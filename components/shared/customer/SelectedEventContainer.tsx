@@ -1,19 +1,23 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { EventType, eventTypes } from "@/types/package-types";
-import CustomerPackageCard from "./CustomerPackageCard";
-import { SelectedEventContainerProps } from "@/types/component-types";
-import clsx from "clsx";
+import { type EventType, eventTypes } from "@/types/package-types";
+import type { SelectedEventContainerProps } from "@/types/component-types";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
-import PlatedWarning from "../PlatedWarning";
-import { Menu, X } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
+import PlatedWarning from "../PlatedWarning";
+import CustomerPackageCard from "./CustomerPackageCard";
+import { CatererPackageCard } from "../caterer/CatererPackageCard";
 
 export default function SelectedEventContainer({
   cateringPackages,
+  isCaterer,
+  open,
 }: SelectedEventContainerProps) {
   const [serviceType, setServiceType] = useState("Buffet");
   const [selectedEventType, setSelectedEventType] = useState<EventType>("All");
@@ -22,17 +26,14 @@ export default function SelectedEventContainer({
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    serviceType === "Plated" ? setIsPlated(true) : setIsPlated(false);
+    setIsPlated(serviceType === "Plated");
     setChangeEventMobile(false);
   }, [serviceType, selectedEventType]);
 
   const eventPackages =
     selectedEventType === "All"
-      ? cateringPackages.filter((pkg) => pkg.packageType === "Event")
-      : cateringPackages.filter(
-          (pkg) =>
-            pkg.packageType === "Event" && pkg.eventType === selectedEventType
-        );
+      ? cateringPackages
+      : cateringPackages.filter((pkg) => pkg.eventType === selectedEventType);
 
   const pkgDescriptions = [
     {
@@ -62,88 +63,109 @@ export default function SelectedEventContainer({
     },
   ];
 
-  return (
-    <div
-      className={clsx("flex gap-10 relative min-h-screen overflow-y-auto", {
-        "flex-col !gap-0": isMobile,
-      })}
-    >
-      <div className={clsx("mt-4 -mb-3 w-full", !isMobile && "hidden")}>
-        <Button
-          className=""
-          onClick={() => setChangeEventMobile((prev) => !prev)}
-          size={"custom"}
-          variant={"link"}
-        >
-          <Menu className="min-h-5 min-w-5 ml-auto" /> Change Event Type
-        </Button>
-      </div>
-      <div
-        className={clsx(
-          "border border-t-0 rounded-lg rounded-t-none p-4 min-w-[200px] bg-background z-10",
-          isMobile ? "absolute top-0 left-0 right-0" : "relative",
-          !changeEventMobile && isMobile && "hidden"
-        )}
-      >
-        {isMobile && (
+  // Filter content that will be used in both desktop and mobile views
+  const filterContent = (
+    <section>
+      <div>
+        <Label className="text-muted-foreground">Event Types</Label>
+        <div className="flex flex-col items-s space-y-4 mt-4">
           <Button
-            className="max-w-fit ml-auto text-destructive "
-            onClick={() => setChangeEventMobile((prev) => !prev)}
-            size={"custom"}
-            variant={"link"}
+            variant={selectedEventType === "All" ? "default" : "ghost"}
+            className={cn("font-medium rounded-sm justify-start", {
+              "text-muted-foreground": selectedEventType !== "All",
+            })}
+            onClick={() => setSelectedEventType("All")}
           >
-            <X className="min-h-5 min-w-5" /> Close
+            <span className="text-left">All</span>
           </Button>
-        )}
-        <div>
-          <Label className="text-muted-foreground">Event Types</Label>
-          <div className="flex flex-col items-s space-y-4 mt-4">
+          {eventTypes.map((event) => (
             <Button
-              variant={selectedEventType === "All" ? "default" : "ghost"}
-              className={clsx("font-medium rounded-sm justify-start", {
-                "text-muted-foreground": selectedEventType !== "All",
+              variant={selectedEventType === event ? "default" : "ghost"}
+              className={cn("font-medium rounded-sm justify-start", {
+                "text-muted-foreground": selectedEventType !== event,
               })}
-              onClick={() => setSelectedEventType("All")}
+              onClick={() => setSelectedEventType(event)}
+              key={event}
             >
-              <span className="text-left">All</span>
-            </Button>
-            {eventTypes.map((event) => (
-              <Button
-                variant={selectedEventType === event ? "default" : "ghost"}
-                className={clsx("font-medium rounded-sm justify-start", {
-                  "text-muted-foreground": selectedEventType !== event,
-                })}
-                onClick={() => setSelectedEventType(event)}
-                key={event}
-              >
-                <span className="text-left">{event}</span>
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        <Separator className="mt-16 mb-4" />
-        <div className="flex flex-col space-y-4">
-          <Label className="text-muted-foreground">Package Types</Label>
-          {["Buffet", "Plated"].map((type) => (
-            <Button
-              variant={type === serviceType ? "default" : "ghost"}
-              className={clsx("font-medium rounded-sm justify-start", {
-                "text-muted-foreground": type !== serviceType,
-              })}
-              onClick={() => setServiceType(type)}
-              key={type}
-            >
-              <span className="text-left">{type}</span>
+              <span className="text-left">{event}</span>
             </Button>
           ))}
         </div>
       </div>
-      <div className="space-y-8">
+
+      <Separator className="my-4" />
+
+      <div className="flex flex-col space-y-4">
+        <Label className="text-muted-foreground">Package Types</Label>
+        {["Buffet", "Plated"].map((type) => (
+          <Button
+            variant={type === serviceType ? "default" : "ghost"}
+            className={cn("font-medium rounded-sm justify-start", {
+              "text-muted-foreground": type !== serviceType,
+            })}
+            onClick={() => setServiceType(type)}
+            key={type}
+          >
+            <span className="text-left">{type}</span>
+          </Button>
+        ))}
+      </div>
+    </section>
+  );
+
+  return (
+    <section
+      className={cn(
+        "flex gap-10 relative min-h-screen",
+        isMobile && "flex-col gap-0"
+      )}
+    >
+      {/* Mobile Filter Toggle Button */}
+      {isMobile && (
+        <Card className="w-full my-4 shadow-md">
+          <Button
+            className="w-full flex items-center justify-between !bg-transparent"
+            onClick={() => setChangeEventMobile((prev) => !prev)}
+            variant="ghost"
+          >
+            <span>Filter Packages</span>
+            <div
+              className={cn(
+                "transition-transform duration-300",
+                changeEventMobile ? "-rotate-180" : "rotate-0"
+              )}
+            >
+              <ChevronDown />
+            </div>
+          </Button>
+          {/* Mobile Filter Dropdown */}
+          {isMobile && changeEventMobile && (
+            <>
+              <Separator />
+
+              <CardContent>
+                <CardContent className="mt-4 p-0 -mx-2">
+                  {filterContent}
+                </CardContent>
+              </CardContent>
+            </>
+          )}
+        </Card>
+      )}
+
+      {/* Desktop Sticky Sidebar */}
+      {!isMobile && (
+        <div className="sticky top-16 self-start h-fit min-w-[250px] border rounded-lg p-4 bg-background z-20 mt-5">
+          {filterContent}
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className="space-y-8 flex-1">
         <div className="mt-6 space-y-5">
           <div className="relative">
             {selectedEventType === "All" && (
-              <h3 className="text-4xl font-semibold">All Packages</h3>
+              <h3 className="text-4xl font-semibold">All Event Packages</h3>
             )}
             {eventTypes.map((event, index) => (
               <h3 className="text-4xl font-semibold" key={index}>
@@ -155,18 +177,39 @@ export default function SelectedEventContainer({
                 {selectedEventType === event && description}
               </p>
             ))}
-            {/* <Info className="absolute top-0 right-0" /> */}
           </div>
-          <PlatedWarning isPlated={serviceType === "Plated"} />
+          {serviceType === "Plated" && <PlatedWarning />}
         </div>
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-10 ">
-          {eventPackages.map((pkg, index) => {
-            return (
-              <CustomerPackageCard key={index} item={pkg} isPlated={isPlated} />
-            );
-          })}
+        <div
+          className={`flex-1 grid grid-cols-1 ${
+            open && isCaterer
+              ? "lg:grid-cols-1 xl:grid-cols-2"
+              : "lg:grid-cols-2"
+          } gap-10`}
+        >
+          {eventPackages.length > 0 ? (
+            eventPackages.map((pkg, index) =>
+              isCaterer ? (
+                <CatererPackageCard
+                  key={index}
+                  item={pkg}
+                  isPlated={isPlated}
+                />
+              ) : (
+                <CustomerPackageCard
+                  key={index}
+                  item={pkg}
+                  isPlated={isPlated}
+                />
+              )
+            )
+          ) : (
+            <div className="col-span-3 min-h-[50vh] flex justify-center items-center">
+              <span className="font-bold text-4xl">No Package Found</span>{" "}
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

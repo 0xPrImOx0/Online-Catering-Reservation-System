@@ -444,6 +444,7 @@ export function useMenuForm({
       }
 
       isSuccess = true;
+      setIsSubmitSuccess(true);
       console.log("MESSAGE", response?.data.message);
       console.log("DATAA", response?.data.data);
       // toast.success(response?.data.message);

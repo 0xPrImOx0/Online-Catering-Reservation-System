@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [customer, setCustomer] = useState<CustomerProps | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refresh, setRefresh] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const getCurrentCustomer = async () => {
     setIsLoading(true);
@@ -20,23 +21,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // toast(<div className="p-4">{JSON.stringify(res, null, 2)}</div>);
       setCustomer(res.data.customer);
     } catch (err: unknown) {
-      // console.log("ERRORRR IN AUTH CONTEXT", err);
       if (!axios.isAxiosError(err) || err.response?.status !== 401) {
-        setCustomer(null);
-        console.error("Unexpected Error:", err);
-        return;
+        setErrorMessage("Unexpected error occur");
+        console.log(
+          "DEV ERROR IF NOT AXIOS ERROR IN GETTING ACCESS TOKEN | EXPIRED",
+          err
+        );
       }
 
+      // This will try to generate new access token using refresh token
       try {
-        const refreshRes = await api.post("/auth/refresh");
-
-        if (refreshRes.status !== 200) setCustomer(null);
+        console.log("Attempting to refresh the access token...");
+        await api.post("/auth/refresh");
 
         const retryRes = await api.get("/auth/me");
         setCustomer(retryRes.data.customer);
-      } catch (refreshErr) {
+      } catch (refreshErr: unknown) {
         setCustomer(null);
-        console.log("Refresh token expired or invalid!", refreshErr);
+
+        if (axios.isAxiosError<{ error: string }>(refreshErr)) {
+          const message = refreshErr.response?.data.error;
+          console.log(
+            "DEV ERROR IF AXIOS ERROR IN REFESHING TOKEN",
+            refreshErr
+          );
+          setErrorMessage(
+            `${refreshErr.message}: ${message || refreshErr.message}`
+          );
+          return;
+        }
+
+        console.log(
+          "DEV ERROR IF NOTTT AXIOS ERROR IN REFESHING TOKEN",
+          refreshErr
+        );
+        setErrorMessage("Failed to get new access token: Not an AxiosError");
       }
     } finally {
       setIsLoading(false);
@@ -63,7 +82,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ customer, isLoading }}>
+    <AuthContext.Provider value={{ customer, isLoading, errorMessage }}>
       {children}
     </AuthContext.Provider>
   );

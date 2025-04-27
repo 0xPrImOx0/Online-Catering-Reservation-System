@@ -1,9 +1,9 @@
 import { Search, SlidersHorizontal } from "lucide-react";
 import React from "react";
 import { Input } from "../ui/input";
-import { SearchInputProps } from "@/types/component-types";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { SearchInputProps } from "@/types/component-types";
 
 export default function SearchInput({
   query,

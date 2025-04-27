@@ -33,7 +33,7 @@ export function CatererPackageCard({ item, isPlated }: PackageCardProps) {
   const [showPackageDetails, setShowPackageDetails] = useState(false);
 
   return (
-    <Card className="overflow-hidden max-w-md transition-all duration-300 hover:shadow-md flex flex-col h-full">
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-md flex flex-col h-full">
       <div className="relative">
         <div className="aspect-video w-full overflow-hidden">
           <Image

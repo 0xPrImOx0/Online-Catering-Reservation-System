@@ -66,11 +66,14 @@ export default function PackageDetailsDialog({
               <div className="flex justify-between items-center mt-4 bg-primary text-primary-foreground px-3 py-2 rounded-md">
                 <div>
                   <span className="text-lg font-bold">
-                    {isPlated
-                      ? `&#8369; ${pkg.pricePerPaxWithServiceCharge.toFixed(
-                          2
-                        )} per pax`
-                      : `&#8369; ${pkg.pricePerPax.toFixed(2)} per pax`}
+                    {isPlated ? (
+                      <>
+                        &#8369; {pkg.pricePerPaxWithServiceCharge.toFixed(2)}{" "}
+                        per pax
+                      </>
+                    ) : (
+                      <>&#8369; {pkg.pricePerPax.toFixed(2)} per pax</>
+                    )}
                   </span>
                   {isPlated && (
                     <span className="text-xs block text-primary-foreground/80">

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  BriefcaseBusiness,
-  ChevronDown,
-  LogOut,
-  Moon,
-  Sun,
-  User,
-} from "lucide-react";
+import { BriefcaseBusiness, ChevronDown, LogOut, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -25,12 +18,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { useTheme } from "next-themes";
-import clsx from "clsx";
 import api from "@/lib/axiosInstance";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
+import { ThemeSwitchToggle } from "../theme/theme-mode-1";
 
 export function NavUser({
   user,
@@ -41,7 +33,6 @@ export function NavUser({
     avatar: string;
   };
 }) {
-  const { setTheme, theme } = useTheme();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -95,7 +86,9 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link href={"/caterer/account-settings"}>
@@ -109,17 +102,12 @@ export function NavUser({
                   Business Settings
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  theme === "dark" ? setTheme("light") : setTheme("dark")
-                }
-              >
-                <Moon className={clsx(theme === "dark" && "hidden")} />
-                <Sun className={clsx(theme === "light" && "hidden")} />
-                <span>{theme === "dark" ? "Light" : "Dark"} Mode</span>
-              </DropdownMenuItem>
             </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
+            <ThemeSwitchToggle />
+            <DropdownMenuSeparator />
+
             <DropdownMenuItem className="text-destructive" asChild>
               <Link href="/" onClick={handleSignOut} className="text-base">
                 <LogOut />

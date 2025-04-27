@@ -110,6 +110,8 @@ export interface FilterSectionProps {
 
 export type SelectedEventContainerProps = {
   cateringPackages: CateringPackagesProps[];
+  isCaterer: boolean;
+  open?: boolean;
 };
 
 export type MultiStepFormProps = {

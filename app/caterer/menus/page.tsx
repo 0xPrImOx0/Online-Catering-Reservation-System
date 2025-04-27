@@ -11,13 +11,13 @@ export default function Page() {
   const { open } = useSidebar();
 
   return (
-    <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto overflow-hidden">
+    <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
       <HeaderWithAddButton
         title="Menu"
         setIsAddInstanceOpen={setIsAddMenuOpen}
       />
 
-      <div className="relative w-full mx-auto overflow-hidden py-2">
+      <div className="relative w-full mx-auto py-2">
         <PaginatedMenus open={open} />
       </div>
 

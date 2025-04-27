@@ -36,6 +36,8 @@ const nextConfig: NextConfig = {
       "miro.medium.com",
       "www.travelwisconsin.com",
       "www.flyacecorp.com",
+      //dummy
+      "www.allrecipes.com",
     ],
   },
 };
