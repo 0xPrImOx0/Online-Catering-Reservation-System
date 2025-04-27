@@ -75,15 +75,17 @@ export default function CateringPackages({
         </div>
       )}
 
-      <div className="w-full md:w-[80%] flex self-center mb-6">
-        <SearchInput
-          query={query}
-          setQuery={setQuery}
-          placeholderTitle="for packages..."
-          iconStyle="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-5"
-          inputStyle="pl-10 pr-10 py-5 rounded-full border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
-        />
-      </div>
+      {activeTab !== "Custom" && (
+        <div className="w-full md:w-[80%] flex self-center mb-6">
+          <SearchInput
+            query={query}
+            setQuery={setQuery}
+            placeholderTitle="for packages..."
+            iconStyle="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-5"
+            inputStyle="pl-10 pr-10 py-5 rounded-full border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          />
+        </div>
+      )}
 
       <Tabs
         defaultValue="Buffet"
