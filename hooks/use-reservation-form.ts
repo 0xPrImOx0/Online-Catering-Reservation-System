@@ -11,6 +11,8 @@ import {
   paxArray,
   PaxArrayType,
   ReservationItem,
+  reservationStatusArray,
+  ReservationStatusType,
   SelectedMenu,
   SelectedMenus,
 } from "@/types/reservation-types";
@@ -99,6 +101,14 @@ const reservationSchema = z
       .string()
       .max(300, "Delivery Instructions must not exceed 300 characters")
       .optional(),
+    status: z.enum(
+      reservationStatusArray as [
+        ReservationStatusType,
+        ...ReservationStatusType[]
+      ]
+    ),
+    createdAt: z.date(),
+    updatedAt: z.date(),
   })
   .superRefine((data, ctx) => {
     const match = data.reservationTime.match(/^(\d+):([0-5]\d)$/);
@@ -170,26 +180,29 @@ export type ReservationValues = z.infer<typeof reservationSchema>;
 const defaultValues: ReservationValues = {
   fullName: "",
   email: "",
-  contactNumber: "0",
-  reservationType: "event",
-  eventType: "Birthday",
+  contactNumber: "",
+  reservationType: "personal",
+  eventType: "",
   reservationDate: new Date(),
-  reservationTime: "08:00",
+  reservationTime: "",
   period: "A.M.",
-  guestCount: 0,
+  guestCount: 20,
   venue: "",
   cateringOptions: "event",
   serviceType: "Buffet",
   serviceFee: 0,
   serviceHours: "",
   selectedPackage: "",
-  selectedMenus: {} as Record<string, Record<string, MenuReservationDetails>>,
+  selectedMenus: {},
   totalPrice: 0,
   specialRequests: "",
   deliveryOption: "Pickup",
   deliveryFee: 0,
   deliveryAddress: "",
   deliveryInstructions: "",
+  status: "Pending",
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 export function useReservationForm() {

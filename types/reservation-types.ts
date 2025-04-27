@@ -2,30 +2,6 @@ import { useReservationForm } from "@/hooks/use-reservation-form";
 import { ServiceType } from "./package-types";
 
 //Reservation Related Types
-export type reservationType = {
-  id: string;
-  customer: {
-    name: string;
-    email: string;
-    phone: string;
-    isRegistered: boolean;
-  };
-  reservationDate: Date | string | number;
-  totalPrice: number;
-  status: string;
-  createdDate: Date | null;
-  guests: number;
-  address: string;
-  specialInstructions: string;
-  items: { name: string; quantity: number; price: number }[];
-  payment: {
-    status: string;
-    date: Date | null;
-    amount: number;
-  };
-  isUrgent: boolean;
-};
-
 export type PaxArrayType = "4-6 pax" | "8-10 pax" | "13-15 pax" | "18-20 pax";
 
 export const paxArray: PaxArrayType[] = [
@@ -33,6 +9,19 @@ export const paxArray: PaxArrayType[] = [
   "8-10 pax",
   "13-15 pax",
   "18-20 pax",
+];
+
+export type ReservationStatusType =
+  | "Pending"
+  | "Confirmed"
+  | "Completed"
+  | "Cancelled";
+
+export const reservationStatusArray: ReservationStatusType[] = [
+  "Pending",
+  "Confirmed",
+  "Completed",
+  "Cancelled",
 ];
 
 export interface MenuReservationDetails {
@@ -68,10 +57,13 @@ export interface ReservationItem {
   deliveryFee: number;
   deliveryAddress?: string;
   deliveryInstructions?: string;
+  status: ReservationStatusType;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export type ReservationTableProps = {
-  reservations: reservationType[];
+  reservations: ReservationItem[];
   dashboard?: boolean;
 };
 

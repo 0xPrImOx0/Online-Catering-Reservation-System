@@ -1,82 +1,91 @@
-# Online Catering Reservation System
+# 🍽️ Online Catering Reservation System
 
-## Project Overview
-The Online Catering Reservation System simplifies event booking for customers while providing caterers with an efficient way to manage reservations, payments, and menu offerings. Customers can browse menus, book catering services, and track their reservations, while caterers handle incoming orders, monitor payments, and schedule events. This system ensures a smooth transaction process between both parties with an intuitive dashboard and automated notifications.
+[![Next.js](https://img.shields.io/badge/Next.js-13-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.0-38B2AC)](https://tailwindcss.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Latest-green)](https://www.mongodb.com/)
 
-## Team Members
-- Rey Daug - Front-End Web Developer & Project Manager
-- Samm Caagbay - Fullstack Web Developer & UI Designer
-- John Patrick Nacional - Researcher & Mobile Developer
-- Ervi Jude Arcillas - Researcher & Mobile Developer
+A modern, full-stack web application that streamlines the catering reservation process, connecting customers with catering services through an intuitive and efficient platform.
 
-## Key Features by Role
-### Caterer Features:
-- Dashboard Overview – View new reservations, upcoming events, and pending payments.
-- Manage Reservations – Approve, reject, and update catering bookings.
-- Menu Management – Add, edit, or remove food items from the catering menu.
-- Payments & Transactions – Track pending and completed customer payments.
-- Event Calendar – View scheduled reservations visually in a calendar format.
+## ✨ Features
 
-###  Customer Features:
-- Browse Menus – View available catering packages and individual menu items.
-- Make a Reservation – Select a date, choose a package, and submit booking requests.
-- Track Booking Status – Check if a reservation is confirmed, pending, or completed.Secure Payments – Pay for reservations online and receive payment confirmations.
-- Cancel/Modify Reservation – Adjust booking details before a set deadline.
+### 🏢 For Caterers
+- **Smart Dashboard** - Real-time overview of reservations, events, and payments
+- **Reservation Management** - Effortlessly handle booking approvals and updates
+- **Menu Control** - Dynamic menu and package management system
+- **Financial Tracking** - Comprehensive payment and transaction monitoring
+- **Visual Calendar** - Interactive event scheduling and management
 
-## Tech Stack
+### 👥 For Customers
+- **Menu Explorer** - Browse through beautifully presented catering packages
+- **Easy Booking** - Streamlined reservation process with date selection
+- **Status Tracking** - Real-time updates on reservation status
+- **Secure Payments** - Integrated online payment system
+- **Flexible Management** - Simple booking modifications and cancellations
+
+## 🛠️ Tech Stack
+
 ### Frontend
-- Next.js
-- Typescript
-- TailwindCSS
-- shadcn/ui
-- Figma
+- **Next.js** - React framework for production
+- **TypeScript** - Type-safe code development
+- **TailwindCSS** - Utility-first CSS framework
+- **shadcn/ui** - Beautifully designed components
+- **Figma** - UI/UX design and prototyping
 
 ### Backend
-- MongoDB (NoSQL)
-- Mongoose (ODM)
+- **MongoDB** - NoSQL database
+- **Mongoose** - Elegant MongoDB object modeling
 
-### Other Tools
-- Git & Github
-- Jira
-- Testing Framework (???)
+### Tools & Infrastructure
+- **Git & GitHub** - Version control and collaboration
+- **Jira** - Project management and issue tracking
 
-## Installation
-# Step-by-step instructions on how to install the project
-Create a folder to store and clone the system and follow this command
-```bash
-git clone https://github.com/0xPrImOx0/Online-Catering-Reservation-System ./
-npm install 
-```
+## 🚀 Getting Started
 
-## Running the Project
-# Commands to run the project locally
-```bash
-npm run dev
-```
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- Git
 
-## Environment Variables
-```# We will change this section after implementing `.env`'s```
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/0xPrImOx0/Online-Catering-Reservation-System ./
+   ```
 
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## API Documentation
-```# We will change this section after implementing our custom express api```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-### Endpoint 1
-```# This is just an example to guide us later```
-- Method: GET/POST/PUT/DELETE
-- Path: `/api/endpoint1`
-- Description: What this endpoint does
-- Required Parameters: List of required parameters
+Visit `http://localhost:3000` to see the application.
 
-## Testing
-```# We will change this section after implementing a testing framework and such```
+## 🤝 Contributing
 
-## Contributing
-Guidelines for how your teammates can contribute to the project:
+We welcome contributions! Please follow these steps:
+
 1. Fork the repository
-2. Create a new branch
-3. Make your changes
-4. Submit a pull request
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Known Issues
-```# There are no known issues as of the moment ```
+## 👥 Team
+
+- **Rey Daug** - Front-End Web Developer & Project Manager
+- **Samm Caagbay** - Fullstack Web Developer & UI Designer
+- **John Patrick Nacional** - Researcher & Mobile Developer
+- **Ervi Jude Arcillas** - Researcher & Mobile Developer
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🔄 Status
+
+Project is under active development. Features and documentation will be continuously updated.
