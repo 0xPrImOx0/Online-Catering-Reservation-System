@@ -16,10 +16,11 @@ import {
   Users,
   Utensils,
   Building,
+  LucideIcon,
 } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { motion } from "framer-motion";
-import { PaxArrayType } from "@/types/reservation-types";
+import { PaxArrayType, SelectedMenu } from "@/types/reservation-types";
 
 export default function SummaryBooking() {
   const { watch } = useFormContext<ReservationValues>();
@@ -38,6 +39,28 @@ export default function SummaryBooking() {
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
+  };
+
+  const DetailRow = ({
+    icon: Icon,
+    label,
+    value,
+  }: {
+    icon: LucideIcon;
+    label: string;
+    value: string | number;
+  }) => {
+    return (
+      <li className="flex items-start">
+        <span className="flex items-center flex-1 text-gray-500 shrink-0">
+          <Icon className="w-4 h-4 mr-2" />
+          {label}
+        </span>
+        <span className="ml-2 font-medium text-gray-800">
+          {value || "Not provided"}
+        </span>
+      </li>
+    );
   };
 
   return (
@@ -66,33 +89,13 @@ export default function SummaryBooking() {
               </h3>
             </div>
             <ul className="space-y-4">
-              <li className="flex items-start">
-                <span className="flex items-center flex-1 text-gray-500 shrink-0">
-                  <User className="w-4 h-4 mr-2" />
-                  Name
-                </span>
-                <span className="ml-2 font-medium text-gray-800">
-                  {formValues.fullName || "Not provided"}
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="flex items-center flex-1 text-gray-500 shrink-0">
-                  <Mail className="w-4 h-4 mr-2" />
-                  Email
-                </span>
-                <span className="ml-2 font-medium text-gray-800 break-all">
-                  {formValues.email || "Not provided"}
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="flex items-center flex-1 text-gray-500 shrink-0">
-                  <Phone className="w-4 h-4 mr-2" />
-                  Phone
-                </span>
-                <span className="ml-2 font-medium text-gray-800">
-                  {formValues.contactNumber || "Not provided"}
-                </span>
-              </li>
+              <DetailRow icon={User} label="Name" value={formValues.fullName} />
+              <DetailRow icon={Mail} label="Email" value={formValues.email} />
+              <DetailRow
+                icon={Phone}
+                label="Phone"
+                value={formValues.contactNumber}
+              />
             </ul>
           </CardContent>
         </Card>
@@ -106,64 +109,42 @@ export default function SummaryBooking() {
               </h3>
             </div>
             <ul className="space-y-4">
-              <li className="flex items-start">
-                <span className="flex items-center text-gray-500 w-28 shrink-0">
-                  <Utensils className="w-4 h-4 mr-2" />
-                  Event Type
-                </span>
-                <span className="ml-2 font-medium text-gray-800">
-                  {formValues.eventType || "Not provided"}
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="flex items-center text-gray-500 w-28 shrink-0">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Date
-                </span>
-                <span className="ml-2 font-medium text-gray-800">
-                  {formattedDate}
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="flex items-center text-gray-500 w-28 shrink-0">
-                  <Users className="w-4 h-4 mr-2" />
-                  Guests
-                </span>
-                <span className="ml-2 font-medium text-gray-800">
-                  {formValues.guestCount || "Not provided"}
-                </span>
-              </li>
+              <DetailRow
+                icon={Utensils}
+                label="Event Type"
+                value={formValues.eventType || "Not provided"}
+              />
+              <DetailRow icon={Calendar} label="Date" value={formattedDate} />
+              <DetailRow
+                icon={Users}
+                label="Guests"
+                value={formValues.guestCount || "Not provided"}
+              />
               {formValues.reservationType === "event" && (
                 <>
-                  <li className="flex items-start">
-                    <span className="flex items-center text-gray-500 w-28 shrink-0">
-                      <Building className="w-4 h-4 mr-2" />
-                      Venue
-                    </span>
-                    <span className="ml-2 font-medium text-gray-800">
-                      {formValues.venue || "Not provided"}
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="flex items-center text-gray-500 w-28 shrink-0">
-                      <Utensils className="w-4 h-4 mr-2" />
-                      Service
-                    </span>
-                    <span className="ml-2 font-medium text-gray-800">
-                      {formValues.serviceType || "Not provided"}
-                    </span>
-                  </li>
+                  <DetailRow
+                    icon={Building}
+                    label="Venue"
+                    value={formValues.venue || "Not provided"}
+                  />
+                  <DetailRow
+                    icon={Utensils}
+                    label="Service"
+                    value={formValues.serviceType || "Not provided"}
+                  />
+                  <DetailRow
+                    icon={Utensils}
+                    label="Service"
+                    value={formValues.serviceType || "Not provided"}
+                  />
+
                   {formValues.serviceType === "Plated" &&
                     formValues.serviceHours && (
-                      <li className="flex items-start">
-                        <span className="flex items-center text-gray-500 w-28 shrink-0">
-                          <Clock className="w-4 h-4 mr-2" />
-                          Hours
-                        </span>
-                        <span className="ml-2 font-medium text-gray-800">
-                          {formValues.serviceHours}
-                        </span>
-                      </li>
+                      <DetailRow
+                        icon={Clock}
+                        label="Hours"
+                        value={formValues.serviceHours}
+                      />
                     )}
                 </>
               )}
@@ -183,17 +164,9 @@ export default function SummaryBooking() {
             </div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {Object.entries(formValues.selectedMenus).map(
-                ([category, menuIds]: [
-                  string,
-                  Record<
-                    string,
-                    {
-                      quantity: number;
-                      paxSelected: PaxArrayType;
-                      pricePerPax: number;
-                    }
-                  >
-                ]) => {
+                ([category, menuIds]: [string, SelectedMenu]) => {
+                  console.log(menuIds);
+
                   const menuIdArray = Object.keys(menuIds);
                   if (menuIdArray.length === 0) return null;
                   return (
@@ -202,16 +175,22 @@ export default function SummaryBooking() {
                         {category}
                       </h4>
                       <ul className="space-y-3">
-                        {menuIdArray.map((id: string) => {
+                        {menuIdArray.map((id) => {
                           const menu = getMenuItem(id);
                           return menu ? (
                             <li
                               key={id}
                               className="flex items-center gap-2 text-gray-700"
                             >
-                              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-green-50">
-                                <Check className="h-3.5 w-3.5 text-green-600" />
-                              </div>
+                              {menuIds[id].quantity > 1 ? (
+                                <span className="text-green-600">
+                                  {menuIds[id].quantity} X
+                                </span>
+                              ) : (
+                                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-green-50">
+                                  <Check className="h-3.5 w-3.5 text-green-600" />
+                                </div>
+                              )}
                               <span>{menu.name}</span>
                             </li>
                           ) : null;

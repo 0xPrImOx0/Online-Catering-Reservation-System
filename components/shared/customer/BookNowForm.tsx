@@ -37,7 +37,7 @@ export default function BookNowForm({ id }: { id: string }) {
     setShowPackageSelection,
     getMenuItem,
   } = useReservationForm();
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(4);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [nextPageCount, setNextPageCount] = useState(0);
