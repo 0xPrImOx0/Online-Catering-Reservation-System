@@ -1,7 +1,7 @@
 import ReservationTable from "@/components/shared/caterer/ReservationTable";
 import MetricCards from "@/components/shared/MetricCards";
 import { Button } from "@/components/ui/button";
-import { reservations } from "@/lib/caterer/reservation-dummy";
+import { reservations } from "@/lib/caterer/reservation-metadata";
 import { Calendar, LucideIcon, MessageSquare, Users } from "lucide-react";
 import Link from "next/link";
 import {
