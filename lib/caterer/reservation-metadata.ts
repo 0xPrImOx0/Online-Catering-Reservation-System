@@ -54,7 +54,7 @@ export const reservations: ReservationItem[] = [
     reservationType: "personal",
     eventType: "",
     reservationDate: new Date("2025-05-03T18:00:00"),
-    reservationTime: "18:00",
+    reservationTime: "06:00",
     period: "P.M.",
     guestCount: 20,
     venue: "Home",
@@ -291,3 +291,54 @@ export const reservations: ReservationItem[] = [
     updatedAt: new Date("2025-04-26T09:00:00"),
   },
 ];
+
+import {
+  ClipboardCheck,
+  ClipboardList,
+  ClipboardPen,
+  CreditCard,
+} from "lucide-react";
+
+const metricCards = [
+  {
+    title: "Total Reservations",
+    firstContent: "10",
+    secondContent: "All active bookings",
+    Icon: ClipboardList,
+  },
+  {
+    title: "Confirmed",
+    firstContent: "6",
+    secondContent: "Ready to serve",
+    Icon: ClipboardCheck,
+  },
+  {
+    title: "Pending",
+    firstContent: "4",
+    secondContent: "Awaiting confirmation",
+    Icon: ClipboardPen,
+  },
+  {
+    title: "Total Revenue",
+    firstContent: "$14,380",
+    secondContent: "From confirmed reservations",
+    Icon: CreditCard,
+  },
+];
+
+const items: Record<string, { value: string; title: string }[]> = {
+  status: [
+    { value: "All", title: "All Statuses" },
+    { value: "Confirmed", title: "Confirmed" },
+    { value: "Pending", title: "Pending" },
+    { value: "Completed", title: "Completed" },
+    { value: "Cancelled", title: "Cancelled" },
+  ],
+  customerType: [
+    { value: "All", title: "All Customers" },
+    { value: "Registered", title: "Registered" },
+    { value: "Guest", title: "Guest" },
+  ],
+};
+
+export { metricCards, items };

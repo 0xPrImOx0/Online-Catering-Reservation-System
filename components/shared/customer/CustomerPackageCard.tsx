@@ -103,7 +103,7 @@ export default function CustomerPackageCard({
             </TooltipProvider>
           </div>
           <div className="absolute bottom-3 right-3">
-            <div className="bg-black/70 backdrop-blur-sm text-foreground rounded px-2 py-1 font-bold">
+            <div className="bg-black/70 backdrop-blur-sm text-background dark:text-foreground rounded px-2 py-1 font-bold">
               &#8369; {item.pricePerPax.toFixed(2)} / pax
             </div>
           </div>

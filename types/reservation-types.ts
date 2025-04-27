@@ -12,6 +12,7 @@ export const paxArray: PaxArrayType[] = [
 ];
 
 export type ReservationStatusType =
+  | "All"
   | "Pending"
   | "Confirmed"
   | "Completed"

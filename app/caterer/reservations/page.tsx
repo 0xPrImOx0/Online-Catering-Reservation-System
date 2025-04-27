@@ -5,20 +5,33 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus } from "lucide-react";
 import MetricCards from "@/components/shared/MetricCards";
-import { reservations } from "@/lib/caterer/reservation-dummy";
+import {
+  reservations,
+  metricCards,
+  items,
+} from "@/lib/caterer/reservation-metadata";
 import ReservationTable from "@/components/shared/caterer/ReservationTable";
 import DateSelector from "@/components/shared/DateSelector";
 import SearchInput from "@/components/shared/SearchInput";
 import CustomSelect from "@/components/shared/CustomSelect";
-import CustomPagination from "@/components/shared/CustomPagination";
-import { metricCards, items } from "../../../lib/caterer/reservations-metadata";
+import { ReservationStatusType } from "@/types/reservation-types";
 
 // Current date for reference
 
 export default function ReservationsPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [query, setQuery] = useState("");
+  const [status, setStatus] = useState<ReservationStatusType | "All" | string>(
+    "All"
+  );
+  const [customerType, setCustomerType] = useState<"All" | string>("All");
 
+  // const filteredReservations = reservations.filter((reservation) => {
+  //   return (
+  //     reservation.fullName.toLowerCase().includes(query.toLowerCase()) &&
+  //     (status === "All" || reservation.status === status)
+  //   );
+  // });
   return (
     <main className="flex-1 overflow-auto px-[4px]">
       {/* Main Header */}
@@ -48,17 +61,21 @@ export default function ReservationsPage() {
             placeholderTitle="reservations"
           />
           <DateSelector date={date} setDate={setDate} />
-        </div>
+        </div> L  
         <div className="flex items-center gap-2">
           <CustomSelect
-            defaultValue="all"
+            defaultValue="All"
             placeholder="Status"
             items={items.status}
+            value={status}
+            onValueChange={setStatus}
           />
           <CustomSelect
-            defaultValue="all"
+            defaultValue="All"
             placeholder="Customer Type"
             items={items.customerType}
+            value={customerType}
+            onValueChange={setCustomerType}
           />
         </div>
       </div>
@@ -76,7 +93,7 @@ export default function ReservationsPage() {
           <ReservationTable reservations={reservations} />
         </TabsContent>
         <TabsContent value="upcoming" className="mt-4">
-          {/* Upcoming reseryvations would be shown here */}
+          {/* Upcoming reservations would be shown here */}
           <ReservationTable reservations={reservations} />
         </TabsContent>
         <TabsContent value="completed" className="mt-4">

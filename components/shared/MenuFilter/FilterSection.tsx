@@ -300,7 +300,6 @@ export default function FilterSection({
                         style={{
                           width: "35px",
                           height: "35px",
-                          background: "transparent",
                         }}
                         className={`${getColorClasses(
                           (category.value.charAt(0).toUpperCase() +

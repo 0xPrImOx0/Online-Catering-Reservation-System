@@ -81,7 +81,7 @@ export function CatererPackageCard({ item, isPlated }: PackageCardProps) {
         </div>
 
         <div className="absolute bottom-3 right-3">
-          <div className="bg-black/70 backdrop-blur-sm text-foreground rounded-md px-2.5 py-1.5 font-bold">
+          <div className="bg-black/70 backdrop-blur-sm text-background dark:text-foreground rounded-md px-2.5 py-1.5 font-bold">
             &#8369;{" "}
             {isPlated
               ? item.pricePerPaxWithServiceCharge.toFixed(2)
