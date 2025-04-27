@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import CustomerPackageCard from "./CustomerPackageCard";
 import CustomPackageForm from "./CustomPacakgeForm";
-import SelectedEventContainer from "./SelectedEventContainer";
+import SelectedEventContainer from "./EventPackageContainer";
 import PlatedWarning from "../PlatedWarning";
 import { cateringPackages } from "@/lib/customer/packages-metadata";
 import TabsTriggerStyle from "../CustomTabsTrigger";

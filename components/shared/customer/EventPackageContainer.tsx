@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { type EventType, eventTypes } from "@/types/package-types";
-import type { SelectedEventContainerProps } from "@/types/component-types";
+import { EventPackageContainerProps } from "@/types/component-types";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
@@ -14,11 +14,11 @@ import PlatedWarning from "../PlatedWarning";
 import CustomerPackageCard from "./CustomerPackageCard";
 import { CatererPackageCard } from "../caterer/CatererPackageCard";
 
-export default function SelectedEventContainer({
+export default function EventPackageContainer({
   cateringPackages,
   isCaterer,
   open,
-}: SelectedEventContainerProps) {
+}: EventPackageContainerProps) {
   const [serviceType, setServiceType] = useState("Buffet");
   const [selectedEventType, setSelectedEventType] = useState<EventType>("All");
   const [isPlated, setIsPlated] = useState(false);

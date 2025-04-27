@@ -108,7 +108,7 @@ export interface FilterSectionProps {
   >;
 }
 
-export type SelectedEventContainerProps = {
+export type EventPackageContainerProps = {
   cateringPackages: CateringPackagesProps[];
   isCaterer: boolean;
   open?: boolean;
