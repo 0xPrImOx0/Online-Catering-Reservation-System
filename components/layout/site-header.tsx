@@ -14,7 +14,7 @@ import {
 import { Menu } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import React from "react";
-import { NavUser } from "./nav-user";
+import { NavUser } from "./caterer-nav-user";
 import { useAuthContext } from "@/contexts/AuthContext";
 
 export function SiteHeader() {

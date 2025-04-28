@@ -26,7 +26,7 @@ import {
 
 import { NavMain } from "../../layout/nav-main";
 import { NavSecondary } from "../../layout/nav-secondary";
-import { NavUser } from "../../layout/nav-user";
+import { NavUser } from "../../layout/caterer-nav-user";
 import {
   Sidebar,
   SidebarContent,

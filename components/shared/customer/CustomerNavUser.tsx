@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, LogOut, LucideIcon, Moon, Sun } from "lucide-react";
+import { ChevronDown, LogOut, LucideIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -13,8 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { useTheme } from "next-themes";
-import clsx from "clsx";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { links, registeredLinks } from "@/lib/customer/customer-links";
@@ -24,6 +22,7 @@ import api from "@/lib/axiosInstance";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { avatarFallBack } from "@/utils/avatar-fallback";
+import { ThemeSwitchToggle } from "@/components/theme/theme-mode-1";
 
 type DropdownLinkProps = {
   data: {
@@ -38,7 +37,6 @@ type CustomerNavUserProps = {
 };
 
 export default function CustomerNavUser({ customer }: CustomerNavUserProps) {
-  const { setTheme, theme } = useTheme();
   const isMobile = useIsMobile();
   const router = useRouter();
 
@@ -129,17 +127,9 @@ export default function CustomerNavUser({ customer }: CustomerNavUserProps) {
           {registeredLinks.map((data) => (
             <DropdownLink data={data} key={data.title} />
           ))}
-          <DropdownMenuItem
-            onClick={() =>
-              theme === "dark" ? setTheme("light") : setTheme("dark")
-            }
-            className="text-base"
-          >
-            <Moon className={clsx(theme === "dark" && "hidden")} />
-            <Sun className={clsx(theme === "light" && "hidden")} />
-            <span>{theme === "dark" ? "Light" : "Dark"} Mode</span>
-          </DropdownMenuItem>
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <ThemeSwitchToggle />
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="text-destructive dark:text-red-500"
