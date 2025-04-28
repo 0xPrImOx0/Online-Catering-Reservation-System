@@ -6,10 +6,13 @@ import CustomerPackageCard from "./CustomerPackageCard";
 import CustomPackageForm from "./CustomPacakgeForm";
 import SelectedEventContainer from "./EventPackageContainer";
 import PlatedWarning from "../PlatedWarning";
-import { cateringPackages } from "@/lib/customer/packages-metadata";
+// import { cateringPackages } from "@/lib/customer/packages-metadata";
 import TabsTriggerStyle from "../CustomTabsTrigger";
 import SearchInput from "../SearchInput";
 import { CatererPackageCard } from "../caterer/CatererPackageCard";
+import { CateringPackagesProps } from "@/types/package-types";
+import api from "@/lib/axiosInstance";
+import axios from "axios";
 
 // async function fetchPackages() {
 //   const packages = await axios.get("http://localhost:5500/api/packages");
@@ -27,34 +30,43 @@ export default function CateringPackages({
   const [isPlated, setIsPlated] = useState(false);
   const [query, setQuery] = useState("");
 
-  // const [cateringPackages, setCateringPackages] = useState<
-  //   CateringPackagesProps[]
-  // >([]);
+  const [cateringPackages, setCateringPackages] = useState<
+    CateringPackagesProps[]
+  >([]);
 
-  // useEffect(() => {
-  //   const getPackages = async () => {
-  //     try {
-  //       const pkg = await fetchPackages();
-  //       if (pkg) setCateringPackages(pkg);
-  //     } catch (error) {
-  //       console.error("Failed to fetch menus:", error); // Log any errors
-  //       setCateringPackages([]); // Set empty array if fetch fails
-  //     }
-  //   };
-  //   getPackages();
-  // }, []);
+  useEffect(() => {
+    const getPackages = async () => {
+      try {
+        const response = await api.get("/packages");
+        setCateringPackages(response.data.data);
+      } catch (err) {
+        console.log("ERRRORRR", err);
 
-  const buffetPlatedPackages = cateringPackages.filter(
-    (pkg) =>
-      pkg.packageType === "BuffetPlated" &&
-      pkg.name.toLowerCase().includes(query.toLowerCase())
-  );
+        if (axios.isAxiosError<{ error: string }>(err)) {
+          const message = err.response?.data.error || "Unexpected Error Occur";
 
-  const eventPackages = cateringPackages.filter(
-    (pkg) =>
-      pkg.packageType === "Event" &&
-      pkg.name.toLowerCase().includes(query.toLowerCase())
-  );
+          console.error("ERROR FETCHING PACKAGES", message);
+        } else {
+          console.error("Something went wrong. Please try again.");
+        }
+      }
+    };
+    getPackages();
+  }, []);
+
+  const buffetPlatedPackages =
+    cateringPackages?.filter(
+      (pkg) =>
+        pkg.packageType === "BuffetPlated" &&
+        pkg.name.toLowerCase().includes(query.toLowerCase())
+    ) || [];
+
+  const eventPackages =
+    cateringPackages?.filter(
+      (pkg) =>
+        pkg.packageType === "Event" &&
+        pkg.name.toLowerCase().includes(query.toLowerCase())
+    ) || [];
 
   useEffect(() => {
     setIsPlated(activeTab === "Plated");
