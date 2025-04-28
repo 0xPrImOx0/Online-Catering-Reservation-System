@@ -13,7 +13,7 @@ export default function Page() {
   return (
     <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
       <HeaderWithAddButton
-        title="Menu"
+        title="Menus"
         setIsAddInstanceOpen={setIsAddMenuOpen}
       />
 

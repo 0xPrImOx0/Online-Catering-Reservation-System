@@ -296,10 +296,11 @@ export default function FilterSection({
                   >
                     <div className="mb-2 items-center justify-center hidden md:flex">
                       <Icon
-                        strokeWidth={1}
+                        strokeWidth={1.5}
                         style={{
                           width: "35px",
                           height: "35px",
+                          background: "transparent",
                         }}
                         className={`${getColorClasses(
                           (category.value.charAt(0).toUpperCase() +

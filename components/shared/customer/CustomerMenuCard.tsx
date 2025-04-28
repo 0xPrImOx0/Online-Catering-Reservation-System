@@ -133,7 +133,7 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
         </div>
 
         <div className="absolute bottom-3 right-3">
-          <div className="bg-black/70 backdrop-blur-sm text-foreground rounded px-2.5 py-1.5 font-bold">
+          <div className="bg-black/70 backdrop-blur-sm text-white rounded px-2.5 py-1.5 font-bold">
             &#8369;
             {menuPricePax.toFixed(2)}
           </div>

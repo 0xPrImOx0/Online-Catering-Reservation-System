@@ -6,29 +6,29 @@ import { CategoryBadgeProps, CategoryProps } from "@/types/menu-types";
 export const getColorClasses = (category: CategoryProps) => {
   switch (category) {
     case "All":
-      return ` text-blue-500 dark:text-blue-800`;
+      return `bg-blue-200 text-blue-800 border-blue-400`;
     case "Soup":
-      return ` text-amber-500 dark:text-amber-800`;
+      return `bg-amber-200 text-amber-800 border-amber-400`;
     case "Salad":
-      return " text-green-500 dark:text-green-800";
+      return "bg-green-200 text-green-800 border-green-400";
     case "Beef":
-      return " text-red-500 dark:text-red-800";
+      return "bg-red-200 text-red-800 border-red-400";
     case "Pork":
-      return " text-pink-500 dark:text-pink-800";
+      return "bg-pink-200 text-pink-800 border-pink-400";
     case "Noodle":
-      return " text-yellow-500 dark:text-yellow-800";
+      return "bg-yellow-200 text-yellow-800 border-yellow-400";
     case "Chicken":
-      return " text-orange-500 dark:text-orange-800";
+      return "bg-orange-200 text-orange-800 border-orange-400";
     case "Seafood":
-      return " text-blue-500 dark:text-blue-800";
+      return "bg-blue-200 text-blue-800 border-blue-400";
     case "Vegetable":
-      return " text-emerald-500 dark:text-emerald-800";
+      return "bg-emerald-200 text-emerald-800 border-emerald-400";
     case "Dessert":
-      return " text-purple-500 dark:text-purple-800";
+      return "bg-purple-200 text-purple-800 border-purple-400";
     case "Beverage":
-      return " text-indigo-500 dark:text-indigo-800";
+      return "bg-indigo-200 text-indigo-800 border-indigo-400";
     default:
-      return " text-gray-500 dark:text-gray-800";
+      return "bg-gray-200 text-gray-800 border-gray-400";
   }
 };
 
