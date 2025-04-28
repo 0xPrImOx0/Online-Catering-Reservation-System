@@ -19,7 +19,7 @@ const MobileRoutePage = () => {
         <Button
           variant={"link"}
           size={"custom"}
-          className="data-[state=open]:bg-sidebar-accent p-1 data-[state=open]:text-foreground bg-[rgb(39,39,42)] rounded-full size-10"
+          className="data-[state=open]:bg-sidebar-accent p-1 data-[state=open]:text-foreground bg-[rgb(39,39,42)] rounded-full size-10 md:hidden"
         >
           <svg
             viewBox="0 0 24 24"

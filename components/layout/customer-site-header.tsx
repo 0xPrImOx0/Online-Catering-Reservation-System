@@ -58,21 +58,35 @@ export default function CustomerSiteHeader() {
           )}
         </div>
         <div className="flex gap-4">
-          {isMobile && <MobileRoutePage />}
           {customer ? (
-            <CustomerNavUser customer={customer} />
+            <>
+              <MobileRoutePage />
+              <CustomerNavUser customer={customer} />
+            </>
           ) : (
             <div className="space-x-4">
-              {!isMobile && (
-                <Button variant={"link"} effect={"hoverUnderline"} asChild>
-                  <Link className="max-sm:hidden !m-0" href={"/sign-in"}>
-                    <User /> Sign In
-                  </Link>
-                </Button>
-              )}
-              <Button asChild>
+              <Button
+                variant={"link"}
+                effect={"hoverUnderline"}
+                className="max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10"
+                asChild
+              >
                 <Link href="/book-now">
-                  <Calendar /> Book Now
+                  <Calendar className="max-md:text-white" />
+                  <p className="max-md:hidden">Book Now</p>
+                </Link>
+              </Button>
+
+              {/* Page Routes */}
+              <MobileRoutePage />
+
+              <Button
+                className="max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10"
+                asChild
+              >
+                <Link href={"/sign-in"}>
+                  <User className="max-md:text-white" />
+                  <p className="max-md:hidden">Sign In</p>
                 </Link>
               </Button>
             </div>
