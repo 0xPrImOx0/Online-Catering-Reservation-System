@@ -17,9 +17,9 @@ const MobileRoutePage = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant={"link"}
+          variant={"ghost"}
           size={"custom"}
-          className="data-[state=open]:bg-sidebar-accent p-1 data-[state=open]:text-foreground bg-[rgb(39,39,42)] rounded-full size-10 md:hidden"
+          className="data-[state=open]:bg-sidebar-accent p-1 data-[state=open]:text-foreground max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10 max-xl:rounded-lg lg:hidden px-4"
         >
           <svg
             viewBox="0 0 24 24"
@@ -31,6 +31,7 @@ const MobileRoutePage = () => {
           >
             <path d="M18.5 1A1.5 1.5 0 0 0 17 2.5v3A1.5 1.5 0 0 0 18.5 7h3A1.5 1.5 0 0 0 23 5.5v-3A1.5 1.5 0 0 0 21.5 1h-3zm0 8a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h3a1.5 1.5 0 0 0 1.5-1.5v-3A1.5 1.5 0 0 0 21.5 9h-3zm-16 8A1.5 1.5 0 0 0 1 18.5v3A1.5 1.5 0 0 0 2.5 23h3A1.5 1.5 0 0 0 7 21.5v-3A1.5 1.5 0 0 0 5.5 17h-3zm8 0A1.5 1.5 0 0 0 9 18.5v3a1.5 1.5 0 0 0 1.5 1.5h3a1.5 1.5 0 0 0 1.5-1.5v-3a1.5 1.5 0 0 0-1.5-1.5h-3zm8 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h3a1.5 1.5 0 0 0 1.5-1.5v-3a1.5 1.5 0 0 0-1.5-1.5h-3zm-16-8A1.5 1.5 0 0 0 1 10.5v3A1.5 1.5 0 0 0 2.5 15h3A1.5 1.5 0 0 0 7 13.5v-3A1.5 1.5 0 0 0 5.5 9h-3zm0-8A1.5 1.5 0 0 0 1 2.5v3A1.5 1.5 0 0 0 2.5 7h3A1.5 1.5 0 0 0 7 5.5v-3A1.5 1.5 0 0 0 5.5 1h-3zm8 0A1.5 1.5 0 0 0 9 2.5v3A1.5 1.5 0 0 0 10.5 7h3A1.5 1.5 0 0 0 15 5.5v-3A1.5 1.5 0 0 0 13.5 1h-3zm0 8A1.5 1.5 0 0 0 9 10.5v3a1.5 1.5 0 0 0 1.5 1.5h3a1.5 1.5 0 0 0 1.5-1.5v-3A1.5 1.5 0 0 0 13.5 9h-3z" />
           </svg>
+          <p className="max-md:hidden">Quick Links</p>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

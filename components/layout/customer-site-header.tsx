@@ -45,29 +45,21 @@ export default function CustomerSiteHeader() {
       <div className="flex mx-[2%] items-center justify-between">
         <div className="relative flex flex-1 items-center">
           <Logo imageSize={50} withTitle={true} />
-          {!isMobile && (
-            <nav className={cn("flex gap-5 flex-1 justify-center")}>
-              {links.map((link) => (
-                <PageLink
-                  key={link.title}
-                  title={link.title}
-                  href={link.href}
-                />
-              ))}
-            </nav>
-          )}
+          <nav className={cn("flex gap-5 flex-1 justify-center max-lg:hidden")}>
+            {links.map((link) => (
+              <PageLink key={link.title} title={link.title} href={link.href} />
+            ))}
+          </nav>
         </div>
         <div className="flex gap-4">
+          <MobileRoutePage />
           {customer ? (
-            <>
-              <MobileRoutePage />
-              <CustomerNavUser customer={customer} />
-            </>
+            <CustomerNavUser customer={customer} />
           ) : (
             <div className="space-x-4">
               <Button
-                variant={"link"}
-                effect={"hoverUnderline"}
+                variant={"secondary"}
+                effect={`${isMobile ? "none" : "hoverUnderline"}`}
                 className="max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10"
                 asChild
               >
@@ -76,9 +68,6 @@ export default function CustomerSiteHeader() {
                   <p className="max-md:hidden">Book Now</p>
                 </Link>
               </Button>
-
-              {/* Page Routes */}
-              <MobileRoutePage />
 
               <Button
                 className="max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10"
