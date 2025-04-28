@@ -18,11 +18,12 @@ const Logo = ({
   withTitle = true,
 }: LogoProps) => {
   const pathname = usePathname();
+  const isCaterer = pathname.includes("/caterer");
 
   return (
     <Link
-      href={pathname.includes("/caterer") ? "/caterer/dashboard" : "/"}
-      className={cn("flex items-center my-2 max-w-fit", {
+      href={isCaterer ? "/caterer/dashboard" : "/"}
+      className={cn("flex items-center my-1 max-w-fit", {
         "mx-auto": pathname === "/about-us",
       })}
     >
@@ -34,12 +35,7 @@ const Logo = ({
           alt="Catering-Logo"
         />
       </div>
-      <div
-        className={cn(
-          "flex flex-col",
-          withLabel ? "text-left" : "ml-2 text-center items-center"
-        )}
-      >
+      <div>
         {withTitle && <span className="font-bold text-lg">Food Sentinel</span>}
         {withLabel && (
           <p className="font-light italic text-xs text-muted-foreground">

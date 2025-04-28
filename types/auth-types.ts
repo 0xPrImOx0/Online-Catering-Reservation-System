@@ -36,6 +36,7 @@ export interface ForgotPasswordFormProps {
 
 export interface IAuthContext {
   customer: CustomerProps | null;
+  setCustomer: (customer: CustomerProps | null) => void;
   isLoading: boolean;
   errorMessage: string;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, LogOut, LucideIcon } from "lucide-react";
+import { ChevronDown, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -14,51 +14,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { links, registeredLinks } from "@/lib/customer/customer-links";
+import { registeredLinks } from "@/lib/customer/customer-links";
 import { CustomerProps } from "@/types/customer-types";
 import axios from "axios";
 import api from "@/lib/axiosInstance";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { avatarFallBack } from "@/utils/avatar-fallback";
 import { ThemeSwitchToggle } from "@/components/theme/theme-mode-1";
-
-type DropdownLinkProps = {
-  data: {
-    title: string;
-    href: string;
-    Icon: LucideIcon;
-  };
-};
+import { useAuthContext } from "@/contexts/AuthContext";
 
 type CustomerNavUserProps = {
   customer: CustomerProps;
 };
 
 export default function CustomerNavUser({ customer }: CustomerNavUserProps) {
-  const isMobile = useIsMobile();
-  const router = useRouter();
-
-  const DropdownLink = ({ data }: DropdownLinkProps) => {
-    const { title, href, Icon } = data;
-    return (
-      <DropdownMenuItem className="text-base" asChild key={title}>
-        <Link href={href}>
-          <Icon />
-          {title}
-        </Link>
-      </DropdownMenuItem>
-    );
-  };
+  const { setCustomer } = useAuthContext();
 
   const handleSignOut = async () => {
     try {
       await api.post("/auth/sign-out");
 
-      // ✅ Tell AuthProvider to re-fetch customer
-      window.dispatchEvent(new Event("refresh-customer"));
-      router.replace("/");
+      setCustomer(null);
       toast.success("Signed out successfully!");
     } catch (err: unknown) {
       if (axios.isAxiosError<{ error: string }>(err)) {
@@ -71,31 +47,33 @@ export default function CustomerNavUser({ customer }: CustomerNavUserProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant={"ghost"}
-          size={isMobile ? "custom" : "landing"}
-          className="data-[state=open]:bg-sidebar-accent p-1 data-[state=open]:text-sidebar-accent-foreground"
+          variant="ghost"
+          className="data-[state=open]:bg-sidebar-accent p-1 data-[state=open]:text-foreground"
         >
-          <Avatar className="h-8 w-8 rounded-full">
-            <AvatarImage src={customer.profileImage} alt={customer.fullName} />
-            <AvatarFallback className="rounded-lg">
-              {avatarFallBack(customer.fullName)}
-            </AvatarFallback>
-          </Avatar>
-          <span className="truncate font-semibold max-md:hidden">
-            {customer.fullName}
-          </span>
-          <ChevronDown />
+          <>
+            <Avatar className="realtive size-10 rounded-full">
+              <AvatarImage
+                src={customer.profileImage}
+                alt={customer.fullName}
+              />
+              <AvatarFallback className="rounded-lg">
+                {avatarFallBack(customer.fullName)}
+              </AvatarFallback>
+            </Avatar>
+            <ChevronDown className="absolute bottom-2 right-3 rounded-full bg-background/85 text-foreground md:hidden" />
+          </>
+          <span className="font-medium max-md:hidden">{customer.fullName}</span>
+          <ChevronDown className="max-md:hidden" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="max-sm:w-[90vw] sm:min-w-56 rounded-lg"
-        side={"bottom"}
+        className="min-w-56 rounded-lg"
         align="end"
-        sideOffset={4}
+        sideOffset={10}
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar className="h-8 w-8 rounded-full">
+            <Avatar className="size-10 rounded-full">
               <AvatarImage
                 src={customer.profileImage}
                 alt={customer.fullName}
@@ -105,40 +83,31 @@ export default function CustomerNavUser({ customer }: CustomerNavUserProps) {
               </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">
-                {customer.fullName}
-              </span>
+              <span className="truncate font-medium">{customer.fullName}</span>
               <span className="truncate text-xs">{customer.email}</span>
             </div>
           </div>
         </DropdownMenuLabel>
-        {isMobile && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              {links.map((data) => (
-                <DropdownLink data={data} key={data.title} />
-              ))}
-            </DropdownMenuGroup>
-          </>
-        )}
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {registeredLinks.map((data) => (
-            <DropdownLink data={data} key={data.title} />
-          ))}
+          {registeredLinks.map((data) => {
+            const { title, href, Icon } = data;
+            return (
+              <DropdownMenuItem className="text-base" asChild key={title}>
+                <Link href={href}>
+                  <Icon />
+                  {title}
+                </Link>
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <ThemeSwitchToggle />
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="text-destructive dark:text-red-500"
-          asChild
-        >
-          <Link href="/" onClick={handleSignOut} className="text-base">
-            <LogOut />
-            Log out
-          </Link>
+        <DropdownMenuItem className="text-red-500 m-1" onClick={handleSignOut}>
+          <LogOut />
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
