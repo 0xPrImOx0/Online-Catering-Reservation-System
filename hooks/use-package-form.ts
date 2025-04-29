@@ -59,8 +59,12 @@ const formSchema = z
         })
       )
       .min(1, { message: "Add at least one inclusion" }),
-    serviceHours: z.number().min(0).optional(),
-    serviceCharge: z.number().min(0).optional(),
+    serviceHours: z
+      .number()
+      .min(1, { message: "Service Hours must be positive values" }),
+    serviceCharge: z
+      .number()
+      .min(1, { message: "Service Charge must be positive values" }),
     eventType: z.enum(eventTypes as [EventType, ...EventType[]]).optional(),
     packageType: z.enum(["BuffetPlated", "Event"] as const),
     imageUrl: z
@@ -222,6 +226,7 @@ export function usePackageForm({
     }
   };
 
+  // Modify the removePackageOption function to set the deleted category as the selected one
   // Remove package option function
   const removePackageOption = (index: number) => {
     const currentOptions = form.getValues("options");
@@ -229,6 +234,12 @@ export function usePackageForm({
 
     // Add the category back to available categories
     setAvailableCategories((prev) => [...prev, removedOption.category].sort());
+
+    // Set the removed category as the selected one in the dropdown
+    setNewOption({
+      category: removedOption.category,
+      count: newOption.count,
+    });
 
     form.setValue(
       "options",
@@ -305,7 +316,7 @@ export function usePackageForm({
       eventType: data.packageType === "Event" ? data.eventType : undefined,
       packageType: displayPackageType,
       pricePerPaxWithServiceCharge: pricePerPaxWithServiceCharge,
-      _id: ""
+      _id: "",
     };
 
     console.log(
@@ -315,7 +326,7 @@ export function usePackageForm({
     // Here you would typically send this to your API
     // If there's an image file, you would upload it first and then update the imageUrl
 
-    toast.success(JSON.stringify(data, null, 2));
+    toast.success("Package submitted successfully!");
     // Show success message
     setIsSubmitSuccess(true);
 

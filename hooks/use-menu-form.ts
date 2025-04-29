@@ -417,7 +417,7 @@ export function useMenuForm({
     const { imageUrl, ...rest } = data;
     let isSuccess = false;
 
-    const menuItem: MenuItem = {
+    const menuItem: Omit<MenuItem, "_id"> = {
       ...rest,
       rating: isEditMode && initialData ? initialData.rating : 0,
       ratingCount: isEditMode && initialData ? initialData.ratingCount : 0,
