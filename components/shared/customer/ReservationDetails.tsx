@@ -32,9 +32,12 @@ import { hoursArray } from "@/types/package-types";
 import PlatedWarning from "../PlatedWarning";
 import DeliveryWarning from "./DeliveryWarning";
 import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { withMask } from "use-mask-input";
+import { HoursArrayTypes } from "@/types/reservation-types";
 
 export default function ReservationDetails() {
-  const { control, getValues, watch, setValue } =
+  const { control, getValues, watch, setValue, formState: { errors } } =
     useFormContext<ReservationValues>();
   const { getPackageItem } = useReservationForm();
   const reservationType = watch("reservationType");
@@ -47,8 +50,10 @@ export default function ReservationDetails() {
   const pkg = getPackageItem(selectedPackage);
 
   useEffect(() => {
-    const hour = serviceHours?.slice(0, 2);
-    setValue("serviceFee", 100 * Number(hour));
+    if (reservationType === "event") {
+      const hour = serviceHours?.slice(0, 2);
+      setValue("serviceFee", 100 * Number(hour));
+    }
   }, [serviceHours]);
 
   const getRecommendedPax = () => {
@@ -59,7 +64,10 @@ export default function ReservationDetails() {
   };
   useEffect(() => {
     if (pkg) {
-      setValue("serviceHours", pkg.serviceHours.toString() + " hours");
+      setValue(
+        "serviceHours",
+        (pkg.serviceHours.toString() + " hours") as HoursArrayTypes
+      );
       setValue("serviceFee", pkg.serviceHours);
     }
   }, [serviceType]);
@@ -68,7 +76,6 @@ export default function ReservationDetails() {
 
   return (
     <div className="space-y-4">
-      <p>{getValues("serviceHours")}</p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {cateringOptions === "custom" && (
           <WhatsTheOccasionCard control={control} />
@@ -138,7 +145,7 @@ export default function ReservationDetails() {
                       <RadioGroupItem
                         onClick={() => {
                           setValue("serviceFee", 0);
-                          setValue("serviceHours", "");
+                          setValue("serviceHours", undefined);
                         }}
                         value="Buffet"
                         id="buffet"
@@ -163,40 +170,58 @@ export default function ReservationDetails() {
             )}
           />
           {serviceType === "Plated" && (
-            <FormField
-              control={control}
-              name="serviceHours"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="">
-                    Service Hours <span className="text-destructive">*</span>{" "}
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled
-                  >
+            <>
+              <FormField
+                control={control}
+                name="venue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="">
+                      Venue <span className="text-destructive">*</span>{" "}
+                    </FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select service hours rendered" />
-                      </SelectTrigger>
+                      <Input placeholder="Enter venue location" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      {hoursArray.map((hour) => (
-                        <SelectItem key={hour} value={hour}>
-                          {hour}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    {errors.venue ? <FormMessage /> : <p className="text-muted-foreground italic text-sm">*Enter venue details for our staff</p>}
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="serviceHours"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="">
+                      Service Hours <span className="text-destructive">*</span>{" "}
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={!!pkg}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select service hours rendered" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {hoursArray.map((hour) => (
+                          <SelectItem key={hour} value={hour}>
+                            {hour}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
           )}
         </div>
       )}
-      {!pkg && <PlatedWarning />}
+      {!pkg && serviceType === "Plated" && <PlatedWarning />}
       <Separator className="" />
       <div>
         <div className="mb-4">
@@ -219,6 +244,40 @@ export default function ReservationDetails() {
         {deliveryOption === "Delivery" && <DeliveryDetails control={control} />}
       </div>
       <Separator />
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold">Payment Details</h3>
+        <p className="mb-4 text-sm text-muted-foreground">
+          Please scan the GCash QR code below to complete your payment and enter
+          the reference number from your transaction.
+        </p>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="border border-gray-200 rounded-lg p-4 w-60 h-60 mx-auto">
+            <Skeleton className="w-full h-full" />
+          </div>
+          <FormField
+            control={control}
+            name="paymentReference"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>
+                  GCash Reference Number{" "}
+                  <span className="text-destructive">*</span>{" "}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter payment reference number"
+                    {...field}
+                    ref={withMask("9999-9999-99999", {
+                      showMaskOnHover: false,
+                    })}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
 
       <div className="flex items-end justify-between">
         <Label>Total Bill</Label>

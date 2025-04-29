@@ -25,6 +25,18 @@ export const reservationStatusArray: ReservationStatusType[] = [
   "Cancelled",
 ];
 
+export type HoursArrayTypes =
+  | "4 hours"
+  | "4.5 hours"
+  | "5 hours"
+  | "5.5 hours"
+  | "6 hours"
+  | "6.5 hours"
+  | "8 hours"
+  | "8.5 hours"
+  | "10 hours";
+
+
 export interface MenuReservationDetails {
   quantity: number;
   paxSelected: PaxArrayType;
@@ -49,7 +61,7 @@ export interface ReservationItem {
   cateringOptions: "event" | "custom";
   serviceType: ServiceType;
   serviceFee: number;
-  serviceHours?: string;
+  serviceHours?: HoursArrayTypes;
   selectedPackage: string;
   selectedMenus: SelectedMenus;
   totalPrice: number;

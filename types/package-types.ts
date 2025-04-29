@@ -1,6 +1,7 @@
 import { SetStateBoolean } from "./global-types";
 import { ObjectId } from "mongodb";
 import { CategoryProps } from "./menu-types";
+import { HoursArrayTypes } from "./reservation-types";
 
 // Define types for our packages
 export type PackageCategory =
@@ -161,11 +162,16 @@ export const reservationEventTypes: EventType[] = [
   "No Event",
 ];
 
-export const hoursArray: string[] = [
+
+export const hoursArray: HoursArrayTypes[] = [
   "4 hours",
+  "4.5 hours",
   "5 hours",
+  "5.5 hours",
   "6 hours",
+  "6.5 hours",
   "8 hours",
+  "8.5 hours",
   "10 hours",
 ];
 

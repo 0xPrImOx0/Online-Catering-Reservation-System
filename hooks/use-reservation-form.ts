@@ -3,10 +3,12 @@ import { menuItems } from "@/lib/menu-lists";
 import { MenuItem } from "@/types/menu-types";
 import {
   EventType,
+  hoursArray,
   PackageCategory,
   reservationEventTypes,
 } from "@/types/package-types";
 import {
+  HoursArrayTypes,
   MenuReservationDetails,
   paxArray,
   PaxArrayType,
@@ -60,7 +62,9 @@ const reservationSchema = z
       required_error: "Please select a Service Type",
     }),
     serviceFee: z.number(),
-    serviceHours: z.string().optional(),
+    serviceHours: z
+      .enum(hoursArray as [HoursArrayTypes, ...HoursArrayTypes[]])
+      .optional(),
     selectedPackage: z
       .string({ required_error: "Please select a Package" })
       .min(1, "Package selection is required"),
@@ -100,6 +104,11 @@ const reservationSchema = z
     deliveryInstructions: z
       .string()
       .max(300, "Delivery Instructions must not exceed 300 characters")
+      .optional(),
+    paymentReference: z
+      .string()
+      .min(1, "Payment Reference is required")
+      .max(100, "Payment Reference must not exceed 100 characters")
       .optional(),
     status: z.enum(
       reservationStatusArray as [
@@ -181,17 +190,17 @@ const defaultValues: ReservationValues = {
   fullName: "",
   email: "",
   contactNumber: "",
-  reservationType: "personal",
+  reservationType: "event",
   eventType: "",
   reservationDate: new Date(),
-  reservationTime: "",
+  reservationTime: "08:00",
   period: "A.M.",
   guestCount: 20,
   venue: "",
   cateringOptions: "event",
   serviceType: "Buffet",
   serviceFee: 0,
-  serviceHours: "",
+  serviceHours: "4 hours",
   selectedPackage: "",
   selectedMenus: {},
   totalPrice: 0,
@@ -200,6 +209,7 @@ const defaultValues: ReservationValues = {
   deliveryFee: 0,
   deliveryAddress: "",
   deliveryInstructions: "",
+  paymentReference: "",
   status: "Pending",
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -331,10 +341,11 @@ export function useReservationForm() {
             "guestCount",
             "serviceType",
             "serviceHours",
+            "paymentReference",
           ];
         }
         if (reservationType === "personal") {
-          return ["reservationDate"];
+          return ["reservationDate", "paymentReference"];
         }
       default:
         return [];

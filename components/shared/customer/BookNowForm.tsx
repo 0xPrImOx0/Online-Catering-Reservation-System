@@ -6,7 +6,7 @@ import {
   cateringPackages,
 } from "@/lib/customer/packages-metadata";
 import CustomerInformation from "@/components/shared/customer/CustomerInformation";
-import EventDetails from "@/components/shared/customer/ReservationDetails";
+import ReservationDetails from "@/components/shared/customer/ReservationDetails";
 import CategoryOptions from "./CategoryOptions";
 import SummaryBooking from "./SummaryBooking";
 import { Form } from "@/components/ui/form";
@@ -39,7 +39,7 @@ export default function BookNowForm({ id }: { id: string }) {
     setShowPackageSelection,
     getMenuItem,
   } = useReservationForm();
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [nextPageCount, setNextPageCount] = useState(0);
@@ -149,7 +149,7 @@ export default function BookNowForm({ id }: { id: string }) {
       showPackageSelection={showPackageSelection}
     />,
     <CategoryOptions key={"category-options"} />,
-    <EventDetails key={"event-details"} />,
+    <ReservationDetails key={"reservation-details"} />,
     <SummaryBooking key={"summary-booking"} />,
   ];
 
