@@ -17,15 +17,14 @@ const MobileRoutePage = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant={"ghost"}
           size={"custom"}
-          className="data-[state=open]:bg-sidebar-accent p-1 data-[state=open]:text-foreground max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10 max-xl:rounded-lg lg:hidden px-4"
+          className="data-[state=open]:bg-sidebar-accent-foreground dark:data-[state=open]:bg-sidebar-accent p-1 data-[state=open]:text-foreground max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10 max-xl:rounded-lg lg:hidden px-4"
         >
           <svg
             viewBox="0 0 24 24"
             width={100}
             height={100}
-            fill="currentColor"
+            fill="#fff"
             aria-hidden="true"
             className="xfx01vb x1lliihq x1tzjh5l x1k90msu x2h7rmj x1qfuztq"
           >
@@ -50,7 +49,11 @@ const MobileRoutePage = () => {
           {links.map((data) => {
             const { title, href, Icon } = data;
             return (
-              <DropdownMenuItem className="text-base" asChild key={title}>
+              <DropdownMenuItem
+                className="text-base cursor-pointer"
+                asChild
+                key={title}
+              >
                 <Link href={href}>
                   <Icon />
                   {title}
@@ -59,10 +62,6 @@ const MobileRoutePage = () => {
             );
           })}
         </DropdownMenuGroup>
-        <DropdownMenuGroup></DropdownMenuGroup>
-        {/* <Link className="font-medium" href={"/sign-in"}>
-          Sign In
-        </Link> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

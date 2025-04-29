@@ -14,7 +14,7 @@ export default function ContactPage() {
       <div>
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold mb-3">Contact Us</h1>
-          <p className="text-muted-foreground max-w-[50%] mx-auto">
+          <p className="text-muted-foreground w-full md:max-w-2xl mx-auto">
             Have questions about our catering services? Reach out to us through
             any of the methods below, and our team will get back to you as soon
             as possible.

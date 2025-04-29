@@ -58,14 +58,14 @@ export default function CustomerSiteHeader() {
           ) : (
             <div className="space-x-4">
               <Button
-                variant={"secondary"}
+                variant={`${isMobile ? "none" : "secondary"}`}
                 effect={`${isMobile ? "none" : "hoverUnderline"}`}
-                className="max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10"
+                className="max-lg:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10"
                 asChild
               >
                 <Link href="/book-now">
-                  <Calendar className="max-md:text-white" />
-                  <p className="max-md:hidden">Book Now</p>
+                  <Calendar className="max-lg:text-white" />
+                  <p className="max-md:hidden text-background">Book Now</p>
                 </Link>
               </Button>
 
