@@ -47,7 +47,7 @@ export default function MiniCateringPackageCard({
                 )}
               >
                 <User className="" /> &#8369;
-                {pkg.pricePerPaxWithServiceCharge.toFixed(2)}/pax
+                {pkg.pricePerPax.toFixed(2)}/pax
               </span>
             </Button>
             <Button

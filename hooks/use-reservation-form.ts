@@ -224,6 +224,7 @@ export function useReservationForm() {
   const deliveryFee = watch("deliveryFee");
   const selectedMenus = watch("selectedMenus");
   const guestCount = watch("guestCount") || 1;
+  const serviceType = watch("serviceType");
 
   //This was formerly from BookNowForm.tsx which calculates the partial/total price of the reservation
   useEffect(() => {
@@ -240,16 +241,17 @@ export function useReservationForm() {
           total += item.quantity * item.pricePerPax;
         });
       });
-      setValue("totalPrice", total + serviceFee + deliveryFee);
+      if (isPackage) {
+        const serviceCharge =
+          serviceType === "Plated" ? isPackage.serviceCharge : 0;
+        setValue(
+          "totalPrice",
+          isPackage.pricePerPax * guestCount + (serviceCharge + deliveryFee)
+        );
+      } else {
+        setValue("totalPrice", total + serviceFee + deliveryFee);
+      }
     };
-    if (isPackage) {
-      setValue(
-        "totalPrice",
-        isPackage.pricePerPax * guestCount +
-          isPackage.serviceCharge +
-          deliveryFee
-      );
-    }
     calculateTotal();
   }, [selectedMenus, serviceFee, deliveryFee, guestCount]);
 
@@ -263,6 +265,7 @@ export function useReservationForm() {
       );
 
       setValue("selectedMenus", selectedMenus);
+      setValue("guestCount", pkg.minimumPax);
       setValue("eventType", pkg?.eventType ?? "No Event");
       setValue("reservationType", "event");
     }

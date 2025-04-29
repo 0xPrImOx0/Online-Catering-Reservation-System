@@ -44,6 +44,7 @@ export default function EventDetails() {
   const serviceHours = watch("serviceHours");
   const eventType = watch("eventType");
   const deliveryOption = watch("deliveryOption");
+  const pkg = getPackageItem(selectedPackage);
 
   useEffect(() => {
     const hour = serviceHours?.slice(0, 2);
@@ -51,17 +52,23 @@ export default function EventDetails() {
   }, [serviceHours]);
 
   const getRecommendedPax = () => {
-    const pkg = getPackageItem(selectedPackage);
     if (pkg) {
       return pkg.recommendedPax;
     }
     return 0;
   };
+  useEffect(() => {
+    if (pkg) {
+      setValue("serviceHours", pkg.serviceHours.toString() + " hours");
+      setValue("serviceFee", pkg.serviceHours);
+    }
+  }, [serviceType]);
 
   const recommendedPax = getRecommendedPax();
 
   return (
     <div className="space-y-4">
+      <p>{getValues("serviceHours")}</p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {cateringOptions === "custom" && (
           <WhatsTheOccasionCard control={control} />
@@ -144,7 +151,7 @@ export default function EventDetails() {
                         id="plated"
                         onClick={() => {
                           setValue("serviceFee", 100 * 4);
-                          setValue("serviceHours", "4 hours");
+                          setValue("serviceHours", serviceHours);
                         }}
                       />
                       <Label htmlFor="plated">Plated Service</Label>
@@ -167,6 +174,7 @@ export default function EventDetails() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -188,7 +196,7 @@ export default function EventDetails() {
           )}
         </div>
       )}
-      <PlatedWarning isPlated={serviceType === "Plated"} />
+      {!pkg && <PlatedWarning />}
       <Separator className="" />
       <div>
         <div className="mb-4">

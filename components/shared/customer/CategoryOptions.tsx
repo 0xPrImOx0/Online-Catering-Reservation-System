@@ -40,7 +40,7 @@ export default function CategoryOptions() {
   );
 
   useEffect(() => {
-    if (cateringOptions === "custom") {
+    if (cateringOptions === "custom" && !!selectedPackage) {
       setCurrentPackage("");
       setValue("selectedPackage", "");
       setValue("selectedMenus", {});

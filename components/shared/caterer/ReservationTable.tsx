@@ -119,7 +119,7 @@ export default function ReservationTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  const currentDate = new Date(); // March 9, 2025
+  const currentDate = new Date();
 
   const isUrgent = (eventDate: any) => {
     const diffTime = Math.abs(eventDate.getTime() - currentDate.getTime());

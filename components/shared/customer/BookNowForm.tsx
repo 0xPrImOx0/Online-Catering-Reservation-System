@@ -29,6 +29,8 @@ import { Check } from "lucide-react";
 export default function BookNowForm({ id }: { id: string }) {
   const router = useRouter();
   const pathname = usePathname();
+  const deconstructedId = id && id[0];
+
   const {
     reservationForm,
     validateStep,
@@ -37,15 +39,13 @@ export default function BookNowForm({ id }: { id: string }) {
     setShowPackageSelection,
     getMenuItem,
   } = useReservationForm();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(2);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [nextPageCount, setNextPageCount] = useState(0);
   const { watch, setValue } = reservationForm;
 
   const cateringOptions = watch("cateringOptions");
-
-  const deconstructedId = id && id[0];
 
   const dynamicPreviousBtn =
     showPackageSelection && currentStep === 1
@@ -112,11 +112,15 @@ export default function BookNowForm({ id }: { id: string }) {
     const isPackage = cateringPackages.some(
       (pkg) => pkg._id === deconstructedId
     );
+
     if (deconstructedId) {
       if (isMenu) {
+        const prev = watch("selectedMenus") || {};
         setValue("cateringOptions", "custom");
         setValue("selectedMenus", {
+          ...prev,
           [isMenu.category]: {
+            ...(prev?.[isMenu.category] || {}),
             [deconstructedId]: {
               quantity: 1,
               paxSelected: "4-6 pax",
@@ -124,7 +128,6 @@ export default function BookNowForm({ id }: { id: string }) {
             },
           },
         });
-        return;
       }
       if (isPackage) {
         setValue("cateringOptions", "event");
@@ -134,6 +137,10 @@ export default function BookNowForm({ id }: { id: string }) {
       }
     }
   }, [id, deconstructedId]);
+
+  useEffect(() => {
+    console.log(watch("selectedMenus"));
+  }, [watch("selectedMenus")]);
 
   const reservationFormComponents = [
     <CustomerInformation key={"customer-information"} />,

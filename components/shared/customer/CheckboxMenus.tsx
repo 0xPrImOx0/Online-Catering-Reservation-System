@@ -48,10 +48,6 @@ export default function CheckboxMenus({
     );
   };
 
-  const isChecked = (field: any, id: string) => {
-    return !!field.value[category]?.[id];
-  };
-
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("");
   return (
@@ -90,7 +86,7 @@ export default function CheckboxMenus({
                         variant={"link"}
                         className={clsx("font-medium max-w-fit -mt-1", {
                           "text-green-500": field.value[category]?.[menu._id],
-                          "text-muted-foreground line-through": isChecked(
+                          "text-muted-foreground line-through": isDisabled(
                             field,
                             menu._id
                           ),
