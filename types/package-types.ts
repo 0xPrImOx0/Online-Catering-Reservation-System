@@ -126,11 +126,6 @@ export interface PackageBookFormProps {
   package: CateringPackagesProps;
 }
 
-export interface EventTypeCardProps {
-  eventType: EventType;
-  onSelect: (eventType: EventType) => void;
-  image?: string;
-}
 
 export interface DeletePackageDialogProps {
   item: CateringPackagesProps;

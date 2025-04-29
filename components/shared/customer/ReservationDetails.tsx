@@ -24,7 +24,7 @@ import {
 import { useFormContext } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import WhatsTheOccasionCard from "./WhatsTheOccasionCard";
-import EventType from "./EventType";
+import ReservationType from "./ReservationType";
 import ReservationDateAndTime from "./ReservationDateAndTime";
 import DeliveryDetails from "./DeliveryDetails";
 import DeliveryOption from "./DeliveryOption";
@@ -33,7 +33,7 @@ import PlatedWarning from "../PlatedWarning";
 import DeliveryWarning from "./DeliveryWarning";
 import { useEffect } from "react";
 
-export default function EventDetails() {
+export default function ReservationDetails() {
   const { control, getValues, watch, setValue } =
     useFormContext<ReservationValues>();
   const { getPackageItem } = useReservationForm();
@@ -74,7 +74,7 @@ export default function EventDetails() {
           <WhatsTheOccasionCard control={control} />
         )}
         {reservationType === "event" && eventType !== "No Event" && (
-          <EventType control={control} />
+          <ReservationType control={control} />
         )}
         {reservationType === "event" && (
           <FormField

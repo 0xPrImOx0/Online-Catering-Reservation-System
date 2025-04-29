@@ -6,7 +6,7 @@ import {
   cateringPackages,
 } from "@/lib/customer/packages-metadata";
 import CustomerInformation from "@/components/shared/customer/CustomerInformation";
-import EventDetails from "@/components/shared/customer/EventDetails";
+import EventDetails from "@/components/shared/customer/ReservationDetails";
 import CategoryOptions from "./CategoryOptions";
 import SummaryBooking from "./SummaryBooking";
 import { Form } from "@/components/ui/form";
