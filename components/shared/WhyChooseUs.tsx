@@ -2,13 +2,11 @@
 import { features } from "@/lib/customer/metadata";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import FooterCTA from "./customer/FooterCTA";
-import { Phone } from "lucide-react";
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-24 md:py-28 relative overflow-hidden">
-      <div className="px-[5%]">
+    <section className="relative overflow-hidden">
+      <div>
         <div className="text-center mx-auto mb-16">
           <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
             Why Choose Food Sentinel
@@ -55,13 +53,6 @@ export default function WhyChooseUs() {
             </motion.div>
           ))}
         </div>
-        <FooterCTA
-          title="Need more information?"
-          description="Contact us today to discuss your event needs and check availability."
-          buttonLabel="Contact Us"
-          href="/contact-us"
-          Icon={Phone}
-        />
       </div>
     </section>
   );

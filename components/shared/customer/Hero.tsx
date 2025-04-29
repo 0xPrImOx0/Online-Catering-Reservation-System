@@ -15,10 +15,10 @@ const Highlights = ({ metric, title }: { metric: string; title: string }) => {
 
 export default function Hero() {
   return (
-    <section className="mx-[5%] flex flex-col gap-10 min-h-[750px] max-lg:py-10">
+    <section className="flex flex-col gap-10 min-h-[750px] max-lg:my-10">
       <div className="flex flex-1 gap-8 flex-wrap justify-center items-center lg:gap-16">
         <div className="max-w-[500px] flex flex-col max-lg:items-center max-lg:text-center">
-          <h1 className="font-semibold mb-4 max-md:text-4xl text-5xl">
+          <h1 className="font-semibold mb-4 text-5xl max-md:text-4xl">
             Seamless Catering, Unforgettable Events
           </h1>
           <p className="text-muted-foreground mb-6">
@@ -26,7 +26,7 @@ export default function Hero() {
             in one platform. Reserve your perfect event catering in just a few
             clicks!
           </p>
-          <div className="">
+          <div>
             <Button className="mt-4 max-w-fit" size={"landing"} asChild>
               <Link href={"/book-now"}>
                 <Calendar /> Book Now
@@ -44,17 +44,17 @@ export default function Hero() {
             </Button>
           </div>
         </div>
-        <div className="sm:min-w-[355px] flex-1 max-w-[700px]">
+        <div className="min-w-[355px] flex-1 max-w-[700px]">
           <Image
             src={"/images/hero.jpg"}
-            width={2000}
-            height={1333}
+            width={150}
+            height={150}
             alt="Hero Image"
             className="w-full h-full object-cover rounded-lg transform scale-x-[-1]"
           />
         </div>
       </div>
-      <div className="flex flex-wrap gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Highlights metric="5,000+" title="Events Successfully Catered" />
         <Highlights metric="&lt; 1 m" title="Instant Booking Confirmation" />
         <Highlights metric="95%" title="Customer Satisfaction Rate" />

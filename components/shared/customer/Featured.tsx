@@ -31,8 +31,8 @@ export default function Featured() {
     fetchFeatured();
   }, []);
   return (
-    <section className="px-[5%] mt-24 flex flex-col items-center gap-14">
-      <div className="">
+    <section className="mt-24 flex flex-col items-center gap-14">
+      <div>
         <h2 className="text-4xl font-bold mb-2 text-center">
           Featured Packages
         </h2>

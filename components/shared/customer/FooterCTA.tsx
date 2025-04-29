@@ -21,7 +21,7 @@ export default function FooterCTA({
   Icon,
 }: FooterCTAProps) {
   return (
-    <section className={clsx("mt-24", px && "px-[5%]")}>
+    <section className={clsx("my-24", px && "px-[5%]")}>
       <div className="bg-foreground rounded-lg px-6 md:px-[2%] py-10 flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
           <h2 className="text-2xl md:text-3xl text-background font-extrabold mb-3">
