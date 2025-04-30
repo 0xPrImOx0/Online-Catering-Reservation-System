@@ -68,25 +68,19 @@ export default function BookNowForm({ id }: { id: string }) {
   // Handle next step validation
   const handleNextStep = async (currentStep: number) => {
     const isValid = await validateStep(currentStep);
-    if (isValid) {
-      if (pathname === `/book-now/${id}` && nextPageCount < 2) {
-        setCurrentStep(currentStep + 2);
-      } else {
-        setCurrentStep(currentStep + 1);
-      }
-      setNextPageCount((prev) => prev + 1);
+    if (isValid && dynamicNextBtn === "Next") {
+      setCurrentStep(currentStep + 1);
     }
     return isValid;
   };
 
   const handlePreviousStep = (currentStep: number) => {
-    if (currentStep > 0) {
+    if (currentStep > 0 && dynamicPreviousBtn === "Previous") {
       setCurrentStep(currentStep - 1);
       return true;
     }
     return false;
   };
-
   // Add a handleCancel function:
   const handleCancel = () => {
     router.push("/");
@@ -138,10 +132,6 @@ export default function BookNowForm({ id }: { id: string }) {
     }
   }, [id, deconstructedId]);
 
-  useEffect(() => {
-    console.log(watch("selectedMenus"));
-  }, [watch("selectedMenus")]);
-
   const reservationFormComponents = [
     <CustomerInformation key={"customer-information"} />,
     <PackageSelection
@@ -188,7 +178,7 @@ export default function BookNowForm({ id }: { id: string }) {
               within 1 hour to discuss the details and provide you with a quote.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex items-center justify-center py-4">
+          <div className="flex justify-center items-center py-4">
             <div className="p-3 bg-green-500 rounded-full">
               <Check className="text-foreground size-10" />
             </div>
