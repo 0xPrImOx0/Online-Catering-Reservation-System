@@ -14,16 +14,21 @@ import MobileRoutePage from "../shared/customer/MobileRoutePage";
 export default function CustomerSiteHeader() {
   const { customer } = useAuthContext(); // Temporary Basis if there is a user currently signed in
   const pathname = usePathname();
-  const isMobile = useMediaQuery("(max-width: 1024px)");
+  const isLargeScreen = useMediaQuery("(max-width: 1024px)");
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   const PageLink = ({ href, title }: { href: string; title: string }) => {
     return (
       <Button
         variant={`${
-          isMobile ? (pathname === href ? "default" : "link") : "link"
+          isLargeScreen ? (pathname === href ? "default" : "link") : "link"
         }`}
         effect={`${
-          isMobile ? "none" : pathname === href ? "underline" : "hoverUnderline"
+          isLargeScreen
+            ? "none"
+            : pathname === href
+            ? "underline"
+            : "hoverUnderline"
         }`}
         className="after:bottom-0 after:border-b-2 after:border-foreground"
         asChild
@@ -31,7 +36,7 @@ export default function CustomerSiteHeader() {
         <Link
           href={href}
           className={cn("text-base relative", {
-            "!text-base": isMobile,
+            "!text-base": isLargeScreen,
           })}
         >
           {title}
@@ -59,23 +64,24 @@ export default function CustomerSiteHeader() {
             <div className="space-x-4">
               <Button
                 variant={`${isMobile ? "none" : "secondary"}`}
-                effect={`${isMobile ? "none" : "hoverUnderline"}`}
-                className="max-lg:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10"
+                effect={`${isLargeScreen ? "none" : "hoverUnderline"}`}
+                className="max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10"
                 asChild
               >
                 <Link href="/book-now">
-                  <Calendar className="max-lg:text-white" />
-                  <p className="max-md:hidden text-background">Book Now</p>
+                  <Calendar className="max-md:text-white" />
+                  <p className="max-md:hidden text-foreground">Book Now</p>
                 </Link>
               </Button>
 
               <Button
-                className="max-md:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10"
+                variant={`${isLargeScreen ? "secondary" : "default"}`}
+                className="max-lg:bg-[rgb(39,39,42)] max-md:rounded-full max-md:size-10 dark:hover:bg-[rgb(39,39,42)]"
                 asChild
               >
                 <Link href={"/sign-in"}>
-                  <User className="max-md:text-white" />
-                  <p className="max-md:hidden">Sign In</p>
+                  <User className="max-lg:text-white" />
+                  <p className="max-md:hidden max-lg:text-white">Sign In</p>
                 </Link>
               </Button>
             </div>
