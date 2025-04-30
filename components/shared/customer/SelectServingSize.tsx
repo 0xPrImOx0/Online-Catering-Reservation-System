@@ -65,16 +65,12 @@ export default function SelectServingSize({
     setValue(`selectedMenus.${category}.${menu}.paxSelected`, newPax);
   };
 
-  useEffect(() => {
-    console.log(selectedMenus);
-  }, [selectedMenus]);
-
   return (
     <Select defaultValue={paxSelected} onValueChange={handlePaxChange}>
       <SelectTrigger className="w-32">
         <SelectValue placeholder="Serving Size" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent> 
         {paxArray.map((pax) => (
           <SelectItem value={pax} key={pax}>
             {pax}

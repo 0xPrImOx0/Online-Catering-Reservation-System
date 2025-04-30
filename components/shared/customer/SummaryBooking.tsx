@@ -105,15 +105,17 @@ export default function SummaryBooking() {
             <div className="flex items-center mb-4">
               <Calendar className="w-5 h-5 mr-2 text-gray-500" />
               <h3 className="text-lg font-semibold text-gray-800">
-                Event Details
+                Reservation Details
               </h3>
             </div>
             <ul className="space-y-4">
-              <DetailRow
-                icon={Utensils}
-                label="Event Type"
-                value={formValues.eventType || "Not provided"}
-              />
+              {formValues.eventType != "No Event" && (
+                <DetailRow
+                  icon={Utensils}
+                  label="Event Type"
+                  value={formValues.eventType || "Not provided"}
+                />
+              )}
               <DetailRow icon={Calendar} label="Date" value={formattedDate} />
               <DetailRow
                 icon={Users}
@@ -126,11 +128,6 @@ export default function SummaryBooking() {
                     icon={Building}
                     label="Venue"
                     value={formValues.venue || "Not provided"}
-                  />
-                  <DetailRow
-                    icon={Utensils}
-                    label="Service"
-                    value={formValues.serviceType || "Not provided"}
                   />
                   <DetailRow
                     icon={Utensils}

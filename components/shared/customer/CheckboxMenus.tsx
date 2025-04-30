@@ -40,6 +40,14 @@ export default function CheckboxMenus({
     return menu ? menu.prices[0].price : 0;
   };
 
+  const isDisabled = (field: any, id: string) => {
+    return (
+      field.value[category] &&
+      Object.keys(field.value[category]).length >= count &&
+      !field.value[category][id]
+    );
+  };
+
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("");
   return (
@@ -55,10 +63,7 @@ export default function CheckboxMenus({
                 <Checkbox
                   id={menu._id}
                   checked={!!field.value[category]?.[menu._id]} // ✅ check if menu is selected (count > 0)
-                  disabled={
-                    !field.value[category]?.[menu._id] && // ✅ allow unchecking
-                    field.value[category]?.length >= count
-                  }
+                  disabled={isDisabled(field, menu._id)}
                   onCheckedChange={(checked) =>
                     handleCheckboxChange(
                       checked,
@@ -81,6 +86,10 @@ export default function CheckboxMenus({
                         variant={"link"}
                         className={clsx("font-medium max-w-fit -mt-1", {
                           "text-green-500": field.value[category]?.[menu._id],
+                          "text-muted-foreground line-through": isDisabled(
+                            field,
+                            menu._id
+                          ),
                         })}
                         onClick={() => {
                           setActiveMenu(menu._id);

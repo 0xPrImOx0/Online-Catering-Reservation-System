@@ -26,11 +26,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { ReservationItem } from "@/types/reservation-types";
 
 type dialogProps = {
-  selectedReservation: any;
-  isDetailsOpen: any;
-  setIsDetailsOpen: any;
+  selectedReservation: ReservationItem;
+  isDetailsOpen: boolean;
+  setIsDetailsOpen: (value: boolean) => void;
 };
 
 export default function ReservationDialog({
@@ -44,8 +45,7 @@ export default function ReservationDialog({
         <DialogHeader>
           <DialogTitle>Reservation Details</DialogTitle>
           <DialogDescription>
-            {selectedReservation.id} - Created on{" "}
-            {format(selectedReservation.createdDate, "MMM d, yyyy")}
+            Created on {format(selectedReservation.createdAt, "MMM d, yyyy")}
           </DialogDescription>
         </DialogHeader>
 
@@ -57,28 +57,28 @@ export default function ReservationDialog({
               <div className="mb-4 flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                   <AvatarFallback>
-                    {selectedReservation.customer.name.charAt(0)}
+                    {selectedReservation.fullName.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <div className="font-medium">
-                    {selectedReservation.customer.name}
+                    {selectedReservation.fullName}
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    {selectedReservation.customer.isRegistered
+                  {/* <div className="text-sm text-muted-foreground">
+                    {selectedReservation.isRegistered
                       ? "Registered Customer"
                       : "Guest Order"}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="grid gap-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Email:</span>
-                  <span>{selectedReservation.customer.email}</span>
+                  <span>{selectedReservation.email}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Phone:</span>
-                  <span>{selectedReservation.customer.phone}</span>
+                  <span>{selectedReservation.contactNumber}</span>
                 </div>
               </div>
             </div>
@@ -92,16 +92,21 @@ export default function ReservationDialog({
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Date:</span>
                   <span>
-                    {format(selectedReservation.eventDate, "MMMM d, yyyy")}
+                    {format(
+                      selectedReservation.reservationDate,
+                      "MMMM d, yyyy"
+                    )}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Time:</span>
-                  <span>{format(selectedReservation.eventDate, "h:mm a")}</span>
+                  <span>
+                    {selectedReservation.reservationTime} {selectedReservation.period}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Guests:</span>
-                  <span>{selectedReservation.guests}</span>
+                  <span>{selectedReservation.guestCount}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Status:</span>
@@ -113,7 +118,7 @@ export default function ReservationDialog({
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Address:</span>
                   <span className="text-right">
-                    {selectedReservation.address}
+                    {selectedReservation.venue}
                   </span>
                 </div>
               </div>
@@ -134,42 +139,36 @@ export default function ReservationDialog({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {selectedReservation.items.map(
-                    (
-                      item: {
-                        name: string;
-                        quantity: number;
-                        price: number;
-                      },
-                      index: number
-                    ) => (
-                      <TableRow key={index}>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell className="text-right">
-                          {item.quantity}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          ${item.price / item.quantity}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          ${item.price}
-                        </TableCell>
-                      </TableRow>
-                    )
+                  {Object.entries(selectedReservation.selectedMenus).map(
+                    ([category, menuItems]) =>
+                      Object.entries(menuItems).map(([menuId, details]) => (
+                        <TableRow key={`₱{category}-₱{menuId}`}>
+                          <TableCell>{menuId}</TableCell>
+                          <TableCell className="text-right">
+                            {details.quantity}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            ₱{details.pricePerPax / details.quantity}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            ₱{details.pricePerPax * details.quantity}
+                          </TableCell>
+                        </TableRow>
+                      ))
                   )}
                 </TableBody>
               </Table>
               <div className="flex justify-between border-t p-4">
                 <span className="font-medium">Total</span>
                 <span className="font-bold">
-                  ${selectedReservation.totalPrice}
+                  ₱{selectedReservation.totalPrice}
                 </span>
               </div>
             </div>
           </div>
 
           {/* Payment Information */}
-          <div>
+          {/* <div>
             <h3 className="mb-2 font-semibold">Payment Information</h3>
             <div className="rounded-lg border p-4">
               <div className="mb-3 flex items-center justify-between">
@@ -189,21 +188,19 @@ export default function ReservationDialog({
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-muted-foreground">Amount:</span>
                     <span className="font-medium">
-                      ${selectedReservation.payment.amount}
+                      ₱{selectedReservation.payment.amount}
                     </span>
                   </div>
                 </>
               )}
             </div>
-          </div>
+          </div> */}
 
           {/* Special Instructions */}
           <div>
             <h3 className="mb-2 font-semibold">Special Instructions</h3>
             <div className="rounded-lg border p-4">
-              <p className="text-sm">
-                {selectedReservation.specialInstructions}
-              </p>
+              <p className="text-sm">{selectedReservation.specialRequests}</p>
             </div>
           </div>
         </div>

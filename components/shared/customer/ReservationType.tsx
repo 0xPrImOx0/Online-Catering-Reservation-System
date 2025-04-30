@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { eventTypes } from "@/types/package-types";
-export default function EventType({ control }: { control: any }) {
+export default function ReservationType({ control }: { control: any }) {
   return (
     <FormField
       control={control}

@@ -24,7 +24,7 @@ import {
 import { useFormContext } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import WhatsTheOccasionCard from "./WhatsTheOccasionCard";
-import EventType from "./EventType";
+import ReservationType from "./ReservationType";
 import ReservationDateAndTime from "./ReservationDateAndTime";
 import DeliveryDetails from "./DeliveryDetails";
 import DeliveryOption from "./DeliveryOption";
@@ -32,9 +32,12 @@ import { hoursArray } from "@/types/package-types";
 import PlatedWarning from "../PlatedWarning";
 import DeliveryWarning from "./DeliveryWarning";
 import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { withMask } from "use-mask-input";
+import { HoursArrayTypes } from "@/types/reservation-types";
 
-export default function EventDetails() {
-  const { control, getValues, watch, setValue } =
+export default function ReservationDetails() {
+  const { control, getValues, watch, setValue, formState: { errors } } =
     useFormContext<ReservationValues>();
   const { getPackageItem } = useReservationForm();
   const reservationType = watch("reservationType");
@@ -44,19 +47,30 @@ export default function EventDetails() {
   const serviceHours = watch("serviceHours");
   const eventType = watch("eventType");
   const deliveryOption = watch("deliveryOption");
+  const pkg = getPackageItem(selectedPackage);
 
   useEffect(() => {
-    const hour = serviceHours?.slice(0, 2);
-    setValue("serviceFee", 100 * Number(hour));
+    if (reservationType === "event") {
+      const hour = serviceHours?.slice(0, 2);
+      setValue("serviceFee", 100 * Number(hour));
+    }
   }, [serviceHours]);
 
   const getRecommendedPax = () => {
-    const pkg = getPackageItem(selectedPackage);
     if (pkg) {
       return pkg.recommendedPax;
     }
     return 0;
   };
+  useEffect(() => {
+    if (pkg) {
+      setValue(
+        "serviceHours",
+        (pkg.serviceHours.toString() + " hours") as HoursArrayTypes
+      );
+      setValue("serviceFee", pkg.serviceHours);
+    }
+  }, [serviceType]);
 
   const recommendedPax = getRecommendedPax();
 
@@ -67,7 +81,7 @@ export default function EventDetails() {
           <WhatsTheOccasionCard control={control} />
         )}
         {reservationType === "event" && eventType !== "No Event" && (
-          <EventType control={control} />
+          <ReservationType control={control} />
         )}
         {reservationType === "event" && (
           <FormField
@@ -131,7 +145,7 @@ export default function EventDetails() {
                       <RadioGroupItem
                         onClick={() => {
                           setValue("serviceFee", 0);
-                          setValue("serviceHours", "");
+                          setValue("serviceHours", undefined);
                         }}
                         value="Buffet"
                         id="buffet"
@@ -144,7 +158,7 @@ export default function EventDetails() {
                         id="plated"
                         onClick={() => {
                           setValue("serviceFee", 100 * 4);
-                          setValue("serviceHours", "4 hours");
+                          setValue("serviceHours", serviceHours);
                         }}
                       />
                       <Label htmlFor="plated">Plated Service</Label>
@@ -156,39 +170,58 @@ export default function EventDetails() {
             )}
           />
           {serviceType === "Plated" && (
-            <FormField
-              control={control}
-              name="serviceHours"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="">
-                    Service Hours <span className="text-destructive">*</span>{" "}
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+            <>
+              <FormField
+                control={control}
+                name="venue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="">
+                      Venue <span className="text-destructive">*</span>{" "}
+                    </FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select service hours rendered" />
-                      </SelectTrigger>
+                      <Input placeholder="Enter venue location" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      {hoursArray.map((hour) => (
-                        <SelectItem key={hour} value={hour}>
-                          {hour}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    {errors.venue ? <FormMessage /> : <p className="text-muted-foreground italic text-sm">*Enter venue details for our staff</p>}
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="serviceHours"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="">
+                      Service Hours <span className="text-destructive">*</span>{" "}
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={!!pkg}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select service hours rendered" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {hoursArray.map((hour) => (
+                          <SelectItem key={hour} value={hour}>
+                            {hour}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
           )}
         </div>
       )}
-      <PlatedWarning isPlated={serviceType === "Plated"} />
+      {!pkg && serviceType === "Plated" && <PlatedWarning />}
       <Separator className="" />
       <div>
         <div className="mb-4">
@@ -211,6 +244,40 @@ export default function EventDetails() {
         {deliveryOption === "Delivery" && <DeliveryDetails control={control} />}
       </div>
       <Separator />
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold">Payment Details</h3>
+        <p className="mb-4 text-sm text-muted-foreground">
+          Please scan the GCash QR code below to complete your payment and enter
+          the reference number from your transaction.
+        </p>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="border border-gray-200 rounded-lg p-4 w-60 h-60 mx-auto">
+            <Skeleton className="w-full h-full" />
+          </div>
+          <FormField
+            control={control}
+            name="paymentReference"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>
+                  GCash Reference Number{" "}
+                  <span className="text-destructive">*</span>{" "}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter payment reference number"
+                    {...field}
+                    ref={withMask("9999-9999-99999", {
+                      showMaskOnHover: false,
+                    })}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
 
       <div className="flex items-end justify-between">
         <Label>Total Bill</Label>

@@ -6,7 +6,7 @@ import {
   cateringPackages,
 } from "@/lib/customer/packages-metadata";
 import CustomerInformation from "@/components/shared/customer/CustomerInformation";
-import EventDetails from "@/components/shared/customer/EventDetails";
+import ReservationDetails from "@/components/shared/customer/ReservationDetails";
 import CategoryOptions from "./CategoryOptions";
 import SummaryBooking from "./SummaryBooking";
 import { Form } from "@/components/ui/form";
@@ -29,6 +29,8 @@ import { Check } from "lucide-react";
 export default function BookNowForm({ id }: { id: string }) {
   const router = useRouter();
   const pathname = usePathname();
+  const deconstructedId = id && id[0];
+
   const {
     reservationForm,
     validateStep,
@@ -44,8 +46,6 @@ export default function BookNowForm({ id }: { id: string }) {
   const { watch, setValue } = reservationForm;
 
   const cateringOptions = watch("cateringOptions");
-
-  const deconstructedId = id && id[0];
 
   const dynamicPreviousBtn =
     showPackageSelection && currentStep === 1
@@ -112,11 +112,15 @@ export default function BookNowForm({ id }: { id: string }) {
     const isPackage = cateringPackages.some(
       (pkg) => pkg._id === deconstructedId
     );
+
     if (deconstructedId) {
       if (isMenu) {
+        const prev = watch("selectedMenus") || {};
         setValue("cateringOptions", "custom");
         setValue("selectedMenus", {
+          ...prev,
           [isMenu.category]: {
+            ...(prev?.[isMenu.category] || {}),
             [deconstructedId]: {
               quantity: 1,
               paxSelected: "4-6 pax",
@@ -124,7 +128,6 @@ export default function BookNowForm({ id }: { id: string }) {
             },
           },
         });
-        return;
       }
       if (isPackage) {
         setValue("cateringOptions", "event");
@@ -135,6 +138,10 @@ export default function BookNowForm({ id }: { id: string }) {
     }
   }, [id, deconstructedId]);
 
+  useEffect(() => {
+    console.log(watch("selectedMenus"));
+  }, [watch("selectedMenus")]);
+
   const reservationFormComponents = [
     <CustomerInformation key={"customer-information"} />,
     <PackageSelection
@@ -142,7 +149,7 @@ export default function BookNowForm({ id }: { id: string }) {
       showPackageSelection={showPackageSelection}
     />,
     <CategoryOptions key={"category-options"} />,
-    <EventDetails key={"event-details"} />,
+    <ReservationDetails key={"reservation-details"} />,
     <SummaryBooking key={"summary-booking"} />,
   ];
 
