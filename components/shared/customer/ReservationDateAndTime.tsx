@@ -18,7 +18,7 @@ import { ReservationValues } from "@/hooks/use-reservation-form";
 import { useFormContext } from "react-hook-form";
 import { withMask } from "use-mask-input";
 
-import { useId, useState } from "react";
+import { useId } from "react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -81,7 +81,7 @@ export default function EventDate({
                     />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
+                <PopoverContent className="p-2 w-auto" align="start">
                   <Calendar
                     mode="single"
                     selected={field.value}
@@ -95,7 +95,7 @@ export default function EventDate({
         )}
       />
       <div className="flex-1">
-        <div className="flex items-end gap-4">
+        <div className="flex gap-4 items-end">
           <FormField
             control={control}
             name="reservationTime"
