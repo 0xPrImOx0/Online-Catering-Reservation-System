@@ -134,3 +134,36 @@ export type MultiStepFormProps = {
   isReservationForm?: boolean;
   setShowPackageSelection?: Dispatch<SetStateAction<boolean>>;
 };
+
+
+export interface CustomerType {
+  name: string;
+  email: string;
+  phone: string;
+  isRegistered: boolean;
+}
+
+export interface OrderItemType {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+export interface ReservationType {
+  eventDate: Date;
+  address: string;
+  items: OrderItemType[];
+}
+
+export interface PaymentType {
+  id: string;
+  reservationId: string;
+  customer: CustomerType;
+  amount: number;
+  status: string;
+  paymentDate: Date | null;
+  paymentMethod: string | null;
+  createdDate: Date;
+  reservation: ReservationType;
+  isUrgent: boolean;
+}
