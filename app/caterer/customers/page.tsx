@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
-import { concerns, customers } from "../../../lib/caterer/customers-metadata";
+import { customers } from "../../../lib/caterer/customers-metadata";
 import { CustomerType } from "@/types/customer-types";
 
 // Import our custom components
@@ -33,7 +33,6 @@ export default function CustomersPage() {
     return c.registrationDate >= thirtyDaysAgo;
   }).length;
   const retentionRate = 85; // Hardcoded for UI demo
-  const openConcerns = concerns.filter((c) => c.status === "Open").length;
 
   const viewCustomerDetails = (customer: CustomerType) => {
     setSelectedCustomer(customer);
@@ -81,7 +80,6 @@ export default function CustomersPage() {
         totalCustomers={totalCustomers}
         newCustomers={newCustomers}
         retentionRate={retentionRate}
-        openConcerns={openConcerns}
       />
 
       {/* Customers Table Section */}

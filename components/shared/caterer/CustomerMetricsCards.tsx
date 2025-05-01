@@ -4,17 +4,15 @@ interface CustomerMetricsProps {
   totalCustomers: number;
   newCustomers: number;
   retentionRate: number;
-  openConcerns: number;
 }
 
-export function  CustomerMetricsCards({
+export function CustomerMetricsCards({
   totalCustomers,
   newCustomers,
   retentionRate,
-  openConcerns,
 }: CustomerMetricsProps) {
   return (
-    <div className="grid gap-6 mt-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-6 mt-6 sm:grid-cols-2 lg:grid-cols-3">
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -23,9 +21,7 @@ export function  CustomerMetricsCards({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalCustomers}</div>
-          <p className="text-xs text-muted-foreground">
-            All registered users
-          </p>
+          <p className="text-xs text-muted-foreground">All registered users</p>
         </CardContent>
       </Card>
 
@@ -54,20 +50,6 @@ export function  CustomerMetricsCards({
             {retentionRate}%
           </div>
           <p className="text-xs text-muted-foreground">Last 90 days</p>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Open Customer Concerns
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-yellow-600">
-            {openConcerns}
-          </div>
-          <p className="text-xs text-muted-foreground">Awaiting response</p>
         </CardContent>
       </Card>
     </div>
