@@ -21,7 +21,6 @@ export default function CustomersPage() {
   );
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isAddOpen, setIsAddOpen] = useState(false);
   const [deleteCustomer, setDeleteCustomer] = useState<CustomerType | null>(
     null
   );
