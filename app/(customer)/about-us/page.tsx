@@ -28,8 +28,8 @@ export default function AboutPage() {
       </section>
 
       {/* Principles Section */}
-      <section className="py-24 max-w-[1200px] mx-auto px-[5%]">
-        <div className="">
+      <section className="max-w-[1440px] mx-auto px-5 mt-10">
+        <div>
           <h2 className="text-3xl font-bold text-center mb-4">
             The Principles We Stand By
           </h2>
@@ -40,7 +40,7 @@ export default function AboutPage() {
           </p>
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="">
+            <div>
               <Image
                 src={"/images/chefs.png"}
                 width={2560}
@@ -62,22 +62,22 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
+
+        {/* Team Section */}
+        <TeamSection />
+
+        {/* Why Choose Us Section */}
+        <WhyChooseUs />
+
+        {/* Reserve CTA */}
+        <FooterCTA
+          title="Ready to Book Your Catering?"
+          description="Secure your date and menu selection now to ensure availability for your upcoming event."
+          buttonLabel="Book Now"
+          href="/book-now"
+          Icon={ClipboardCheck}
+        />
       </section>
-
-      {/* Team Section */}
-      <TeamSection />
-
-      {/* Why Choose Us Section */}
-      <WhyChooseUs />
-
-      {/* Reserve CTA */}
-      <FooterCTA
-        title="Ready to Book Your Catering?"
-        description="Secure your date and menu selection now to ensure availability for your upcoming event."
-        buttonLabel="Book Now"
-        href="/book-now"
-        Icon={ClipboardCheck}
-      />
     </main>
   );
 }
