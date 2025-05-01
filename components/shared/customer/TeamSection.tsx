@@ -16,7 +16,7 @@ const TeamSection = () => {
   const { leadership, culinary, event, service } = teams;
   return (
     <section className="py-24">
-      <div className="">
+      <div>
         <h2 className="text-3xl font-bold text-center mb-4">
           The People Who Make Up Our Team
         </h2>
@@ -27,11 +27,11 @@ const TeamSection = () => {
         </p>
 
         {/* Stats */}
-        <div className="flex flex-wrap gap-8 mb-16">
+        {/* <div className="flex flex-wrap gap-8 mb-16"> Temporary commented since 
           <Highlights metric="5,000+" title="Events Successfully Catered" />
           <Highlights metric="&lt; 1 m" title="Instant Booking Confirmation" />
           <Highlights metric="95%" title="Customer Satisfaction Rate" />
-        </div>
+        </div> */}
 
         {/* Leadership Team */}
         <div className="mb-16">

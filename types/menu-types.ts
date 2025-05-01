@@ -93,7 +93,7 @@ export interface PriceInfo {
 }
 
 export interface MenuItem {
-  _id: string;
+  _id?: string;
   name: string;
   category: CategoryProps;
   available: boolean;
