@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PlusIcon } from "lucide-react";
 import React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import Image from "next/image";
 
 export default function FAQ() {
   const faqs = [
@@ -30,16 +31,21 @@ export default function FAQ() {
     },
   ];
   return (
-    <section className="flex items-center py-24 justify-between max-w-[1200px] mx-auto max-sm:flex-col px-[5%] gap-6">
-      <Skeleton className="w-full max-w-[500px] h-[400px]" />
+    <section className="flex gap-6 justify-between items-center py-24 mx-auto px-[5%] flex-col lg:flex-row">
+      <Image
+        src="/images/faq.jpg"
+        alt="FAQ Image"
+        width={2000}
+        height={1333}
+        className="w-full min-w-[300px] max-w-[500px] h-[400px] object-cover" />
 
       <div className="mx-auto sm:min-w-[600px]">
-        <h2 className="text-3xl font-bold mb-8">Frequently asked questions</h2>
+        <h2 className="mb-8 text-3xl font-bold">Frequently asked questions</h2>
 
         <Accordion
           type="single"
           collapsible
-          className="max-w-[600px] w-full sm:min-w-[600px]"
+          className="w-full"
           defaultValue="first-faq"
         >
           {faqs.map((faq) => (
@@ -50,12 +56,12 @@ export default function FAQ() {
                   <PlusIcon
                     size={24}
                     strokeWidth={3}
-                    className="pointer-events-none shrink-0 opacity-60 transition-transform duration-200"
+                    className="opacity-60 transition-transform duration-200 pointer-events-none shrink-0"
                     aria-hidden="true"
                   />
                 </AccordionPrimitive.Trigger>
               </AccordionPrimitive.Header>
-              <AccordionContent className="text-muted-foreground pb-2">
+              <AccordionContent className="pb-2 text-muted-foreground">
                 {faq.content}
               </AccordionContent>
             </AccordionItem>
