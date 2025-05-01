@@ -3,7 +3,6 @@ import {
   AccordionContent,
   AccordionItem,
 } from "@/components/ui/accordion";
-import { Skeleton } from "@/components/ui/skeleton";
 import { PlusIcon } from "lucide-react";
 import React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
@@ -37,7 +36,8 @@ export default function FAQ() {
         alt="FAQ Image"
         width={2000}
         height={1333}
-        className="w-full min-w-[300px] max-w-[500px] h-[400px] object-cover" />
+        className="w-full min-w-[300px] max-w-[500px] h-[400px] object-cover"
+      />
 
       <div className="mx-auto sm:min-w-[600px]">
         <h2 className="mb-8 text-3xl font-bold">Frequently asked questions</h2>

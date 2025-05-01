@@ -1,16 +1,6 @@
-import { Card } from "@/components/ui/card";
 import { teams } from "@/lib/customer/metadata";
 import Image from "next/image";
 import React from "react";
-
-const Highlights = ({ metric, title }: { metric: string; title: string }) => {
-  return (
-    <Card className="flex-1 p-4 border-2 rounded-sm sm:text-center">
-      <span className="text-4xl font-medium">{metric} </span>{" "}
-      <p className="text-muted-foreground text-sm min-w-max">{title}</p>
-    </Card>
-  );
-};
 
 const TeamSection = () => {
   const { leadership, culinary, event, service } = teams;
@@ -25,13 +15,6 @@ const TeamSection = () => {
           diverse team. From executive chefs to service staff, each member
           brings their unique expertise to create extraordinary experiences.
         </p>
-
-        {/* Stats */}
-        {/* <div className="flex flex-wrap gap-8 mb-16"> Temporary commented since 
-          <Highlights metric="5,000+" title="Events Successfully Catered" />
-          <Highlights metric="&lt; 1 m" title="Instant Booking Confirmation" />
-          <Highlights metric="95%" title="Customer Satisfaction Rate" />
-        </div> */}
 
         {/* Leadership Team */}
         <div className="mb-16">

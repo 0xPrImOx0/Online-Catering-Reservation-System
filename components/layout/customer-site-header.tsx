@@ -69,7 +69,7 @@ export default function CustomerSiteHeader() {
                   isDarkMode && isLargeScreen ? "none" : "secondary"
                 }`}
                 effect={`${isLargeScreen ? "none" : "hoverUnderline"}`}
-                className="max-lg:bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground max-md:rounded-full max-md:size-10 dark:hover:bg-[rgb(39,39,42)]"
+                className="max-lg:bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground max-md:rounded-full max-md:size-10 dark:hover:bg-sidebar-accent"
                 asChild
               >
                 <Link href={"/sign-in"}>
@@ -84,7 +84,7 @@ export default function CustomerSiteHeader() {
                 variant={`${
                   isDarkMode && isLargeScreen ? "secondary" : "default"
                 }`}
-                className="max-md:bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground max-md:rounded-full max-md:size-10 dark:hover:bg-[rgb(39,39,42)]"
+                className="max-md:bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground max-md:rounded-full max-md:size-10 dark:hover:bg-sidebar-accent"
                 asChild
               >
                 <Link href="/book-now">
