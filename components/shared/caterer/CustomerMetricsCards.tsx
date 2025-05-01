@@ -7,14 +7,14 @@ interface CustomerMetricsProps {
   openConcerns: number;
 }
 
-export function CustomerMetricsCards({
+export function  CustomerMetricsCards({
   totalCustomers,
   newCustomers,
   retentionRate,
   openConcerns,
 }: CustomerMetricsProps) {
   return (
-    <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-6 mt-6 sm:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
