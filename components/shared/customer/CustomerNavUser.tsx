@@ -46,17 +46,14 @@ export default function CustomerNavUser({ customer }: CustomerNavUserProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="data-[state=open]:bg-sidebar-accent p-1 data-[state=open]:text-foreground"
-        >
+        <Button variant="ghost" className="p-1 hover:bg-transparent">
           <>
             <Avatar className="realtive size-10 rounded-full">
               <AvatarImage
                 src={customer.profileImage}
                 alt={customer.fullName}
               />
-              <AvatarFallback className="rounded-lg">
+              <AvatarFallback className="rounded-lg bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground dark:hover:bg-sidebar-accent data-[state=open]:bg-sidebar-accent-foreground dark:data-[state=open]:bg-sidebar-accent text-white">
                 {avatarFallBack(customer.fullName)}
               </AvatarFallback>
             </Avatar>
