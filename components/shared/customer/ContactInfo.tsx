@@ -66,7 +66,7 @@ export default function ContactInfo() {
             href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-600 text-foreground hover:bg-blue-700 transition-colors"
+            className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors"
           >
             <Facebook className="h-6 w-6" />
             <span className="sr-only">Facebook</span>
@@ -76,7 +76,7 @@ export default function ContactInfo() {
             href="https://instagram.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-yellow-400 via-red-500 to-purple-600 text-foreground hover:opacity-90 transition-opacity"
+            className="flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-yellow-400 via-red-500 to-purple-600 text-white hover:opacity-90 transition-opacity"
           >
             <Instagram className="h-6 w-6" />
             <span className="sr-only">Instagram</span>
@@ -86,7 +86,7 @@ export default function ContactInfo() {
             href="https://tiktok.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-black text-foreground hover:bg-gray-800 transition-colors"
+            className="flex items-center justify-center h-12 w-12 rounded-full bg-black text-white hover:bg-gray-800 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -112,7 +112,7 @@ export default function ContactInfo() {
             href="https://wa.me/15551234567"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-foreground hover:bg-green-600 transition-colors"
+            className="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white hover:bg-green-600 transition-colors"
           >
             <MessageCircle className="h-6 w-6" />
             <span className="sr-only">WhatsApp</span>
