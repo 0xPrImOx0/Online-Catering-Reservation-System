@@ -4,16 +4,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import { concerns, customers } from "../../../lib/caterer/customers-metadata";
-import { ConcernType, CustomerType } from "@/types/customer-types";
+import { CustomerType } from "@/types/customer-types";
 
 // Import our custom components
 import { CustomerMetricsCards } from "@/components/shared/caterer/CustomerMetricsCards";
 import { CustomersTable } from "@/components/shared/caterer/CustomersTable";
-import { CustomerConcernsTable } from "@/components/shared/caterer/CustomerConcernsTable";
 import { CustomerViewDialog } from "@/components/shared/caterer/CustomerViewDialog";
 import { CustomerEditDialog } from "@/components/shared/caterer/CustomerEditDialog";
 import { CustomerDeleteDialog } from "@/components/shared/caterer/CustomerDeleteDialog";
-import { ConcernReplyDialog } from "@/components/shared/caterer/ConcernReplyDialog";
 
 export default function CustomersPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerType | null>(
@@ -25,10 +23,6 @@ export default function CustomersPage() {
     null
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [selectedConcern, setSelectedConcern] = useState<ConcernType | null>(
-    null
-  );
-  const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Calculate metrics
@@ -54,11 +48,6 @@ export default function CustomersPage() {
   const deleteCustomerPrompt = (customer: CustomerType) => {
     setDeleteCustomer(customer);
     setIsDeleteOpen(true);
-  };
-
-  const replyConcern = (concern: ConcernType) => {
-    setSelectedConcern(concern);
-    setIsReplyOpen(true);
   };
 
   // Filter customers based on search query
@@ -105,11 +94,6 @@ export default function CustomersPage() {
         onDeleteCustomer={deleteCustomerPrompt}
       />
 
-      {/* Customer Concerns Section */}
-      <CustomerConcernsTable
-        concerns={concerns}
-        onReplyConcern={replyConcern}
-      />
       {/* View Customer Details Dialog */}
       <CustomerViewDialog
         customer={selectedCustomer}
@@ -130,13 +114,6 @@ export default function CustomersPage() {
         customer={deleteCustomer}
         isOpen={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-      />
-
-      {/* Reply to Concern Dialog */}
-      <ConcernReplyDialog
-        concern={selectedConcern}
-        isOpen={isReplyOpen}
-        onOpenChange={setIsReplyOpen}
       />
     </main>
   );

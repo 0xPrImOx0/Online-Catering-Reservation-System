@@ -61,7 +61,7 @@ export default function ReservationsPage() {
             placeholderTitle="reservations"
           />
           <DateSelector date={date} setDate={setDate} />
-        </div> L  
+        </div>
         <div className="flex items-center gap-2">
           <CustomSelect
             defaultValue="All"
