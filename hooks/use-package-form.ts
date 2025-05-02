@@ -386,51 +386,63 @@ export function usePackageForm({
     mode: "create" | "update",
     id?: string
   ) => {
+    const { imageUrl, ...rest } = data;
+    let isSuccess = false;
+
     // Map packageType from internal value to UI display name
-    const displayPackageType =
-      data.packageType === "BuffetPlated" ? "BuffetPlated" : "Event";
+    // const displayPackageType =
+    //   data.packageType === "BuffetPlated" ? "BuffetPlated" : "Event";
 
     // Calculate pricePerPaxWithServiceCharge if not already set
-    const serviceCharge = data.serviceCharge || 0;
-    const serviceHours = data.serviceHours || 0;
-    const minimumPax = data.minimumPax || 1; // Avoid division by zero
-    const pricePerPax = data.pricePerPax || 0;
+    // const serviceCharge = data.serviceCharge || 0;
+    // const serviceHours = data.serviceHours || 0;
+    // const minimumPax = data.minimumPax || 1; // Avoid division by zero
+    // const pricePerPax = data.pricePerPax || 0;
 
-    const totalServiceFee = serviceCharge * serviceHours;
-    const serviceChargePerPax =
-      minimumPax > 0 ? totalServiceFee / minimumPax : 0;
-    const pricePerPaxWithServiceCharge = pricePerPax + serviceChargePerPax;
+    // const totalServiceFee = serviceCharge * serviceHours;
+    // const serviceChargePerPax =
+    //   minimumPax > 0 ? totalServiceFee / minimumPax : 0;
+    // const pricePerPaxWithServiceCharge = pricePerPax + serviceChargePerPax;
 
     // Create package object
-    const packageData: CateringPackagesProps = {
-      name: data.name,
-      description: data.description,
-      available: data.available,
-      pricePerPax: data.pricePerPax,
-      minimumPax: data.minimumPax,
-      recommendedPax: data.recommendedPax,
-      maximumPax: data.maximumPax,
+    // const packageData: CateringPackagesProps = {
+    //   name: data.name,
+    //   description: data.description,
+    //   available: data.available,
+    //   pricePerPax: data.pricePerPax,
+    //   minimumPax: data.minimumPax,
+    //   recommendedPax: data.recommendedPax,
+    //   maximumPax: data.maximumPax,
+    //   options: data.options.map((option) => ({
+    //     ...option,
+    //     category: option.category as PackageCategory, // Cast to PackageCategory
+    //   })),
+    //   inclusions: data.inclusions,
+    //   imageUrl: data.imageUrl || "",
+    //   serviceHours: data.serviceHours || 0,
+    //   serviceCharge: data.serviceCharge || 0,
+    //   eventType: data.packageType === "Event" ? data.eventType : undefined,
+    //   packageType: displayPackageType,
+    //   pricePerPaxWithServiceCharge: pricePerPaxWithServiceCharge,
+    // };
+
+    const packageData: Omit<CateringPackagesProps, "_id"> = {
+      ...rest,
+      rating: isEditMode && initialData ? initialData.rating : 0,
+      ratingCount: isEditMode && initialData ? initialData.ratingCount : 0,
+      ...(imageUrl !== "" && { imageUrl }), // Exclude the imageUrl if it's null
       options: data.options.map((option) => ({
         ...option,
-        category: option.category as PackageCategory, // Cast to PackageCategory
+        category: option.category as PackageCategory, // Cast category to PackageCategory
       })),
-      inclusions: data.inclusions,
-      imageUrl: data.imageUrl || "",
-      serviceHours: data.serviceHours || 0,
-      serviceCharge: data.serviceCharge || 0,
-      eventType: data.packageType === "Event" ? data.eventType : undefined,
-      packageType: displayPackageType,
-      pricePerPaxWithServiceCharge: pricePerPaxWithServiceCharge,
-      _id: "", // Add the ID when updating
     };
 
     console.log(
       `${mode === "update" ? "Updating" : "Submitting"} package:`,
       packageData
     );
-    console.log("Submitted data:", JSON.stringify(packageData, null, 2));
 
-    let isSuccess = false;
+    console.log("Submitted data:", JSON.stringify(packageData, null, 2));
 
     try {
       let response;
@@ -438,7 +450,11 @@ export function usePackageForm({
       if (mode === "create") {
         // Create package API request
         response = await api.post("/packages", packageData);
-        toast.success(`${packageData.name} is successfully added to package`);
+        toast.success(`${packageData.name} is successfully added to packages`);
+        console.log(
+          "Submitted data IN JSON JSON:",
+          JSON.stringify(response, null, 2)
+        );
       } else if (mode === "update" && id) {
         // Update package API request
         console.log("ID OF THE PACKAGE:", id);
@@ -450,9 +466,6 @@ export function usePackageForm({
       setIsSubmitSuccess(true);
       console.log("MESSAGE", response?.data.message);
       console.log("DATAA", response?.data.data);
-
-      // Show success message
-      toast.success(response?.data.message);
     } catch (err: unknown) {
       isSuccess = false;
       console.log("ERROR", err);
