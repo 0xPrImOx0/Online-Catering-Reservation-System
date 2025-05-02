@@ -1,35 +1,22 @@
-import React from "react";
+"use client";
+import { useState } from "react";
 import { Lock, Eye, EyeOff } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-type PasswordChangeProps = {
-  accountData: {
-    currentPassword: string;
-    newPassword: string;
-    confirmPassword: string;
-  };
-  showCurrentPassword: boolean;
-  showNewPassword: boolean;
-  showConfirmPassword: boolean;
-  setShowCurrentPassword: (show: boolean) => void;
-  setShowNewPassword: (show: boolean) => void;
-  setShowConfirmPassword: (show: boolean) => void;
-  updateField: (field: string, value: string) => void;
-};
+export function PasswordChange() {
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-export function PasswordChange({
-  accountData,
-  showCurrentPassword,
-  showNewPassword,
-  showConfirmPassword,
-  setShowCurrentPassword,
-  setShowNewPassword,
-  setShowConfirmPassword,
-  updateField,
-}: PasswordChangeProps) {
   return (
     <Card>
       <CardHeader>
@@ -41,11 +28,8 @@ export function PasswordChange({
       <CardContent className="space-y-4">
         {/* Current Password */}
         <div className="space-y-2">
-          <Label
-            htmlFor="current-password"
-            className="flex items-center gap-2"
-          >
-            <Lock className="h-4 w-4 text-muted-foreground" />
+          <Label htmlFor="current-password" className="flex gap-2 items-center">
+            <Lock className="w-4 h-4 text-muted-foreground" />
             Current Password
           </Label>
           <div className="relative">
@@ -53,22 +37,18 @@ export function PasswordChange({
               id="current-password"
               type={showCurrentPassword ? "text" : "password"}
               placeholder="Enter your current password"
-              value={accountData.currentPassword}
-              onChange={(e) =>
-                updateField("currentPassword", e.target.value)
-              }
             />
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
+              className="absolute top-0 right-0 px-3 py-2 h-full text-muted-foreground"
               onClick={() => setShowCurrentPassword(!showCurrentPassword)}
             >
               {showCurrentPassword ? (
-                <EyeOff className="h-4 w-4" />
+                <EyeOff className="w-4 h-4" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <Eye className="w-4 h-4" />
               )}
             </Button>
           </div>
@@ -76,11 +56,8 @@ export function PasswordChange({
 
         {/* New Password */}
         <div className="space-y-2">
-          <Label
-            htmlFor="new-password"
-            className="flex items-center gap-2"
-          >
-            <Lock className="h-4 w-4 text-muted-foreground" />
+          <Label htmlFor="new-password" className="flex gap-2 items-center">
+            <Lock className="w-4 h-4 text-muted-foreground" />
             New Password
           </Label>
           <div className="relative">
@@ -88,20 +65,18 @@ export function PasswordChange({
               id="new-password"
               type={showNewPassword ? "text" : "password"}
               placeholder="Enter your new password"
-              value={accountData.newPassword}
-              onChange={(e) => updateField("newPassword", e.target.value)}
             />
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
+              className="absolute top-0 right-0 px-3 py-2 h-full text-muted-foreground"
               onClick={() => setShowNewPassword(!showNewPassword)}
             >
               {showNewPassword ? (
-                <EyeOff className="h-4 w-4" />
+                <EyeOff className="w-4 h-4" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <Eye className="w-4 h-4" />
               )}
             </Button>
           </div>
@@ -112,11 +87,8 @@ export function PasswordChange({
 
         {/* Confirm New Password */}
         <div className="space-y-2">
-          <Label
-            htmlFor="confirm-password"
-            className="flex items-center gap-2"
-          >
-            <Lock className="h-4 w-4 text-muted-foreground" />
+          <Label htmlFor="confirm-password" className="flex gap-2 items-center">
+            <Lock className="w-4 h-4 text-muted-foreground" />
             Confirm New Password
           </Label>
           <div className="relative">
@@ -124,22 +96,18 @@ export function PasswordChange({
               id="confirm-password"
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm your new password"
-              value={accountData.confirmPassword}
-              onChange={(e) =>
-                updateField("confirmPassword", e.target.value)
-              }
             />
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
+              className="absolute top-0 right-0 px-3 py-2 h-full text-muted-foreground"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
               {showConfirmPassword ? (
-                <EyeOff className="h-4 w-4" />
+                <EyeOff className="w-4 h-4" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <Eye className="w-4 h-4" />
               )}
             </Button>
           </div>

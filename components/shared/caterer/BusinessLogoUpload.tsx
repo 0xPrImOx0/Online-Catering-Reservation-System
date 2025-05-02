@@ -1,15 +1,32 @@
 import React from "react";
 import { Building2, Upload } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useFormContext } from "react-hook-form";
+import { SettingsValues } from "@/hooks/use-settings-form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 
-type BusinessLogoUploadProps = {
-  logo: string;
-  handleLogoUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
-
-export function BusinessLogoUpload({ logo, handleLogoUpload }: BusinessLogoUploadProps) {
+  /**
+   * @description A form component to upload a business logo.
+   * @example
+   * <BusinessLogoUpload />
+   * @returns {ReactElement} A form component with a text input for the logo link and a preview of the uploaded logo.
+   */
+export function BusinessLogoUpload() {
+  const { control, watch, setValue } = useFormContext<SettingsValues>();
+  const logo = watch("logo");
   return (
     <Card>
       <CardHeader>
@@ -19,47 +36,53 @@ export function BusinessLogoUpload({ logo, handleLogoUpload }: BusinessLogoUploa
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col md:flex-row gap-6 items-start">
-          <div className="w-full md:w-1/2 space-y-4">
+        <div className="flex flex-col gap-6 items-start md:flex-row">
+          <div className="space-y-4 w-full md:w-1/2">
             <Label htmlFor="logo-upload">Upload Logo</Label>
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label
-                htmlFor="logo-upload"
-                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-md cursor-pointer hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
-                  <p className="mb-2 text-sm text-muted-foreground">
-                    <span className="font-semibold">Click to upload</span>{" "}
-                    or drag and drop
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    PNG, JPG or SVG (MAX. 2MB)
-                  </p>
-                </div>
-                <Input
-                  id="logo-upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleLogoUpload}
-                />
-              </Label>
-            </div>
+            <FormField
+              control={control}
+              name="logo"
+              render={({ field }) => (
+                <FormItem className="grid w-full max-w-sm items-center gap-1.5">
+                  <FormLabel htmlFor="logo-upload" className="">
+                    Logo Link
+                  </FormLabel>
+
+                  {/* <div className="flex flex-col justify-center items-center pt-5 pb-6">
+                      <Upload className="mb-2 w-8 h-8 text-muted-foreground" />
+                      <p className="mb-2 text-sm text-muted-foreground">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        PNG, JPG or SVG (MAX. 2MB)
+                      </p>
+                    </div> */}
+                  <FormControl>
+                    <Input
+                      id="logo-upload"
+                      type="text"
+                      // accept="image/*"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
 
           <div className="w-full md:w-1/2">
             <Label>Logo Preview</Label>
-            <div className="mt-2 border rounded-md flex items-center justify-center bg-muted/20 h-40 w-full">
+            <div className="flex justify-center items-center mt-2 w-full h-40 rounded-md border bg-muted/20">
               {logo ? (
                 <img
                   src={logo || "/placeholder.svg"}
                   alt="Business Logo"
-                  className="max-h-full max-w-full object-contain p-4"
+                  className="object-contain p-4 max-w-full max-h-full"
                 />
               ) : (
                 <div className="text-center text-muted-foreground">
-                  <Building2 className="mx-auto h-10 w-10 mb-2" />
+                  <Building2 className="mx-auto mb-2 w-10 h-10" />
                   <p>No logo uploaded</p>
                 </div>
               )}
