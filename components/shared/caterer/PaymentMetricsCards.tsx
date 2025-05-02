@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency } from "@/lib/utils/format";
 import { DollarSign } from "lucide-react";
 
 interface PaymentMetricsCardsProps {
@@ -15,17 +16,17 @@ export function PaymentMetricsCards({
   pendingPayments,
 }: PaymentMetricsCardsProps) {
   return (
-    <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-6 mt-6 sm:grid-cols-2 lg:grid-cols-4">
       <Card className="bg-green-50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
-            <DollarSign className="mr-1 h-4 w-4 text-green-500" />
+            <DollarSign className="mr-1 w-4 h-4 text-green-500" />
             Total Paid
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-green-500">
-            ${totalPaid.toLocaleString()}
+            {formatCurrency(totalPaid)}
           </div>
           <p className="text-xs text-muted-foreground">
             From all confirmed payments
@@ -36,13 +37,13 @@ export function PaymentMetricsCards({
       <Card className="bg-red-50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
-            <DollarSign className="mr-1 h-4 w-4 text-red-500" />
+            <DollarSign className="mr-1 w-4 h-4 text-red-500" />
             Pending Amount
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-red-500">
-            ${totalPending.toLocaleString()}
+            {formatCurrency(totalPending)}
           </div>
           <p className="text-xs text-muted-foreground">
             Outstanding payments
