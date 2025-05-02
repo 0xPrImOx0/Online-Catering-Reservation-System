@@ -3,8 +3,10 @@ const businessMetadata = {
   address:
     "University of Science and Technology of Southern Philippines, Cagayan de Oro City, Philippines",
   map: {
-    latitude: 11.5311,
-    longitude: 124.5111,
+    latitude: 8.484884473850416,
+    longitude: 124.656737005461,
+    zoom: 15,
+    address: "University of Science and Technology of Southern Philippines, Cagayan de Oro City, Philippines",
   },
   aboutDescription:
     "Crafting extraordinary culinary experiences with passion, precision, and the finest ingredients since 2002.",
