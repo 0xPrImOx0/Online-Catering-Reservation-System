@@ -22,99 +22,6 @@ const principles = [
       "Our chefs constantly explore new flavors and techniques while respecting traditional culinary arts.",
   },
 ];
-const teams = {
-  leadership: [
-    {
-      name: "Sarah Johnson",
-      title: "Founder & CEO",
-      description: "20+ years of culinary excellence and business leadership",
-      image: "/images/sarah.jpg",
-    },
-    {
-      name: "Michael Chen",
-      title: "Executive Chef",
-      description: "Michelin-starred chef with global culinary expertise",
-      image: "/images/michael.jpg",
-    },
-    {
-      name: "Emily Rodriguez",
-      title: "Operations Director",
-      description: "Expert in large-scale event management",
-      image: "/images/emily.jpg",
-    },
-  ],
-  culinary: [
-    {
-      name: "David Park",
-      title: "Head Chef - Asian Cuisine",
-      image: "/images/david.jpg",
-    },
-    {
-      name: "Maria Santos",
-      title: "Head Chef - Mediterranean",
-      image: "/images/maria.jpg",
-    },
-    {
-      name: "James Wilson",
-      title: "Pastry Chef",
-      image: "/images/james.jpg",
-    },
-    {
-      name: "Aisha Patel",
-      title: "Head Chef - Indian Cuisine",
-      image: "/images/aisha.jpg",
-    },
-  ],
-  event: [
-    {
-      name: "Lisa Thompson",
-      title: "Senior Event Coordinator",
-      image: "/images/lisa.jpg",
-    },
-    {
-      name: "Marcus Brown",
-      title: "Wedding Specialist",
-      image: "/images/marcus.jpg",
-    },
-    {
-      name: "Sophie Kim",
-      title: "Corporate Events Manager",
-      image: "/images/kim.jpg",
-    },
-    {
-      name: "Carlos Mendez",
-      title: "Logistics Coordinator",
-      image: "/images/mendez.jpg",
-    },
-  ],
-  service: [
-    {
-      name: "Ryan Mitchell",
-      title: "Head Server",
-      image: "/images/ryan.jpg",
-    },
-    {
-      name: "Nina Patel",
-      title: "Senior Server",
-      image: "/images/nina.jpg",
-    },
-    {
-      name: "Tom Wilson",
-      title: "Bartender",
-      image: "/images/tom.jpg",
-    },
-    {
-      name: "Grace Lee",
-      title: "Service Captain",
-      image: "/images/grace.jpg",
-    },
-    {
-      name: "Alex Rivera",
-      title: "Setup Specialist",
-      image: "/images/alex.jpg",
-    },
-  ],
-};
 
 const features = [
   {
@@ -155,4 +62,4 @@ const features = [
   },
 ];
 
-export { teams, principles, features };
+export { principles, features };

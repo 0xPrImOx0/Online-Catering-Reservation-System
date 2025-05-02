@@ -27,12 +27,12 @@ const businessMetadata = {
 
 const ownerMetadata = {
   name: "Gordon Ramsay",
-  title: "Head Chef & Owner",
+  title: "Caterer & Founder",
   description:
     "With multiple Michelin stars and decades of culinary excellence, Gordon Ramsay brings his unparalleled expertise and passion to Food Sentinel. His commitment to using only the finest ingredients and innovative cooking techniques ensures that every dish we serve exceeds expectations.",
   email: "gordon@food-sentinel.com",
   phone: "09123456789",
-  profilePic: "/chef-gordon.png",
+  profilePic: "/images/chef-gordon.png",
 };
 
 export { businessMetadata, ownerMetadata };

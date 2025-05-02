@@ -5,7 +5,7 @@ import Image from "next/image";
 import WhyChooseUs from "@/components/shared/WhyChooseUs";
 import { Metadata } from "next";
 import FooterCTA from "@/components/shared/customer/FooterCTA";
-import TeamSection from "@/components/shared/customer/TeamSection";
+import FounderSection from "@/components/shared/customer/FounderSection";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -19,8 +19,8 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative z-10">
           <Logo imageSize={300} withTitle={false} />
-          <h1 className="text-4xl font-bold mb-4 text-white">Food Sentinel</h1>
-          <p className="text-white/80 max-w-2xl mx-auto mb-8">
+          <h1 className="mb-4 text-4xl font-bold text-white">Food Sentinel</h1>
+          <p className="mx-auto mb-8 max-w-2xl text-white/80">
             Crafting extraordinary culinary experiences with passion, precision,
             and the finest ingredients since 2002.
           </p>
@@ -30,31 +30,31 @@ export default function AboutPage() {
       {/* Principles Section */}
       <section className="max-w-[1440px] mx-auto px-5 mt-10">
         <div>
-          <h2 className="text-3xl font-bold text-center mb-4">
+          <h2 className="mb-4 text-3xl font-bold text-center">
             The Principles We Stand By
           </h2>
-          <p className="text-muted-foreground text-center max-w-3xl mx-auto mb-16">
+          <p className="mx-auto mb-16 max-w-3xl text-center text-muted-foreground">
             Our commitment to excellence goes beyond just great food. We believe
             in creating memorable experiences through exceptional service,
             attention to detail, and unwavering dedication to our craft.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid gap-12 items-center md:grid-cols-2">
             <div>
               <Image
                 src={"/images/chefs.png"}
                 width={2560}
                 height={1707}
                 alt="Chefs"
-                className="w-full h-full rounded-lg object-cover"
+                className="object-cover w-full h-full rounded-lg"
               />
             </div>
             <div className="space-y-8">
               {principles.map(({ title, content }) => (
                 <div className="flex gap-4" key={title}>
-                  <CheckCircle className="h-6 w-6 text-green-600 flex-shrink-0" />
+                  <CheckCircle className="flex-shrink-0 w-6 h-6 text-green-600" />
                   <div>
-                    <h3 className="font-semibold mb-2">{title}</h3>
+                    <h3 className="mb-2 font-semibold">{title}</h3>
                     <p className="text-muted-foreground">{content}</p>
                   </div>
                 </div>
@@ -64,7 +64,7 @@ export default function AboutPage() {
         </div>
 
         {/* Team Section */}
-        <TeamSection />
+        <FounderSection />
 
         {/* Why Choose Us Section */}
         <WhyChooseUs />
