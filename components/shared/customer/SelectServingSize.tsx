@@ -17,7 +17,6 @@ import {
   ReservationValues,
   useReservationForm,
 } from "@/hooks/use-reservation-form";
-import { useEffect } from "react";
 
 export default function SelectServingSize({
   category,
@@ -27,7 +26,6 @@ export default function SelectServingSize({
 }: SelectServingSizeProps) {
   const { setValue, watch } = useFormContext<ReservationValues>();
   const { getMenuItem } = useReservationForm();
-  const selectedMenus = watch("selectedMenus");
 
   const currentCategory = value[category] || {};
   const paxSelected = value[category]?.[menu]?.paxSelected || "4-6 pax";

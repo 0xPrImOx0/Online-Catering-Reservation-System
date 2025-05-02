@@ -363,6 +363,9 @@ export function useReservationForm() {
     const currentSelection = field.value[category] || {};
     const updatedMenus: SelectedMenu = { ...currentSelection };
     const uniqueMenusSelected = Object.keys(updatedMenus).length;
+    if (!menu._id) {
+      return;
+    }
 
     if (checked === true) {
       // Allow adding a new dish if under the limit

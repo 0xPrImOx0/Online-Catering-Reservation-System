@@ -6,9 +6,10 @@ const businessMetadata = {
     latitude: 8.484884473850416,
     longitude: 124.656737005461,
     zoom: 15,
-    address: "University of Science and Technology of Southern Philippines, Cagayan de Oro City, Philippines",
+    address:
+      "University of Science and Technology of Southern Philippines, Cagayan de Oro City, Philippines",
   },
-  label: "Catering Resevation System",
+  label: "Catering Reservation System",
   aboutDescription:
     "Crafting extraordinary culinary experiences with passion, precision, and the finest ingredients since 2002.",
   description:
@@ -18,12 +19,12 @@ const businessMetadata = {
   logo: "/catering-logo.png",
   businessHours: "8:00 AM - 5:00 PM",
   businessDays: "Monday - Friday",
-  socialMediaLinks: {
-    facebook: "https://www.facebook.com/food-sentinel",
-    instagram: "https://www.instagram.com/food-sentinel",
-    twitter: "https://www.twitter.com/food-sentinel",
-    tiktok: "https://www.tiktok.com/@food-sentinel",
-  },
+  socialMediaLinks: [
+    { platform: "Facebook", url: "https://www.facebook.com/food-sentinel" },
+    { platform: "Instagram", url: "https://www.instagram.com/food-sentinel" },
+    { platform: "Twitter", url: "https://www.twitter.com/food-sentinel" },
+    { platform: "Tiktok", url: "https://www.tiktok.com/@food-sentinel" },
+  ],
 };
 
 const ownerMetadata = {
