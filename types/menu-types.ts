@@ -106,8 +106,8 @@ export interface MenuItem {
   regularPricePerPax: number;
   prices: PriceInfo[]; // Now an array of price tiers
   imageUrl?: string;
-  rating?: number;
-  ratingCount?: number;
+  rating: number;
+  ratingCount: number;
   perServing: string; // New property for serving size
   nutritionInfo: NutritionInfo;
   reviews?: ReviewsProps[];
