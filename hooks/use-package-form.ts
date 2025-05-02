@@ -18,6 +18,8 @@ import {
 } from "@/types/package-types";
 import { toast } from "sonner";
 import { FOOD_CATEGORIES } from "@/types/menu-types";
+import axios from "axios";
+import api from "@/lib/axiosInstance";
 
 // Form schema using Zod
 const formSchema = z
@@ -379,7 +381,11 @@ export function usePackageForm({
   };
 
   // Submit form function
-  const onSubmit = (data: PackageFormValues) => {
+  const onSubmit = async (
+    data: PackageFormValues,
+    mode: "create" | "update",
+    id?: string
+  ) => {
     // Map packageType from internal value to UI display name
     const displayPackageType =
       data.packageType === "BuffetPlated" ? "BuffetPlated" : "Event";
@@ -415,22 +421,57 @@ export function usePackageForm({
       eventType: data.packageType === "Event" ? data.eventType : undefined,
       packageType: displayPackageType,
       pricePerPaxWithServiceCharge: pricePerPaxWithServiceCharge,
-      _id: "",
+      _id: "", // Add the ID when updating
     };
 
     console.log(
-      `${isEditMode ? "Updating" : "Submitting"} package:`,
+      `${mode === "update" ? "Updating" : "Submitting"} package:`,
       packageData
     );
-    // Here you would typically send this to your API
-    // If there's an image file, you would upload it first and then update the imageUrl
+    console.log("Submitted data:", JSON.stringify(packageData, null, 2));
 
-    toast.success("Package submitted successfully!");
-    // Show success message
-    setIsSubmitSuccess(true);
+    let isSuccess = false;
 
-    // Return the package data
-    return packageData;
+    try {
+      let response;
+
+      if (mode === "create") {
+        // Create package API request
+        response = await api.post("/packages", packageData);
+        toast.success(`${packageData.name} is successfully added to package`);
+      } else if (mode === "update" && id) {
+        // Update package API request
+        console.log("ID OF THE PACKAGE:", id);
+        response = await api.put(`/packages/${id}`, packageData);
+        toast.success(`${packageData.name} is successfully updated`);
+      }
+
+      isSuccess = true;
+      setIsSubmitSuccess(true);
+      console.log("MESSAGE", response?.data.message);
+      console.log("DATAA", response?.data.data);
+
+      // Show success message
+      toast.success(response?.data.message);
+    } catch (err: unknown) {
+      isSuccess = false;
+      console.log("ERROR", err);
+
+      if (axios.isAxiosError<{ error: string }>(err)) {
+        const message = err.response?.data.error || "Unexpected Error Occur";
+        if (err.response?.status === 400) {
+          toast.error(`Bad Request: ${message}`);
+        } else if (err.response?.status === 403) {
+          toast.error(`Unauthorized: ${message}`);
+        } else if (err.response?.status === 404) {
+          toast.error(`Not Found: ${message}`);
+        }
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    }
+
+    return isSuccess;
   };
 
   // Helper function to get fields to validate for each step
