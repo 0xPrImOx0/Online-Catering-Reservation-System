@@ -49,8 +49,8 @@ export default function DeleteMenuDialog({
           <AlertDialogDescription asChild>
             <div>
               You are about to delete{" "}
-              <span className="font-medium">{menu.name}</span>. This action
-              cannot be undone.
+              <span className="font-medium text-red-500">{menu.name}</span>.
+              This action cannot be undone.
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
