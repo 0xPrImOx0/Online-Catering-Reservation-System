@@ -1,5 +1,6 @@
 // utils/socket.ts
 import { MenuItem } from "@/types/menu-types";
+import { CateringPackagesProps } from "@/types/package-types";
 import { io, Socket } from "socket.io-client";
 
 let socket: Socket;
@@ -40,7 +41,33 @@ export const subscribeToMenuCreated = (callback: (menu: MenuItem) => void) => {
 };
 
 export const subscribeToMenuDeleted = (callback: (menu: MenuItem) => void) => {
-  socket?.on("menuDeleted", callback);
+  if (socket) {
+    socket.on("menuDeleted", callback); // Listen for menu delete event
+  }
+};
+
+export const subscribeToPackageUpdates = (
+  callback: (pkg: CateringPackagesProps) => void
+) => {
+  if (socket) {
+    socket.on("packageUpdated", callback); // Listen for package update event
+  }
+};
+
+export const subscribeToPackageCreated = (
+  callback: (pkg: CateringPackagesProps) => void
+) => {
+  if (socket) {
+    socket.on("packageCreated", callback); // Listen for package created event
+  }
+};
+
+export const subscribeToPackageDeleted = (
+  callback: (pkg: CateringPackagesProps) => void
+) => {
+  if (socket) {
+    socket.on("packageDeleted", callback); // Listen for package delete event
+  }
 };
 
 export const unsubscribeFromMenuUpdates = () => {
@@ -56,5 +83,25 @@ export const unsubscribeFromMenuCreated = () => {
 };
 
 export const unsubscribeFromMenuDeleted = () => {
-  socket?.off("menuDeleted");
+  if (socket) {
+    socket.off("menuDeleted"); // Stop listening for menu deleted
+  }
+};
+
+export const unsubscribeFromPackageUpdates = () => {
+  if (socket) {
+    socket.off("packageUpdated"); // Stop listening for package updates
+  }
+};
+
+export const unsubscribeFromPackageCreated = () => {
+  if (socket) {
+    socket.off("packageCreated"); // Stop listening for package created
+  }
+};
+
+export const unsubscribeFromPackageDeleted = () => {
+  if (socket) {
+    socket.off("packageDeleted"); // Stop listening for package deleted
+  }
 };
