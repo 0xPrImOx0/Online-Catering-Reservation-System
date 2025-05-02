@@ -19,6 +19,7 @@ import { InclusionsServicesStep } from "./package-form-steps/InclusionsServicesS
 import { ImageStep } from "./package-form-steps/ImageStep";
 import ReviewStep from "./package-form-steps/ReviewStep";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Import VisuallyHidden
+import { toast } from "sonner";
 
 export default function EditPackageForm({
   isEditPackageOpen,
@@ -56,11 +57,16 @@ export default function EditPackageForm({
   };
 
   // Handle form submission
-  const handleSubmit = () => {
-    form.handleSubmit((data) => {
-      onSubmit(data);
-      setIsSubmitComplete(true);
-    })();
+  const handleSubmit = async () => {
+    const data = form.getValues();
+    const isSuccess = onSubmit(data, "update", item._id);
+
+    if (!isSuccess) {
+      toast.error("Submission Failed");
+      return;
+    }
+
+    setIsSubmitComplete(true);
   };
 
   // Handle form completion (close dialog and reset)
