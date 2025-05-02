@@ -32,11 +32,11 @@ export function CustomerDeleteDialog({
             This will permanently delete the customer "{customer.name}" and all
             associated data.
             {customer.totalReservations > 0 && (
-              <p className="mt-2 font-medium text-destructive">
+              <span className="block mt-2 font-medium text-destructive">
                 Warning: This customer has {customer.totalReservations}{" "}
                 reservations. Deleting this customer may affect existing
                 reservation records.
-              </p>
+              </span>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>

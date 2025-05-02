@@ -29,6 +29,34 @@ export default function CategoryOptions() {
 
   const selectedMenus = watch("selectedMenus");
 
+  // State to hold loaded menu items
+  const [menuItemsMap, setMenuItemsMap] = useState<{ [key: string]: any }>({});
+
+  // Preload all menu items used in selectedMenus
+  useEffect(() => {
+    async function loadMenuItems() {
+      const menuIds: string[] = [];
+      Object.values(selectedMenus || {}).forEach((category: any) => {
+        Object.keys(category || {}).forEach((menuId) => {
+          if (!menuIds.includes(menuId)) menuIds.push(menuId);
+        });
+      });
+      // Only fetch missing ones
+      const missing = menuIds.filter((id) => !menuItemsMap[id]);
+      if (missing.length === 0) return;
+      const newItems: { [key: string]: any } = {};
+      await Promise.all(
+        missing.map(async (id) => {
+          const item = await getMenuItem(id);
+          if (item) newItems[id] = item;
+        })
+      );
+      if (Object.keys(newItems).length > 0) {
+        setMenuItemsMap((prev) => ({ ...prev, ...newItems }));
+      }
+    }
+    loadMenuItems();
+  }, [selectedMenus]);
   const cateringOptions = watch("cateringOptions");
   const selectedPackage = watch("selectedPackage");
   const serviceFee = watch("serviceFee");
@@ -110,9 +138,11 @@ export default function CategoryOptions() {
                         {Object.keys(field.value[category]).map((menu) => (
                           <li
                             key={menu}
-                            className="flex items-center justify-between space-x-4"
+                            className="flex justify-between items-center space-x-4"
                           >
-                            <span>{getMenuItem(menu)?.name}</span>
+                            <span>
+                              {menuItemsMap[menu]?.name || "Loading..."}
+                            </span>
                             <div className="flex space-x-2">
                               <AddRemoveMenuQuantity
                                 value={field.value}
@@ -154,7 +184,7 @@ export default function CategoryOptions() {
         )}
       />
       {watch("totalPrice") > 0 && (
-        <div className="flex items-end justify-between">
+        <div className="flex justify-between items-end">
           <Label>{serviceFee && deliveryFee ? "Total" : "Partial"} Price</Label>
           <span className="text-2xl text-green-500 underline underline-offset-4">
             &#8369;{" "}
