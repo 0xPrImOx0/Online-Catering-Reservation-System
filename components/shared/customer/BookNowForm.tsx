@@ -39,10 +39,9 @@ export default function BookNowForm({ id }: { id: string }) {
     setShowPackageSelection,
     getMenuItem,
   } = useReservationForm();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(2);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [nextPageCount, setNextPageCount] = useState(0);
   const { watch, setValue } = reservationForm;
 
   const cateringOptions = watch("cateringOptions");
@@ -102,35 +101,36 @@ export default function BookNowForm({ id }: { id: string }) {
   };
 
   useEffect(() => {
-    const isMenu = getMenuItem(deconstructedId);
-    const isPackage = cateringPackages.some(
-      (pkg) => pkg._id === deconstructedId
-    );
+    async function fetchMenuOrPackage() {
+      const menu = await getMenuItem(id as string);
+      const isPackage = cateringPackages.some((pkg) => pkg._id === id);
 
-    if (deconstructedId) {
-      if (isMenu) {
-        const prev = watch("selectedMenus") || {};
-        setValue("cateringOptions", "custom");
-        setValue("selectedMenus", {
-          ...prev,
-          [isMenu.category]: {
-            ...(prev?.[isMenu.category] || {}),
-            [deconstructedId]: {
-              quantity: 1,
-              paxSelected: "4-6 pax",
-              pricePerPax: isMenu.prices[0].price,
+      if (deconstructedId) {
+        if (menu) {
+          const prev = watch("selectedMenus") || {};
+          setValue("cateringOptions", "custom");
+          setValue("selectedMenus", {
+            ...prev,
+            [menu.category]: {
+              ...(prev?.[menu.category] || {}),
+              [deconstructedId as string]: {
+                quantity: 1,
+                paxSelected: "4-6 pax",
+                pricePerPax: menu.prices[0].price,
+              },
             },
-          },
-        });
-      }
-      if (isPackage) {
-        setValue("cateringOptions", "event");
-        setValue("selectedPackage", deconstructedId);
-        setShowPackageSelection(true);
-        return;
+          });
+        }
+        if (isPackage) {
+          setValue("cateringOptions", "event");
+          setValue("selectedPackage", id as string);
+          setShowPackageSelection(true);
+          return;
+        }
       }
     }
-  }, [id, deconstructedId]);
+    fetchMenuOrPackage();
+  }, [deconstructedId]);
 
   const reservationFormComponents = [
     <CustomerInformation key={"customer-information"} />,

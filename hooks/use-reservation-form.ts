@@ -1,3 +1,4 @@
+import api from "@/lib/axiosInstance";
 import { cateringPackages } from "@/lib/customer/packages-metadata";
 import { menuItems } from "@/lib/menu-lists";
 import { MenuItem } from "@/types/menu-types";
@@ -19,6 +20,7 @@ import {
   SelectedMenus,
 } from "@/types/reservation-types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -295,11 +297,37 @@ export function useReservationForm() {
   };
 
   //Find all menus (will transfer to the socket later on)
-  const getMenuItem = (menuId: string) => {
-    const menu = menuItems.find((item) => item._id === menuId);
-    return menu;
-  };
+   const getAllMenus = async () => {
+     try {
+       const response = await api.get(`/menus`);
+       return response.data.data;
+     } catch (err) {
+       if (axios.isAxiosError<{ error: string }>(err)) {
+         const message =
+           err.response?.data.error || "Unexpected error occurred.";
+         console.error("ERROR FETCHING MENU", message);
+       } else {
+         console.error("Something went wrong. Please try again.");
+       }
+       return null;
+     }
+   };
 
+   const getMenuItem = async (menuId: string) => {
+     try {
+       const response = await api.get(`/menus/${menuId}`);
+       return response.data.data;
+     } catch (err) {
+       if (axios.isAxiosError<{ error: string }>(err)) {
+         const message =
+           err.response?.data.error || "Unexpected error occurred.";
+         console.error("ERROR FETCHING MENU", message);
+       } else {
+         console.error("Something went wrong. Please try again.");
+       }
+       return null;
+     }
+   };
   ///Find all packages (will transfer to socket later on)
   const getPackageItem = (pkgId: string) => {
     const pkg = cateringPackages.find((item) => item._id === pkgId);
@@ -480,5 +508,6 @@ export function useReservationForm() {
     setShowPackageSelection,
     handleReduceQuantity,
     handleAddQuantity,
+    getAllMenus
   };
 }
