@@ -47,7 +47,7 @@ export interface ReviewsProps {
 }
 
 export interface CateringPackagesProps {
-  _id: string;
+  _id?: string;
   name: string;
   description: string;
   available: boolean;
@@ -127,7 +127,6 @@ export interface PackageBookFormProps {
   package: CateringPackagesProps;
 }
 
-
 export interface DeletePackageDialogProps {
   item: CateringPackagesProps;
   isDeleteDialogOpen: boolean;
@@ -161,7 +160,6 @@ export const reservationEventTypes: EventType[] = [
   "Graduation",
   "No Event",
 ];
-
 
 export const hoursArray: HoursArrayTypes[] = [
   "4 hours",

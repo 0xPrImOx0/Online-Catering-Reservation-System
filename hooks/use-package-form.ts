@@ -17,68 +17,162 @@ import {
   type PackageType,
 } from "@/types/package-types";
 import { toast } from "sonner";
+import { FOOD_CATEGORIES } from "@/types/menu-types";
 
 // Form schema using Zod
 const formSchema = z
   .object({
-    name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+    name: z.string().min(5, { message: "Name must be at least 5 characters" }),
+
     description: z
       .string()
-      .min(20, { message: "Description must be at least 20 characters" }),
+      .min(10, { message: "Description must be at least 10 characters" }),
+
     available: z.boolean().default(true),
+
     pricePerPax: z
       .number()
-      .min(1, { message: "Price per pax must be at least 1" }),
-    pricePerPaxWithServiceCharge: z.number().min(0).optional(), // Changed from totalPriceWithService
+      .min(0, { message: "Price per pax must be a positive number" }),
+
+    pricePerPaxWithServiceCharge: z.number().min(0, {
+      message: "Price per pax with service charge must be a positive number",
+    }), // Changed from totalPriceWithService
+
     minimumPax: z
       .number()
       .min(10, { message: "Minimum pax must be at least 10" }),
+
     recommendedPax: z
       .number()
       .min(10, { message: "Recommended pax must be at least 10" }),
+
     maximumPax: z
       .number()
       .min(10, { message: "Maximum pax must be at least 10" }),
+
     options: z
       .array(
         z.object({
-          category: z.enum(
-            packageCategories as [PackageCategory, ...PackageCategory[]]
-          ),
-          count: z.number().min(1, { message: "Count must be at least 1" }),
+          category: z.string().refine((val) => FOOD_CATEGORIES.includes(val), {
+            message: "Category must be one of: " + FOOD_CATEGORIES.join(", "),
+          }),
+          count: z
+            .number()
+            .min(1, { message: "Count for category must be at least 1" }),
         })
       )
-      .min(1, { message: "Add at least one package option" }),
+      .min(1, { message: "Options must be an array with at least 1 value" }),
+
     inclusions: z
       .array(
         z.object({
-          typeOfCustomer: z.enum(["Both", "Buffet", "Plated"] as const),
+          typeOfCustomer: z
+            .enum(["Both", "Buffet", "Plated"] as const)
+            .refine((val) => ["Both", "Buffet", "Plated"].includes(val), {
+              message: "Type of customer must be one of: Both, Buffet, Plated",
+            }),
           includes: z
             .string()
-            .min(1, { message: "Inclusion must not be empty" }),
+            .min(5, {
+              message: "Service included must be at least 5 characters",
+            })
+            .refine((val) => val.trim().length > 0, {
+              message: "Service included must not be empty",
+            }),
         })
       )
-      .min(1, { message: "Add at least one inclusion" }),
+      .min(1, { message: "Inclusions must be an array with at least 1 value" }),
+
     serviceHours: z
       .number()
-      .min(1, { message: "Service Hours must be positive values" }),
+      .min(0, { message: "Service Hours must be a positive number" }),
+
     serviceCharge: z
       .number()
-      .min(1, { message: "Service Charge must be positive values" }),
+      .min(0, { message: "Service Charge must be a positive number" }),
+
     eventType: z.enum(eventTypes as [EventType, ...EventType[]]).optional(),
-    packageType: z.enum(["BuffetPlated", "Event"] as const),
+
+    packageType: z
+      .enum(["BuffetPlated", "Event"] as const)
+      .refine((val) => typeof val === "string", {
+        message: "Package type must be a String",
+      })
+      .refine((val) => val.trim() !== "", {
+        message: "Please provide the package type",
+      }),
+
     imageUrl: z
       .string()
-      .url({ message: "Please enter a valid URL" })
-      .or(z.literal("")),
+      .url({ message: "Image URL must be a valid URL" })
+      .optional()
+      .refine((val) => val === "" || typeof val === "string", {
+        message: "Image URL must be a String",
+      }),
+
     imageFile: z.instanceof(File).optional(),
+
     totalServiceFee: z.number().min(0).optional(),
+
     imageUploadType: z.enum(["url", "upload"]).default("url"),
   })
   .refine((data) => data.packageType !== "Event" || !!data.eventType, {
     path: ["eventType"],
     message: "Please Select an Event Type",
-  });
+  })
+  .refine((data) => data.pricePerPaxWithServiceCharge > data.pricePerPax, {
+    path: ["pricePerPaxWithServiceCharge"],
+    message:
+      "Price per pax with service charge must be greater than price per pax",
+  })
+  .refine((data) => data.recommendedPax > data.minimumPax, {
+    path: ["recommendedPax"],
+    message: "Recommended pax must be greater than minimum pax",
+  })
+  .refine((data) => data.recommendedPax < data.maximumPax, {
+    path: ["recommendedPax"],
+    message: "Recommended pax must be less than maximum pax",
+  })
+  .refine((data) => data.maximumPax > data.minimumPax, {
+    path: ["maximumPax"],
+    message: "Maximum pax must be greater than minimum pax",
+  })
+  .refine((data) => data.maximumPax > data.recommendedPax, {
+    path: ["maximumPax"],
+    message: "Maximum pax must be greater than recommended pax",
+  })
+  .refine(
+    (data) => {
+      // Check if packageType is "Event" and ensure eventType is provided
+      if (data.packageType === "Event" && !data.eventType) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Please provide the event type for the event package",
+      path: ["eventType"], // Specify the field to apply the error message
+    }
+  )
+  .refine(
+    (data) => {
+      // Check if eventType is one of the valid values if it is provided
+      if (
+        data.eventType &&
+        !["Birthday", "Wedding", "Corporate", "Graduation"].includes(
+          data.eventType
+        )
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message:
+        "Event type must be one of: Birthday, Wedding, Corporate, Graduation",
+      path: ["eventType"], // Specify the field to apply the error message
+    }
+  );
 
 export type PackageFormValues = z.infer<typeof formSchema>;
 
@@ -233,11 +327,13 @@ export function usePackageForm({
     const removedOption = currentOptions[index];
 
     // Add the category back to available categories
-    setAvailableCategories((prev) => [...prev, removedOption.category].sort());
+    setAvailableCategories((prev) =>
+      [...prev, removedOption.category as PackageCategory].sort()
+    );
 
     // Set the removed category as the selected one in the dropdown
     setNewOption({
-      category: removedOption.category,
+      category: removedOption.category as PackageCategory,
       count: newOption.count,
     });
 
@@ -308,7 +404,10 @@ export function usePackageForm({
       minimumPax: data.minimumPax,
       recommendedPax: data.recommendedPax,
       maximumPax: data.maximumPax,
-      options: data.options,
+      options: data.options.map((option) => ({
+        ...option,
+        category: option.category as PackageCategory, // Cast to PackageCategory
+      })),
       inclusions: data.inclusions,
       imageUrl: data.imageUrl || "",
       serviceHours: data.serviceHours || 0,
