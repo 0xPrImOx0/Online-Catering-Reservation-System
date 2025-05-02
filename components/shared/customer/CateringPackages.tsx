@@ -13,6 +13,7 @@ import { CatererPackageCard } from "../caterer/CatererPackageCard";
 import { CateringPackagesProps } from "@/types/package-types";
 import api from "@/lib/axiosInstance";
 import axios from "axios";
+import useSocketPackages from "@/hooks/use-socket-packages";
 
 // async function fetchPackages() {
 //   const packages = await axios.get("http://localhost:5500/api/packages");
@@ -33,6 +34,42 @@ export default function CateringPackages({
   const [cateringPackages, setCateringPackages] = useState<
     CateringPackagesProps[]
   >([]);
+
+  // Callback to handle menu updates
+  const handlePackageUpdated = (updatedPackage: CateringPackagesProps) => {
+    console.log("🔄 Received updated package from socket:", updatedPackage);
+    setCateringPackages((prevPackages) => {
+      if (prevPackages === null) return [updatedPackage]; // If prevMenus is null, start a new array with the updated menu
+      return prevPackages.map((cateringPackages) =>
+        cateringPackages._id === updatedPackage._id
+          ? updatedPackage
+          : cateringPackages
+      );
+    });
+  };
+
+  const handlePackageCreated = (createdPackage: CateringPackagesProps) => {
+    console.log("🆕 New package created from socket:", createdPackage);
+    setCateringPackages((prevPackages) => {
+      if (prevPackages === null) return [createdPackage];
+      return [...prevPackages, createdPackage];
+    });
+  };
+
+  const handlePackageDeleted = (deletedPackage: CateringPackagesProps) => {
+    console.log("❌ Menu deleted from socket:", deletedPackage);
+    setCateringPackages(
+      (prevPackage) =>
+        prevPackage?.filter((pkg) => pkg._id !== deletedPackage._id) || null
+    );
+  };
+
+  // Use the socket hook to listen for updates
+  useSocketPackages({
+    onPackageUpdated: handlePackageUpdated,
+    onPackageCreated: handlePackageCreated,
+    onPackageDeleted: handlePackageDeleted,
+  });
 
   useEffect(() => {
     const getPackages = async () => {

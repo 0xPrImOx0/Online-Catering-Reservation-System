@@ -11,7 +11,7 @@ import {
 import { MenuItem } from "@/types/menu-types";
 import { useEffect } from "react";
 
-const useSocket = ({
+const useSocketMenus = ({
   onMenuUpdated,
   onMenuCreated,
   onMenuDeleted,
@@ -35,4 +35,4 @@ const useSocket = ({
   }, [onMenuUpdated, onMenuCreated, onMenuDeleted]);
 };
 
-export default useSocket;
+export default useSocketMenus;

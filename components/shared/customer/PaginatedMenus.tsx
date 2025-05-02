@@ -9,7 +9,7 @@ import CatererMenuCard from "../caterer/CatererMenuCard";
 import CustomPagination from "../CustomPagination";
 import api from "@/lib/axiosInstance";
 import axios from "axios";
-import useSocket from "@/hooks/use-socket";
+import useSocketMenus from "@/hooks/use-socket-menus";
 
 export default function PaginatedMenus({ open }: { open?: boolean }) {
   const [query, setQuery] = useState("");
@@ -56,7 +56,7 @@ export default function PaginatedMenus({ open }: { open?: boolean }) {
   };
 
   // Use the socket hook to listen for updates
-  useSocket({
+  useSocketMenus({
     onMenuUpdated: handleMenuUpdated,
     onMenuCreated: handleMenuCreated,
     onMenuDeleted: handleMenuDeleted,
