@@ -8,6 +8,7 @@ const businessMetadata = {
     zoom: 15,
     address: "University of Science and Technology of Southern Philippines, Cagayan de Oro City, Philippines",
   },
+  label: "Catering Resevation System",
   aboutDescription:
     "Crafting extraordinary culinary experiences with passion, precision, and the finest ingredients since 2002.",
   description:

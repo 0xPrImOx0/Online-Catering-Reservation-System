@@ -1,5 +1,6 @@
 "use client";
 
+import { businessMetadata } from "@/lib/caterer/business-metadata";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,6 +20,7 @@ const Logo = ({
 }: LogoProps) => {
   const pathname = usePathname();
   const isCaterer = pathname.includes("/caterer");
+  const { name, logo, label } = businessMetadata;
 
   return (
     <Link
@@ -29,17 +31,17 @@ const Logo = ({
     >
       <div>
         <Image
-          src="/catering-logo.png"
+          src={logo}
           width={imageSize}
           height={imageSize}
           alt="Catering-Logo"
         />
       </div>
       <div>
-        {withTitle && <span className="font-bold text-lg">Food Sentinel</span>}
+        {withTitle && <span className="text-lg font-bold">{name}</span>}
         {withLabel && (
-          <p className="font-light italic text-xs text-muted-foreground">
-            Catering Reservation System
+          <p className="text-xs italic font-light text-muted-foreground">
+            {label}
           </p>
         )}
       </div>
