@@ -7,6 +7,7 @@ import markerIcon2xPng from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadowPng from "leaflet/dist/images/marker-shadow.png";
 import { businessMetadata } from "@/lib/caterer/business-metadata";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 // Fix marker icons
 delete (L.Icon.Default as any)._getIconUrl;
@@ -44,12 +45,15 @@ export default function MapComponent() {
         </Marker>
       </MapContainer>
       <div className="flex flex-col items-center mt-8">
-        <Button
-          variant="outline"
-          className="bg-white hover:bg-gray-100"
-          onClick={handleViewOnGoogleMaps}
-        >
-          View on Google Maps
+        <Button asChild variant={"outline"}>
+          <Link
+            href={`https://www.google.com/maps?q=${map.latitude},${map.longitude}`}
+            target="_blank"
+            rel="nofollow noopener noreferrer"
+            className="text-justify text-wrap"
+          >
+            View on Google Maps
+          </Link>
         </Button>
       </div>
     </div>

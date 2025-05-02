@@ -16,6 +16,7 @@ const businessMetadata = {
   email: "info@food-sentinel.com",
   logo: "/catering-logo.png",
   businessHours: "8:00 AM - 5:00 PM",
+  businessDays: "Monday - Friday",
   socialMediaLinks: {
     facebook: "https://www.facebook.com/food-sentinel",
     instagram: "https://www.instagram.com/food-sentinel",

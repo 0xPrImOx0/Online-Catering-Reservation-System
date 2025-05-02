@@ -9,25 +9,29 @@ import {
 } from "lucide-react";
 import React from "react";
 import MapComponent from "../MapComponent";
+import { businessMetadata } from "@/lib/caterer/business-metadata";
+import Link from "next/link";
 
 export default function ContactInfo() {
+  const { address, email, phone, businessHours, businessDays } =
+    businessMetadata;
   const contactInfos = [
     {
       title: "Email Us",
       icon: Mail,
-      content: "hello@gourmetcater.com",
+      content: email,
       subcontent: "We'll respond within 24 hours",
     },
     {
       title: "Call Us",
       icon: Phone,
-      content: "(555) 123-4567",
-      subcontent: "Mon-Fri: 9:00am - 5:30pm EST",
+      content: phone,
+      subcontent: `${businessDays} ${businessHours} `,
     },
     {
       title: "Visit Us",
       icon: MapPin,
-      content: "456 Elm Street, Suite 101",
+      content: address,
       subcontent: "By appointment only",
     },
   ];
@@ -42,7 +46,9 @@ export default function ContactInfo() {
               <info.icon className="h-5 w-5 text-gray-500 mt-0.5" />
               <div>
                 <h3 className="font-medium">{info.title}</h3>
-                <h4 className="text-primary hover:underline">{info.content}</h4>
+                <h4 className="text-primary line-clamp-2 hover:underline">
+                  {info.content}
+                </h4>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {info.subcontent}
                 </p>
@@ -61,7 +67,7 @@ export default function ContactInfo() {
         </p>
 
         <div className="flex space-x-4">
-          <a
+          <Link
             href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -69,9 +75,9 @@ export default function ContactInfo() {
           >
             <Facebook className="w-6 h-6" />
             <span className="sr-only">Facebook</span>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="https://instagram.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -79,9 +85,9 @@ export default function ContactInfo() {
           >
             <Instagram className="w-6 h-6" />
             <span className="sr-only">Instagram</span>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="https://tiktok.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -105,9 +111,9 @@ export default function ContactInfo() {
               <line x1="9" y1="16" x2="9" y2="20" />
             </svg>
             <span className="sr-only">TikTok</span>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="https://wa.me/15551234567"
             target="_blank"
             rel="noopener noreferrer"
@@ -115,7 +121,7 @@ export default function ContactInfo() {
           >
             <MessageCircle className="w-6 h-6" />
             <span className="sr-only">WhatsApp</span>
-          </a>
+          </Link>
         </div>
 
         <div className="mt-6">
