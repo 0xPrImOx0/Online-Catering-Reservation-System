@@ -17,7 +17,7 @@ export default function AnalyticsDashboard() {
         </div>
       </div>
       <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2">
-        <ChartOrders chartData={chartData} formatCurrency={formatCurrency} />
+        <ChartOrders chartData={chartData} />
         <TrendingPackages trendingPackages={trendingPackages} formatCurrency={formatCurrency} />
       </div>
       <MostFavoritesItems favoriteMenus={favoriteMenus} formatNumber={formatNumber} />

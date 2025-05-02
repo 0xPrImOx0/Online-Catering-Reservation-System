@@ -3,20 +3,58 @@ import { menuItems } from "../menu-lists";
 
 // Sample data for chart
 
+type PeriodType = 'monthly' | 'weekly' | 'daily';
+
 export type chartDataType = {
-  month: string;
+  label: string;
   value: number;
+  period: PeriodType;
 };
 
-const chartData: chartDataType[] = [
-  { month: "Jan", value: 38 },
-  { month: "Feb", value: 52 },
-  { month: "Mar", value: 45 },
-  { month: "Apr", value: 78 },
-  { month: "May", value: 90 },
-  { month: "Jun", value: 85 },
-  { month: "Jul", value: 92 },
+const monthlyData: chartDataType[] = [
+  { label: "Jan", value: 38000, period: 'monthly' },
+  { label: "Feb", value: 52000, period: 'monthly' },
+  { label: "Mar", value: 45000, period: 'monthly' },
+  { label: "Apr", value: 78000, period: 'monthly' },
+  { label: "May", value: 90000, period: 'monthly' },
+  { label: "Jun", value: 85000, period: 'monthly' },
+  { label: "Jul", value: 92000, period: 'monthly' },
 ];
+
+const weeklyData: chartDataType[] = [
+  { label: "Week 1", value: 21500, period: 'weekly' },
+  { label: "Week 2", value: 24300, period: 'weekly' },
+  { label: "Week 3", value: 18700, period: 'weekly' },
+  { label: "Week 4", value: 27500, period: 'weekly' },
+];
+
+const dailyData: chartDataType[] = [
+  { label: "Mon", value: 3800, period: 'daily' },
+  { label: "Tue", value: 4200, period: 'daily' },
+  { label: "Wed", value: 3950, period: 'daily' },
+  { label: "Thu", value: 4500, period: 'daily' },
+  { label: "Fri", value: 5100, period: 'daily' },
+  { label: "Sat", value: 6200, period: 'daily' },
+  { label: "Sun", value: 5800, period: 'daily' },
+];
+
+const chartData = {
+  monthly: {
+    data: monthlyData,
+    totalSales: 48000,
+    avgSales: 685
+  },
+  weekly: {
+    data: weeklyData,
+    totalSales: 9200,
+    avgSales: 230
+  },
+  daily: {
+    data: dailyData,
+    totalSales: 3350,
+    avgSales: 20
+  }
+};
 
 // Sample data for trending packages
 export type trendingPackagesType = {

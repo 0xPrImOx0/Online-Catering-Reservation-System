@@ -3,13 +3,15 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal, ShoppingBag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { mostSellingMenusType } from "@/lib/caterer/analytics-metadata";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { CategoryBadge } from "../customer/MenuCategoryBadge";
+import { CategoryProps } from "@/types/menu-types";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 
 interface MostSellingItemsProps {
   mostSellingMenus: mostSellingMenusType[];
@@ -24,7 +26,7 @@ export default function MostSellingItems({
     <div className="py-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Most Selling Items</h2>
-        <Select defaultValue="monthly">
+        {/* <Select defaultValue="monthly">
           <SelectTrigger className="w-[130px]">
             <SelectValue placeholder="Period" />
           </SelectTrigger>
@@ -33,7 +35,7 @@ export default function MostSellingItems({
             <SelectItem value="weekly">Weekly</SelectItem>
             <SelectItem value="daily">Daily</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {mostSellingMenus.map((menu) => (
@@ -52,7 +54,10 @@ export default function MostSellingItems({
             </div>
             <div className="flex-1">
               <div className="flex justify-between items-center mb-1">
-                <h3 className="text-base font-medium">{menu.name}</h3>
+                <div className="flex gap-2 items-center">
+                  <h3 className="text-base font-medium">{menu.name}</h3>
+                  <CategoryBadge category={menu.category as CategoryProps} />
+                </div>
                 <Button variant="ghost" size="icon" className="w-8 h-8">
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
@@ -61,12 +66,6 @@ export default function MostSellingItems({
                 <span className="font-bold text-indigo-700">
                   {formatCurrency(menu.price)}
                 </span>
-                <Badge
-                  variant="outline"
-                  className="text-xs text-indigo-600 bg-indigo-50 border-indigo-200"
-                >
-                  {menu.category}
-                </Badge>
               </div>
               <div className="flex justify-between items-center mt-2">
                 <div className="text-xs text-muted-foreground">

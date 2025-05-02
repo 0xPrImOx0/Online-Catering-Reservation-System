@@ -1,19 +1,41 @@
-import { DollarSign } from "lucide-react";
+"use client"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { chartDataType } from "../../../lib/caterer/analytics-metadata";
-import { formatNumber } from "@/lib/utils/format";
+import { formatCurrency, formatNumber } from "@/lib/utils/format";
+import { useState } from "react";
 
 interface ChartOrdersProps {
-  chartData: chartDataType[];
-  formatCurrency: (amount: number) => string;
+  chartData: {
+    monthly: {
+      data: chartDataType[];
+      totalSales: number;
+      avgSales: number;
+    };
+    weekly: {
+      data: chartDataType[];
+      totalSales: number;
+      avgSales: number;
+    };
+    daily: {
+      data: chartDataType[];
+      totalSales: number;
+      avgSales: number;
+    };
+  };
 }
 
-export default function ChartOrders({ chartData, formatCurrency }: ChartOrdersProps) {
+export default function ChartOrders({ chartData }: ChartOrdersProps) {
+  const [period, setPeriod] = useState<"monthly" | "weekly" | "daily">("monthly");
+  
+  const currentData = chartData[period].data;
+  const totalSales = chartData[period].totalSales;
+  const avgSales = chartData[period].avgSales;
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Chart Orders</h2>
-        <Select defaultValue="monthly">
+        <Select defaultValue={period} onValueChange={(value) => setPeriod(value as "monthly" | "weekly" | "daily")}>
           <SelectTrigger className="w-[130px]">
             <SelectValue placeholder="Period" />
           </SelectTrigger>
@@ -27,14 +49,14 @@ export default function ChartOrders({ chartData, formatCurrency }: ChartOrdersPr
       <div className="flex gap-12 items-start mb-4">
         <div>
           <div className="flex gap-2 items-center">
-            <span className="text-xl font-bold">{formatCurrency(257000)}</span>
+            <span className="text-xl font-bold">{formatCurrency(totalSales)}</span>
           </div>
           <div className="text-sm text-muted-foreground">Total Sales</div>
         </div>
         <div>
-          <div className="text-xl font-bold">{formatNumber(1245)}</div>
+          <div className="text-xl font-bold">{formatNumber(avgSales)}</div>
           <div className="text-sm text-muted-foreground">
-            Avg. Sales per day
+            Avg. Sales per {period === "daily" ? "day" : period === "weekly" ? "week" : "month"}
           </div>
         </div>
       </div>
@@ -83,11 +105,11 @@ export default function ChartOrders({ chartData, formatCurrency }: ChartOrdersPr
             strokeWidth="1"
           />
           <path
-            d={`M 0 ${240 - chartData[0].value * 2} ${chartData
+            d={`M 0 ${240 - (currentData[0].value / 1000) * 2} ${currentData
               .map(
                 (point, i) =>
-                  `L ${i * (400 / (chartData.length - 1))} ${
-                    240 - point.value * 2
+                  `L ${i * (400 / (currentData.length - 1))} ${
+                    240 - (point.value / 1000) * 2
                   }`
               )
               .join(" ")}`}
@@ -96,29 +118,29 @@ export default function ChartOrders({ chartData, formatCurrency }: ChartOrdersPr
             strokeWidth="2"
           />
           <path
-            d={`M 0 ${240 - chartData[0].value * 2} ${chartData
+            d={`M 0 ${240 - (currentData[0].value / 1000) * 2} ${currentData
               .map(
                 (point, i) =>
-                  `L ${i * (400 / (chartData.length - 1))} ${
-                    240 - point.value * 2
+                  `L ${i * (400 / (currentData.length - 1))} ${
+                    240 - (point.value / 1000) * 2
                   }`
               )
               .join(" ")} L ${400} 240 L 0 240 Z`}
             fill="url(#gradient)"
           />
-          {chartData.map((point, i) => (
+          {currentData.map((point, i) => (
             <circle
               key={i}
-              cx={i * (400 / (chartData.length - 1))}
-              cy={240 - point.value * 2}
+              cx={i * (400 / (currentData.length - 1))}
+              cy={240 - (point.value / 1000) * 2}
               r="4"
               fill="#10b981"
             />
           ))}
         </svg>
         <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-          {chartData.map((point, i) => (
-            <div key={i}>{point.month}</div>
+          {currentData.map((point, i) => (
+            <div key={i}>{point.label}</div>
           ))}
         </div>
       </div>

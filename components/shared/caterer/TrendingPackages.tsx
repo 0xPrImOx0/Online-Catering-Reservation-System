@@ -13,8 +13,8 @@ export default function TrendingPackages({ trendingPackages, formatCurrency }: T
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Trending Packages</h2>
-        <Select defaultValue="monthly">
+        <h2 className="text-lg font-semibold">Trending Packages For This Month</h2>
+        {/* <Select defaultValue="monthly">
           <SelectTrigger className="w-[130px]">
             <SelectValue placeholder="Period" />
           </SelectTrigger>
@@ -23,7 +23,7 @@ export default function TrendingPackages({ trendingPackages, formatCurrency }: T
             <SelectItem value="weekly">Weekly</SelectItem>
             <SelectItem value="daily">Daily</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
       <div className="space-y-4">
         {trendingPackages.map((pkg, index) => (
