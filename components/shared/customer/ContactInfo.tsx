@@ -43,18 +43,23 @@ export default function ContactInfo() {
       {/* Get In Touch */}
       <div className="space-y-6">
         <h2 className="text-xl font-semibold">Get in Touch</h2>
-        <div className="flex gap-6 max-sm:flex-col">
+        <div className="flex flex-wrap gap-6 sm:flex-nowrap max-sm:flex-col">
           {contactInfos.map((info) => (
-            <Card className="flex flex-1 gap-4 px-6 py-4" key={info.title}>
-              <info.icon className="h-5 w-5 text-gray-500 mt-0.5" />
-              <div>
+            <Card
+              key={info.title}
+              className="flex flex-1 items-start gap-4 p-6 transition-shadow hover:shadow-md"
+            >
+              <info.icon className="mt-1 size-6 text-gray-500 shrink-0" />
+              <div className="space-y-1">
                 <h3 className="font-medium">{info.title}</h3>
-                <h4 className="text-primary line-clamp-2 hover:underline">
+                <h4 className="text-primary line-clamp-2 hover:underline cursor-pointer text-base">
                   {info.content}
                 </h4>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {info.subcontent}
-                </p>
+                {info.subcontent && (
+                  <p className="text-sm text-muted-foreground">
+                    {info.subcontent}
+                  </p>
+                )}
               </div>
             </Card>
           ))}
