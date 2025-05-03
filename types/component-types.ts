@@ -106,6 +106,7 @@ export interface FilterSectionProps {
       [key: string]: string | number | boolean | AllergenProps[];
     }>
   >;
+  highestPrice?: number;
 }
 
 export type EventPackageContainerProps = {
@@ -134,7 +135,6 @@ export type MultiStepFormProps = {
   isReservationForm?: boolean;
   setShowPackageSelection?: Dispatch<SetStateAction<boolean>>;
 };
-
 
 export interface CustomerType {
   name: string;

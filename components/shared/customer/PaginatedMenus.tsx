@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { CustomerMenuCard } from "./CustomerMenuCard";
 import { MenuItem, type AllergenProps } from "@/types/menu-types";
 import { usePathname } from "next/navigation";
-import { menuItems } from "@/lib/menu-lists";
 import FilterSection from "../MenuFilter/FilterSection";
 import CatererMenuCard from "../caterer/CatererMenuCard";
 import CustomPagination from "../CustomPagination";
@@ -20,7 +19,7 @@ export default function PaginatedMenus({ open }: { open?: boolean }) {
     sortBy: "",
     excludedAllergens: [] as AllergenProps[],
     minPrice: 0,
-    maxPrice: 500,
+    maxPrice: 3000,
     available: false,
     spicy: false,
   });
@@ -67,6 +66,7 @@ export default function PaginatedMenus({ open }: { open?: boolean }) {
       try {
         const response = await api.get("/menus");
         setMenus(response.data.data);
+        console.log(response.data.data);
       } catch (err: unknown) {
         console.log("ERRRORRR", err);
 
@@ -84,7 +84,7 @@ export default function PaginatedMenus({ open }: { open?: boolean }) {
   }, []);
 
   // Add this function before the return statement in PaginatedMenus component
-  const sortMenus = (menus: typeof menuItems) => {
+  const sortMenus = (menus: MenuItem[]): MenuItem[] => {
     if (!filters.sortBy) return menus;
 
     return [...menus].sort((a, b) => {
@@ -140,6 +140,14 @@ export default function PaginatedMenus({ open }: { open?: boolean }) {
 
           // Match spicy
           const matchesSpicy = !filters.spicy || menu.spicy;
+
+          console.log(`Menu: ${menu.name}, Query match: ${matchesQuery}`);
+          console.log(`Menu: ${menu.name}, Category match: ${matchesCategory}`);
+          console.log(`Menu: ${menu.name}, Price match: ${matchesPrice}`);
+          console.log(`Menu: ${menu.name}, Spicy match: ${matchesSpicy}`);
+          console.log(
+            `Menu: ${menu.name}, Available match: ${matchesAvailability}`
+          );
 
           return (
             matchesQuery &&

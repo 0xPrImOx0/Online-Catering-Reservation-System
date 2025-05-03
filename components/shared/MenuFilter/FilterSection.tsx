@@ -20,9 +20,10 @@ export default function FilterSection({
   setQuery,
   filters,
   setFilters,
+  highestPrice = 3000,
 }: FilterSectionProps) {
   const [openFilter, setOpenFilter] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 500]);
+  const [priceRange, setPriceRange] = useState([0, Number(highestPrice)]);
   const [excludedAllergens, setExcludedAllergens] = useState<AllergenProps[]>(
     []
   );
