@@ -17,7 +17,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadowPng,
 });
 
-const { map, name } = businessMetadata;
+const { map, businessName } = businessMetadata;
 
 export default function MapComponent() {
   const handleViewOnGoogleMaps = () => {

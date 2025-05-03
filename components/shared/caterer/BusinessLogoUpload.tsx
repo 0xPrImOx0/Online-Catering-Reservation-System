@@ -1,5 +1,5 @@
 import React from "react";
-import { Building2, Upload } from "lucide-react";
+import { Building2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -17,16 +17,11 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import Image from "next/image";
 
-  /**
-   * @description A form component to upload a business logo.
-   * @example
-   * <BusinessLogoUpload />
-   * @returns {ReactElement} A form component with a text input for the logo link and a preview of the uploaded logo.
-   */
 export function BusinessLogoUpload() {
-  const { control, watch, setValue } = useFormContext<SettingsValues>();
-  const logo = watch("logo");
+  const { control, watch } = useFormContext<SettingsValues>();
+  const businessLogo = watch("businessLogo");
   return (
     <Card>
       <CardHeader>
@@ -38,10 +33,9 @@ export function BusinessLogoUpload() {
       <CardContent>
         <div className="flex flex-col gap-6 items-start md:flex-row">
           <div className="space-y-4 w-full md:w-1/2">
-            <Label htmlFor="logo-upload">Upload Logo</Label>
             <FormField
               control={control}
-              name="logo"
+              name="businessLogo"
               render={({ field }) => (
                 <FormItem className="grid w-full max-w-sm items-center gap-1.5">
                   <FormLabel htmlFor="logo-upload" className="">
@@ -49,15 +43,15 @@ export function BusinessLogoUpload() {
                   </FormLabel>
 
                   {/* <div className="flex flex-col justify-center items-center pt-5 pb-6">
-                      <Upload className="mb-2 w-8 h-8 text-muted-foreground" />
-                      <p className="mb-2 text-sm text-muted-foreground">
-                        <span className="font-semibold">Click to upload</span>{" "}
-                        or drag and drop
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        PNG, JPG or SVG (MAX. 2MB)
-                      </p>
-                    </div> */}
+                    <Upload className="mb-2 w-8 h-8 text-muted-foreground" />
+                    <p className="mb-2 text-sm text-muted-foreground">
+                      <span className="font-semibold">Click to upload</span> or
+                      drag and drop
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      PNG, JPG or SVG (MAX. 2MB)
+                    </p>
+                  </div> */}
                   <FormControl>
                     <Input
                       id="logo-upload"
@@ -73,12 +67,13 @@ export function BusinessLogoUpload() {
 
           <div className="w-full md:w-1/2">
             <Label>Logo Preview</Label>
-            <div className="flex justify-center items-center mt-2 w-full h-40 rounded-md border bg-muted/20">
-              {logo ? (
-                <img
-                  src={logo || "/placeholder.svg"}
+            <div className="relative flex justify-center items-center mt-2 w-full h-56 rounded-md border bg-muted/20">
+              {businessLogo ? (
+                <Image
+                  src={businessLogo || "/placeholder.svg"}
                   alt="Business Logo"
-                  className="object-contain p-4 max-w-full max-h-full"
+                  fill
+                  className="max-h-full max-w-full object-contain"
                 />
               ) : (
                 <div className="text-center text-muted-foreground">

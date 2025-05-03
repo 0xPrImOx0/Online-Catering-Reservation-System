@@ -10,8 +10,6 @@ const businessMetadata = {
   },
   tagline:
     "Savor the heart of Filipino cuisine, preserving tradition and flavor since 2002",
-  description:
-    "At Food Sentinel, we simplifies catering reservation with authentic Filipino menus, easy bookings, and unforgettable dining experiences for any occasion.",
   systemName: "Catering Reservation System",
   businessLogo: "/catering-logo.png",
   businessHours: "8:00 AM - 5:00 PM",

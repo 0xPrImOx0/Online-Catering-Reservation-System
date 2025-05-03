@@ -9,12 +9,15 @@ import {
 } from "lucide-react";
 import React from "react";
 import MapComponent from "../MapComponent";
-import { businessMetadata } from "@/lib/caterer/business-metadata";
+import {
+  businessMetadata,
+  ownerMetadata,
+} from "@/lib/caterer/business-metadata";
 import Link from "next/link";
 
 export default function ContactInfo() {
-  const { address, email, phone, businessHours, businessDays } =
-    businessMetadata;
+  const { address, businessHours, businessDays } = businessMetadata;
+  const { email, phone } = ownerMetadata;
   const contactInfos = [
     {
       title: "Email Us",

@@ -1,5 +1,5 @@
 import React from "react";
-import { Building2, Mail, Phone, MapPin, FileText } from "lucide-react";
+import { Building2, MapPin, FileText } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useFormContext } from "react-hook-form";
 import { SettingsValues } from "@/hooks/use-settings-form";
@@ -20,25 +19,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-type BusinessDetailsProps = {
-  businessData: {
-    name: string;
-    email: string;
-    phone: string;
-    address: string;
-    description: string;
-  };
-  updateField: (field: string, value: string) => void;
-};
-
 export function BusinessDetailsForm() {
   const { control } = useFormContext<SettingsValues>();
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Business Details</CardTitle>
+        <CardTitle>Business Information</CardTitle>
         <CardDescription>
-          Update your business information visible to customers
+          Keep your business details up to date for greater engagement
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -46,7 +34,7 @@ export function BusinessDetailsForm() {
           {/* Business Name */}
           <FormField
             control={control}
-            name="name"
+            name="businessName"
             render={({ field }) => (
               <FormItem className="space-y-2">
                 <FormLabel
@@ -69,53 +57,6 @@ export function BusinessDetailsForm() {
             )}
           />
 
-          {/* Email */}
-          <FormField
-            control={control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="space-y-2">
-                <FormLabel htmlFor="email" className="flex gap-2 items-center">
-                  <Mail className="w-4 h-4 text-muted-foreground" />
-                  Contact Email <span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your contact email"
-                    {...field}
-                    required
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Phone */}
-          <FormField
-            control={control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem className="space-y-2">
-                <FormLabel htmlFor="phone" className="flex gap-2 items-center">
-                  <Phone className="w-4 h-4 text-muted-foreground" />
-                  Phone Number <span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    id="phone"
-                    placeholder="Enter your phone number"
-                    {...field}
-                    required
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           {/* Address */}
           <FormField
             control={control}
@@ -127,12 +68,13 @@ export function BusinessDetailsForm() {
                   className="flex gap-2 items-center"
                 >
                   <MapPin className="w-4 h-4 text-muted-foreground" />
-                  Business Address
+                  Business Address <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
                     id="address"
                     placeholder="Enter your business address"
+                    required
                     {...field}
                   />
                 </FormControl>
@@ -142,32 +84,26 @@ export function BusinessDetailsForm() {
           />
         </div>
 
-        {/* Description */}
+        {/* Tagline */}
         <FormField
           control={control}
-          name="description"
+          name="tagline"
           render={({ field }) => (
             <FormItem className="space-y-2">
-              <FormLabel
-                htmlFor="description"
-                className="flex gap-2 items-center"
-              >
+              <FormLabel htmlFor="tagline" className="flex gap-2 items-center">
                 <FileText className="w-4 h-4 text-muted-foreground" />
-                Business Description
+                Business Tagline <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <Textarea
-                  id="description"
+                  id="tagline"
                   placeholder="Describe your catering business"
                   className="min-h-[120px]"
+                  required
                   {...field}
                 />
               </FormControl>
               <FormMessage />
-              <p className="text-sm text-muted-foreground">
-                This description will appear on your public profile and in
-                search results
-              </p>
             </FormItem>
           )}
         />
