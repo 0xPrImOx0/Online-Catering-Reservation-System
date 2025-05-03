@@ -15,7 +15,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { useTheme } from "next-themes";
 
 const MobileRoutePage = () => {
-  const isLargeScreen = useMediaQuery("(max-width: 1024px)");
+  const isMediumScreen = useMediaQuery("(max-width: 1024px)");
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
 
@@ -23,7 +23,7 @@ const MobileRoutePage = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const fillColor = isLargeScreen ? "#fff" : isDarkMode ? "#fff" : "#000";
+  const fillColor = isMediumScreen ? "#fff" : isDarkMode ? "#fff" : "#000";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

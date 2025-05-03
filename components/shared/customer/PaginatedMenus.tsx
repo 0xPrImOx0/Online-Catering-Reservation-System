@@ -9,12 +9,14 @@ import CustomPagination from "../CustomPagination";
 import api from "@/lib/axiosInstance";
 import axios from "axios";
 import useSocketMenus from "@/hooks/use-socket-menus";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export default function PaginatedMenus({ open }: { open?: boolean }) {
   const [query, setQuery] = useState("");
   const menuListRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const menusPerPage = 9;
+  const isMediumScreen = useMediaQuery("(max-width: 1279px)"); //do not set to 1280px, results will still have 3 menus in each rows
+  const menusPerPage = isMediumScreen ? 10 : 9;
   const [menus, setMenus] = useState<MenuItem[] | null>(null);
   const [filters, setFilters] = useState({
     category: "",

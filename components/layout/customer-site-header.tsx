@@ -15,7 +15,7 @@ import { useTheme } from "next-themes";
 export default function CustomerSiteHeader() {
   const { customer } = useAuthContext(); // Temporary Basis if there is a user currently signed in
   const pathname = usePathname();
-  const isLargeScreen = useMediaQuery("(max-width: 1024px)");
+  const isMediumScreen = useMediaQuery("(max-width: 1024px)");
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
 
@@ -23,10 +23,10 @@ export default function CustomerSiteHeader() {
     return (
       <Button
         variant={`${
-          isLargeScreen ? (pathname === href ? "default" : "link") : "link"
+          isMediumScreen ? (pathname === href ? "default" : "link") : "link"
         }`}
         effect={`${
-          isLargeScreen
+          isMediumScreen
             ? "none"
             : pathname === href
             ? "underline"
@@ -38,7 +38,7 @@ export default function CustomerSiteHeader() {
         <Link
           href={href}
           className={cn("text-base relative", {
-            "!text-base": isLargeScreen,
+            "!text-base": isMediumScreen,
           })}
         >
           {title}
@@ -66,9 +66,9 @@ export default function CustomerSiteHeader() {
             <div className="space-x-4">
               <Button
                 variant={`${
-                  isDarkMode && isLargeScreen ? "none" : "secondary"
+                  isDarkMode && isMediumScreen ? "none" : "secondary"
                 }`}
-                effect={`${isLargeScreen ? "none" : "hoverUnderline"}`}
+                effect={`${isMediumScreen ? "none" : "hoverUnderline"}`}
                 className="max-lg:bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground max-md:rounded-full max-md:size-10 dark:hover:bg-sidebar-accent"
                 asChild
               >
@@ -82,7 +82,7 @@ export default function CustomerSiteHeader() {
 
               <Button
                 variant={`${
-                  isDarkMode && isLargeScreen ? "secondary" : "default"
+                  isDarkMode && isMediumScreen ? "secondary" : "default"
                 }`}
                 className="max-md:bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground max-md:rounded-full max-md:size-10 dark:hover:bg-sidebar-accent"
                 asChild

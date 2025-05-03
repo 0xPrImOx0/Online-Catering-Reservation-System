@@ -119,9 +119,9 @@ export function FilterDialog({
                 Price Range (₱{priceRange[0]} - ₱{priceRange[1]})
               </Label>
               <Slider
-                defaultValue={[0, 500]}
+                defaultValue={[0, 1000]}
                 min={0}
-                max={500}
+                max={1000}
                 step={10}
                 value={priceRange}
                 onValueChange={setPriceRange}
