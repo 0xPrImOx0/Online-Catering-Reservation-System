@@ -62,13 +62,6 @@ export const SignInForm = ({ form, onSubmit, error }: SignInFormProps) => {
                 <FormItem>
                   <FormLabel className="flex justify-between items-center py-2">
                     Password
-                    {/* <Button
-                      className="p-0 text-gray-500 "
-                      variant="link"
-                      asChild
-                    >
-                      <Link href="/forgot-password">Forgot Password?</Link>
-                    </Button> */}
                   </FormLabel>
                   <FormControl>
                     <PasswordInput placeholder="Password" {...field} />

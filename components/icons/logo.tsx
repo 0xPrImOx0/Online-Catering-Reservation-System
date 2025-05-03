@@ -20,7 +20,7 @@ const Logo = ({
 }: LogoProps) => {
   const pathname = usePathname();
   const isCaterer = pathname.includes("/caterer");
-  const { name, logo, label } = businessMetadata;
+  const { name, businessLogo, systemName } = businessMetadata;
 
   return (
     <Link
@@ -31,17 +31,17 @@ const Logo = ({
     >
       <div>
         <Image
-          src={logo}
+          src={businessLogo}
           width={imageSize}
           height={imageSize}
           alt="Catering-Logo"
         />
       </div>
       <div>
-        {withTitle && <span className="text-lg font-bold">{name}</span>}
+        {withTitle && <span className="font-bold text-lg">{name}</span>}
         {withLabel && (
-          <p className="text-xs italic font-light text-muted-foreground">
-            {label}
+          <p className="text-muted-foreground text-xs italic font-light">
+            {systemName}
           </p>
         )}
       </div>

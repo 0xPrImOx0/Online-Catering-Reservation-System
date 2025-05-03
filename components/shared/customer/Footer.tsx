@@ -2,7 +2,10 @@ import Logo from "@/components/icons/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { businessMetadata } from "@/lib/caterer/business-metadata";
+import {
+  businessMetadata,
+  ownerMetadata,
+} from "@/lib/caterer/business-metadata";
 import { links } from "@/lib/customer/customer-links";
 import { MapPin, Phone } from "lucide-react";
 import Link from "next/link";
@@ -12,7 +15,7 @@ const FooterLinks = ({ href, title }: { href: string; title: string }) => {
     <li>
       <Link
         href={href}
-        className="transition-colors text-muted-foreground hover:text-foreground"
+        className="text-muted-foreground hover:text-foreground transition-colors"
       >
         {title}
       </Link>
@@ -21,7 +24,9 @@ const FooterLinks = ({ href, title }: { href: string; title: string }) => {
 };
 
 export default function Page() {
-  const { name, aboutDescription, phone, address, map } = businessMetadata;
+  const { name, tagline, address, map } = businessMetadata;
+  const { phone, email } = ownerMetadata;
+
   return (
     <footer className="flex justify-center w-full border-t bg-muted/50">
       <div className="container mx-4 sm:mx-6 lg:mx-8 py-6 sm:py-8 md:py-12 px-4 sm:px-6 lg:px-8 max-w-[1440px]">
@@ -29,12 +34,12 @@ export default function Page() {
           <div className="space-y-4 flex flex-col items-center md:items-start text-center sm:text-left lg:w-[280px]">
             <Logo withLabel imageSize={100} />
             <p className="max-w-xs text-sm text-center text-muted-foreground md:text-justify">
-              {aboutDescription}
+              {tagline}
             </p>
           </div>
           <div className="flex flex-col items-center text-center sm:mt-0 md:items-start md:text-left lg:ml-20 xl:ml-10">
             <h3 className="mb-3 text-base font-medium sm:mb-4">Quick Links</h3>
-            <ul className="grid-cols-2 space-y-3 text-sm">
+            <ul className="space-y-3 text-sm">
               {links.map(({ href, title }) => (
                 <FooterLinks href={href} title={title} key={href} />
               ))}
@@ -51,7 +56,7 @@ export default function Page() {
               <li className="flex gap-2 items-center text-muted-foreground">
                 <MapPin className="flex-shrink-0 w-4 h-4" />
                 <Link
-                  href={`https://www.google.com/maps?q=${map.latitude},${map.longitude}`}
+                  href={map.link}
                   target="_blank"
                   rel="nofollow noopener noreferrer"
                   className="text-justify text-wrap"
