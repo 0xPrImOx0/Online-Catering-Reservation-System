@@ -106,7 +106,6 @@ export interface FilterSectionProps {
       [key: string]: string | number | boolean | AllergenProps[];
     }>
   >;
-  highestPrice?: number;
 }
 
 export type EventPackageContainerProps = {

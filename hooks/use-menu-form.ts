@@ -69,7 +69,8 @@ const formSchema = z.object({
 
   regularPricePerPax: z
     .number()
-    .min(0, { message: "Regular price per pax must be a positive number" }),
+    .min(0, { message: "Regular price per pax must be atleast 0" })
+    .max(1000, { message: "Regular price per pax must not exceed 1000" }),
 
   prices: z
     .array(

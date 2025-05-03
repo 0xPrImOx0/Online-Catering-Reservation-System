@@ -54,22 +54,36 @@ export function PricingStep({ formHook }: AddMenuFormProps) {
                 </span>
                 <Input
                   type="number"
-                  min="1"
-                  step="1"
+                  min={0}
+                  step={1}
                   placeholder="0.00"
                   className="pl-7"
                   {...field}
-                  onChange={(e) => {
-                    // Handle the 0 issue by replacing the value completely
-                    const value = e.target.value;
-                    if (value === "0" || value === "") {
-                      field.onChange(0);
-                    } else {
-                      // Remove leading zeros and convert to number
-                      field.onChange(Number(value.replace(/^0+/, "")));
+                  onKeyDown={(e) => {
+                    if (["e", "E", "+", "-"].includes(e.key)) {
+                      e.preventDefault();
                     }
                   }}
-                  value={field.value || ""}
+                  onChange={(e) => {
+                    let value = e.target.value;
+
+                    // Prevent more than 2 decimal places
+                    if (value.includes(".")) {
+                      const [intPart, decPart] = value.split(".");
+                      if (decPart.length > 2) {
+                        value = `${intPart}.${decPart.slice(0, 2)}`;
+                      }
+                    }
+
+                    const num = Number(value);
+
+                    if (value === "" || isNaN(num) || num < 0) {
+                      field.onChange(0);
+                    } else {
+                      field.onChange(num);
+                    }
+                  }}
+                  value={field.value === 0 ? "" : field.value}
                 />
               </div>
             </FormControl>

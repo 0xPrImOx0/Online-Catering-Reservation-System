@@ -13,19 +13,19 @@ import useSocketMenus from "@/hooks/use-socket-menus";
 export default function PaginatedMenus({ open }: { open?: boolean }) {
   const [query, setQuery] = useState("");
   const menuListRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const menusPerPage = 9;
+  const [menus, setMenus] = useState<MenuItem[] | null>(null);
   const [filters, setFilters] = useState({
     category: "",
     allergens: "" as AllergenProps,
     sortBy: "",
     excludedAllergens: [] as AllergenProps[],
     minPrice: 0,
-    maxPrice: 3000,
+    maxPrice: 1000,
     available: false,
     spicy: false,
   });
-  const [currentPage, setCurrentPage] = useState(1);
-  const menusPerPage = 9;
-  const [menus, setMenus] = useState<MenuItem[] | null>(null);
 
   // Callback to handle menu updates
   const handleMenuUpdated = (updatedMenu: MenuItem) => {
@@ -141,13 +141,13 @@ export default function PaginatedMenus({ open }: { open?: boolean }) {
           // Match spicy
           const matchesSpicy = !filters.spicy || menu.spicy;
 
-          console.log(`Menu: ${menu.name}, Query match: ${matchesQuery}`);
-          console.log(`Menu: ${menu.name}, Category match: ${matchesCategory}`);
-          console.log(`Menu: ${menu.name}, Price match: ${matchesPrice}`);
-          console.log(`Menu: ${menu.name}, Spicy match: ${matchesSpicy}`);
-          console.log(
-            `Menu: ${menu.name}, Available match: ${matchesAvailability}`
-          );
+          // console.log(`Menu: ${menu.name}, Query match: ${matchesQuery}`);
+          // console.log(`Menu: ${menu.name}, Category match: ${matchesCategory}`);
+          // console.log(`Menu: ${menu.name}, Price match: ${matchesPrice}`);
+          // console.log(`Menu: ${menu.name}, Spicy match: ${matchesSpicy}`);
+          // console.log(
+          //   `Menu: ${menu.name}, Available match: ${matchesAvailability}`
+          // );
 
           return (
             matchesQuery &&
