@@ -1,5 +1,5 @@
 const businessMetadata = {
-  name: "Food Sentinel",
+  businessName: "Food Sentinel",
   address:
     "University of Science and Technology of Southern Philippines, Cagayan de Oro City, Philippines",
   map: {

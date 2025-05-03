@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const settingsSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  businessName: z.string().min(1, "Name is required"),
   address: z.string().min(1, "Address is required"),
   map: z.object({
     link: z
@@ -39,7 +39,7 @@ const settingsSchema = z.object({
 export type SettingsValues = z.infer<typeof settingsSchema>;
 
 const {
-  name: businessName,
+  businessName,
   address,
   map,
   systemName,
@@ -60,7 +60,7 @@ const {
 } = ownerMetadata;
 
 const defaultValues: SettingsValues = {
-  name: businessName,
+  businessName: businessName,
   address: address,
   map: {
     link: map.link,

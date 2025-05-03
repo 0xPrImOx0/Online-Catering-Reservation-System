@@ -7,7 +7,7 @@ import {
   ownerMetadata,
 } from "@/lib/caterer/business-metadata";
 import { links } from "@/lib/customer/customer-links";
-import { MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 
 const FooterLinks = ({ href, title }: { href: string; title: string }) => {
@@ -24,7 +24,7 @@ const FooterLinks = ({ href, title }: { href: string; title: string }) => {
 };
 
 export default function Page() {
-  const { name, tagline, address, map } = businessMetadata;
+  const { businessName, tagline, address, map } = businessMetadata;
   const { phone, email } = ownerMetadata;
 
   return (
@@ -48,18 +48,23 @@ export default function Page() {
           <div className="flex flex-col items-center text-center md:items-start sm:text-left">
             <h3 className="mb-3 text-base font-medium sm:mb-4">Contact</h3>
             <ul className="flex flex-col items-center space-y-3 text-sm text-center md:justify-start md:text-left">
-              <li className="flex gap-2 items-center text-muted-foreground sm:text-left md:self-start">
-                <Phone className="flex-shrink-0 w-4 h-4" />
+              <li className="flex items-center text-muted-foreground sm:text-left md:self-start gap-2">
+                <Phone className="flex-shrink-0 size-4" />
                 <span>{phone}</span>
               </li>
 
-              <li className="flex gap-2 items-center text-muted-foreground">
-                <MapPin className="flex-shrink-0 w-4 h-4" />
+              <li className="flex items-center text-muted-foreground sm:text-left md:self-start gap-2">
+                <Mail className="flex-shrink-0 size-4" />
+                <span>{email}</span>
+              </li>
+
+              <li className="flex items-center text-muted-foreground gap-2">
+                <MapPin className="flex-shrink-0 size-4" />
                 <Link
                   href={map.link}
                   target="_blank"
                   rel="nofollow noopener noreferrer"
-                  className="text-justify text-wrap"
+                  className="text-wrap text-justify"
                 >
                   {address}
                 </Link>
@@ -89,7 +94,7 @@ export default function Page() {
         <Separator className="my-8" />
         <div className="flex flex-col gap-4 justify-between items-center sm:flex-row">
           <p className="text-xs text-center text-muted-foreground sm:text-left">
-            © {new Date().getFullYear()} {name}. All rights reserved.
+            © {new Date().getFullYear()} {businessName}. All rights reserved.
           </p>
           <div className="flex gap-4 items-center">
             <Link
