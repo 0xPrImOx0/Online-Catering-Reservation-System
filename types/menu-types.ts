@@ -1,6 +1,7 @@
 import { useMenuForm } from "@/hooks/use-menu-form";
 import { SetStateBoolean } from "./global-types";
 import { ReviewsProps } from "./package-types";
+import { CustomSelectItemProps } from "./component-types";
 
 export type ServingSize = 6 | 10 | 15 | 20;
 
@@ -253,3 +254,46 @@ export const addMenuFormSteps = [
 export interface AddMenuFormProps {
   formHook: ReturnType<typeof useMenuForm>;
 }
+
+export const selectorItems: CustomSelectItemProps[] = [
+  { value: "default", title: "Default" },
+  { value: "price-asc", title: "Price: Low to High" },
+  { value: "price-desc", title: "Price: High to Low" },
+  { value: "rating-desc", title: "Highest Rated" },
+  { value: "name-asc", title: "Name: A to Z" },
+  { value: "name-desc", title: "Name: Z to A" },
+];
+
+export const categorySelect: CustomSelectItemProps[] = [
+  { value: "all", title: "All" },
+  { value: "soup", title: "Soup" },
+  { value: "salad", title: "Salad" },
+  { value: "beef", title: "Beef" },
+  { value: "pork", title: "Pork" },
+  { value: "noodle", title: "Noodle" },
+  { value: "chicken", title: "Chicken" },
+  { value: "seafood", title: "Seafood" },
+  { value: "vegetable", title: "Vegetable" },
+  { value: "dessert", title: "Dessert" },
+  { value: "beverage", title: "Beverage" },
+];
+
+export const allergensSelect: CustomSelectItemProps[] = [
+  { value: "Milk", title: "Milk" },
+  { value: "Eggs", title: "Eggs" },
+  { value: "Fish", title: "Fish" },
+  { value: "Shellfish", title: "Shellfish" },
+  { value: "Tree Nuts", title: "Tree nuts" },
+  { value: "Peanuts", title: "Peanuts" },
+  { value: "Wheat", title: "Wheat" },
+  { value: "Soybeans", title: "Soybeans" },
+  { value: "Sesame", title: "Sesame" },
+  { value: "Gluten", title: "Gluten" },
+  { value: "Mustard", title: "Mustard" },
+  { value: "Celery", title: "Celery" },
+  { value: "Lupin", title: "Lupin" },
+  { value: "Molluscs", title: "Molluscs" },
+  { value: "Sulphites", title: "Sulphites" },
+  { value: "Soy", title: "Soy" },
+  { value: "Nuts", title: "Nuts" },
+];
