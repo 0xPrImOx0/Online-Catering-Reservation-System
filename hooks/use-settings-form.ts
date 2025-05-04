@@ -10,8 +10,6 @@ import * as z from "zod";
 const settingsSchema = z.object({
   businessName: z.string().min(1, "Name is required"),
 
-  address: z.string().min(1, "Address is required"),
-
   map: z.object({
     link: z
       .string()
@@ -31,7 +29,7 @@ const settingsSchema = z.object({
         message: "Embedded link must be a valid embedded Google Maps URL",
       }),
 
-    address: z.string(),
+    address: z.string().min(1, "Address is required"),
   }),
 
   systemName: z.string().min(1, "Sys is required"),
@@ -67,7 +65,6 @@ export type SettingsValues = z.infer<typeof settingsSchema>;
 
 const {
   businessName,
-  address,
   map,
   systemName,
   tagline,
@@ -87,7 +84,6 @@ const {
 
 const defaultValues: SettingsValues = {
   businessName: businessName,
-  address: address,
   map: {
     link: map.link,
     embeddedLink: map.embeddedLink,

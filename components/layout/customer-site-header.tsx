@@ -51,8 +51,10 @@ export default function CustomerSiteHeader() {
     <header className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/65">
       <div className="flex mx-[2%] items-center justify-between">
         <div className="relative flex flex-1 items-center">
-          <Logo imageSize={50} withTitle={true} />
-          <nav className={cn("flex gap-5 flex-1 justify-center max-lg:hidden")}>
+          <div className="self-start">
+            <Logo imageSize={50} withTitle={true} />
+          </div>
+          <nav className="flex gap-5 flex-1 justify-center max-lg:hidden">
             {links.map((link) => (
               <PageLink key={link.title} title={link.title} href={link.href} />
             ))}
