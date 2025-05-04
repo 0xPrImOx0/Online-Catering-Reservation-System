@@ -5,12 +5,12 @@ import Logo from "../icons/logo";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
 import { Calendar, User } from "lucide-react";
-import { links } from "@/lib/customer/customer-links";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useAuthContext } from "@/contexts/AuthContext";
 import CustomerNavUser from "../shared/customer/CustomerNavUser";
 import MobileRoutePage from "../shared/customer/MobileRoutePage";
 import { useTheme } from "next-themes";
+import { links } from "@/lib/customer/customer-nav-links";
 
 export default function CustomerSiteHeader() {
   const { customer } = useAuthContext(); // Temporary Basis if there is a user currently signed in

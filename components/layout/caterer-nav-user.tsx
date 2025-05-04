@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import api from "@/lib/axiosInstance";
+import api from "@/lib/api/axiosInstance";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";

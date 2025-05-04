@@ -25,7 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CustomerType } from "@/types/customer-types";
-import { formatCurrency } from "@/lib/utils/format";
+import { formatCurrency } from "@/utils/format-currency";
 import { format } from "date-fns";
 import { Edit, Eye, MoreHorizontal, Search, Trash2, Users } from "lucide-react";
 import Link from "next/link";

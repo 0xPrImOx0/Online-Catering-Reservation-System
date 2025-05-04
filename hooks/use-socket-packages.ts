@@ -7,7 +7,7 @@ import {
   unsubscribeFromPackageCreated,
   unsubscribeFromPackageDeleted,
   unsubscribeFromPackageUpdates,
-} from "@/lib/socket";
+} from "@/lib/api/socket";
 import { CateringPackagesProps } from "@/types/package-types";
 import { useEffect } from "react";
 

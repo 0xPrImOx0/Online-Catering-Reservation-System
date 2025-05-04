@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { CheckCircle2Icon, X } from "lucide-react";
 import Image from "next/image";
-import { menuItems } from "@/lib/menu-lists";
 import type { PackageDetailsDialogProps } from "@/types/package-types";
 import Link from "next/link";
+import { menuItems } from "@/lib/shared/menus-metadata";
 
 export default function PackageDetailsDialog({
   pkg,

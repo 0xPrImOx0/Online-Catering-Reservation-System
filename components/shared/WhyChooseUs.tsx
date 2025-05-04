@@ -1,7 +1,7 @@
 "use client";
-import { features } from "@/lib/customer/metadata";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { features } from "@/lib/customer/about-metadata";
 
 export default function WhyChooseUs() {
   return (

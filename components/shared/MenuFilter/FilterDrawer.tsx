@@ -3,11 +3,11 @@
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  categorySelect,
   allergensSelect,
+  categorySelect,
   selectorItems,
-} from "@/lib/menu-select";
-import type { AllergenProps } from "@/types/menu-types";
+  type AllergenProps,
+} from "@/types/menu-types";
 import { FilterComponentProps } from "./FilterDialog";
 import {
   Drawer,

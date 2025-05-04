@@ -2,9 +2,9 @@
 
 import { CustomerProps } from "@/types/customer-types";
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "@/lib/axiosInstance";
 import { IAuthContext } from "@/types/auth-types";
 import axios from "axios";
+import api from "@/lib/api/axiosInstance";
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
 

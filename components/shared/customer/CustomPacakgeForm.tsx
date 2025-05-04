@@ -14,10 +14,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Check } from "lucide-react";
-import { menuItems } from "@/lib/menu-lists";
 import { PackageCategory, FormData } from "@/types/package-types";
-import { categories } from "@/lib/menu-select";
 import Link from "next/link";
+import { menuItems } from "@/lib/shared/menus-metadata";
+import { categories } from "@/types/menu-types";
 
 export default function CustomPackageForm() {
   const [formData, setFormData] = useState<FormData>({

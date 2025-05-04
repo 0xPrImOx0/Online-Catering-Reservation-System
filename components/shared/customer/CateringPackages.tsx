@@ -11,9 +11,9 @@ import TabsTriggerStyle from "../CustomTabsTrigger";
 import SearchInput from "../SearchInput";
 import { CatererPackageCard } from "../caterer/CatererPackageCard";
 import { CateringPackagesProps } from "@/types/package-types";
-import api from "@/lib/axiosInstance";
 import axios from "axios";
 import useSocketPackages from "@/hooks/use-socket-packages";
+import api from "@/lib/api/axiosInstance";
 
 // async function fetchPackages() {
 //   const packages = await axios.get("http://localhost:5500/api/packages");

@@ -14,14 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { registeredLinks } from "@/lib/customer/customer-links";
 import { CustomerProps } from "@/types/customer-types";
 import axios from "axios";
-import api from "@/lib/axiosInstance";
 import { toast } from "sonner";
 import { avatarFallBack } from "@/utils/avatar-fallback";
 import { ThemeSwitchToggle } from "@/components/theme/theme-mode-1";
 import { useAuthContext } from "@/contexts/AuthContext";
+import api from "@/lib/api/axiosInstance";
+import { registeredLinks } from "@/lib/customer/customer-nav-links";
 
 type CustomerNavUserProps = {
   customer: CustomerProps;

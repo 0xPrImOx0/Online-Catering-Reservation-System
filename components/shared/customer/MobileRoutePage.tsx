@@ -8,11 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useEffect, useState } from "react";
-import { links } from "@/lib/customer/customer-links";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useTheme } from "next-themes";
+import { links } from "@/lib/customer/customer-nav-links";
 
 const MobileRoutePage = () => {
   const isMediumScreen = useMediaQuery("(max-width: 1024px)");

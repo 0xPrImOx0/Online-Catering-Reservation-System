@@ -4,7 +4,6 @@ import {
   ReservationValues,
   useReservationForm,
 } from "@/hooks/use-reservation-form";
-import { defaultCategoryAndCount } from "@/lib/menu-select";
 import { useEffect, useState } from "react";
 import {
   FormControl,
@@ -20,6 +19,7 @@ import CategoryOptionsBadge from "./CategoryOptionsBadge";
 import { Label } from "@/components/ui/label";
 import AddRemoveMenuQuantity from "./AddRemoveMenuQuantity";
 import SelectServingSize from "./SelectServingSize";
+import { defaultCategoryAndCount } from "@/types/menu-types";
 
 export default function CategoryOptions() {
   const { control, setValue, watch, clearErrors } =

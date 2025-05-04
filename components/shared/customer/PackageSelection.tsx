@@ -2,10 +2,8 @@
 
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { ReservationValues } from "@/hooks/use-reservation-form";
-import { cateringPackages, options } from "@/lib/customer/packages-metadata";
 import { useFormContext } from "react-hook-form";
 import MiniCateringPackageCard from "./MiniCateringPackageCard";
-import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -15,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import clsx from "clsx";
+import { cateringPackages, options } from "@/lib/shared/packages-metadata";
 
 interface PackageSelectionProps {
   showPackageSelection: boolean;

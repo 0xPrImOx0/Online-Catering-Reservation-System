@@ -1,9 +1,14 @@
-import { chartData, favoriteMenus, mostSellingMenus, trendingPackages } from "@/lib/caterer/analytics-metadata";
+import {
+  chartData,
+  favoriteMenus,
+  mostSellingMenus,
+  trendingPackages,
+} from "@/lib/caterer/analytics-metadata";
 import ChartOrders from "@/components/shared/caterer/ChartOrders";
 import TrendingPackages from "@/components/shared/caterer/TrendingPackages";
 import MostFavoritesItems from "@/components/shared/caterer/MostFavoritesItems";
 import MostSellingItems from "@/components/shared/caterer/MostSellingItems";
-import { formatCurrency, formatNumber } from "@/lib/utils/format";
+import { formatCurrency, formatNumber } from "@/utils/format-currency";
 
 export default function AnalyticsDashboard() {
   return (
@@ -18,10 +23,19 @@ export default function AnalyticsDashboard() {
       </div>
       <div className="grid grid-cols-1 gap-8 mb-8 md:grid-cols-2">
         <ChartOrders chartData={chartData} />
-        <TrendingPackages trendingPackages={trendingPackages} formatCurrency={formatCurrency} />
+        <TrendingPackages
+          trendingPackages={trendingPackages}
+          formatCurrency={formatCurrency}
+        />
       </div>
-      <MostFavoritesItems favoriteMenus={favoriteMenus} formatNumber={formatNumber} />
-      <MostSellingItems mostSellingMenus={mostSellingMenus} formatCurrency={formatCurrency} />
+      <MostFavoritesItems
+        favoriteMenus={favoriteMenus}
+        formatNumber={formatNumber}
+      />
+      <MostSellingItems
+        mostSellingMenus={mostSellingMenus}
+        formatCurrency={formatCurrency}
+      />
     </main>
   );
 }

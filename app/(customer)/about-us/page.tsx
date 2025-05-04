@@ -1,11 +1,11 @@
 import { CheckCircle, ClipboardCheck } from "lucide-react";
 import Logo from "@/components/icons/logo";
-import { principles } from "../../../lib/customer/metadata";
 import Image from "next/image";
 import WhyChooseUs from "@/components/shared/WhyChooseUs";
 import { Metadata } from "next";
 import FooterCTA from "@/components/shared/customer/FooterCTA";
 import OwnerSection from "@/components/shared/customer/OwnerSection";
+import { principles } from "@/lib/customer/about-metadata";
 
 export const metadata: Metadata = {
   title: "About Us",

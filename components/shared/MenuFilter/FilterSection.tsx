@@ -1,19 +1,23 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import type { FilterSectionProps } from "@/types/component-types";
-import type { AllergenProps, CategoryProps } from "@/types/menu-types";
-import { categorySelect, selectorItems } from "@/lib/menu-select";
+import {
+  categorySelect,
+  selectorItems,
+  type AllergenProps,
+  type CategoryProps,
+} from "@/types/menu-types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { getCategoryIcon } from "@/lib/menu-category-badges";
 import { getColorClasses } from "../customer/MenuCategoryBadge";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { FilterDialog } from "./FilterDialog";
 import { FilterDrawer } from "./FilterDrawer";
 import { cn } from "@/lib/utils";
 import SearchInput from "../SearchInput";
+import { getCategoryIcon } from "@/lib/shared/menu-category-badges";
 
 export default function FilterSection({
   query = "",

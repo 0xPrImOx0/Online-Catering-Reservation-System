@@ -6,10 +6,10 @@ import { usePathname } from "next/navigation";
 import FilterSection from "../MenuFilter/FilterSection";
 import CatererMenuCard from "../caterer/CatererMenuCard";
 import CustomPagination from "../CustomPagination";
-import api from "@/lib/axiosInstance";
 import axios from "axios";
 import useSocketMenus from "@/hooks/use-socket-menus";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import api from "@/lib/api/axiosInstance";
 
 export default function PaginatedMenus({ open }: { open?: boolean }) {
   const [query, setQuery] = useState("");

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils/format";
+import { formatCurrency } from "@/utils/format-currency";
 import { LucideIcon } from "lucide-react";
 
 type MetricCardProps = {

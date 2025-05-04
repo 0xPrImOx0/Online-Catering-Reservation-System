@@ -5,10 +5,10 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import CustomerPackageCard from "./CustomerPackageCard";
 import { CateringPackagesProps } from "@/types/package-types";
-import api from "@/lib/axiosInstance";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
+import api from "@/lib/api/axiosInstance";
 // use this if you want to render the packages offline
 // import { cateringPackages } from "@/lib/customer/packages-metadata";
 

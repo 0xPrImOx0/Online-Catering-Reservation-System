@@ -10,9 +10,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import api from "@/lib/axiosInstance";
 import { toast } from "sonner";
 import axios from "axios";
+import api from "@/lib/api/axiosInstance";
 
 export default function DeleteMenuDialog({
   menu,

@@ -1,10 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  eventPackageFormSteps,
-  cateringPackages,
-} from "@/lib/customer/packages-metadata";
 import CustomerInformation from "@/components/shared/customer/CustomerInformation";
 import ReservationDetails from "@/components/shared/customer/ReservationDetails";
 import CategoryOptions from "./CategoryOptions";
@@ -25,6 +21,10 @@ import {
 } from "@/components/ui/dialog";
 import Link from "next/link";
 import { Check } from "lucide-react";
+import {
+  cateringPackages,
+  eventPackageFormSteps,
+} from "@/lib/shared/packages-metadata";
 
 export default function BookNowForm({ id }: { id: string }) {
   const router = useRouter();

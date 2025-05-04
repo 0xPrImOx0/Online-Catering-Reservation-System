@@ -1,6 +1,6 @@
 import { useMenuForm } from "@/hooks/use-menu-form";
 import { SetStateBoolean } from "./global-types";
-import { ReviewsProps } from "./package-types";
+import { PackageOption, ReviewsProps } from "./package-types";
 import { CustomSelectItemProps } from "./component-types";
 
 export type ServingSize = 6 | 10 | 15 | 20;
@@ -296,4 +296,17 @@ export const allergensSelect: CustomSelectItemProps[] = [
   { value: "Sulphites", title: "Sulphites" },
   { value: "Soy", title: "Soy" },
   { value: "Nuts", title: "Nuts" },
+];
+
+export const defaultCategoryAndCount: PackageOption[] = [
+  { category: "Soup", count: 5 },
+  { category: "Salad", count: 5 },
+  { category: "Beef", count: 5 },
+  { category: "Pork", count: 5 },
+  { category: "Noodle", count: 5 },
+  { category: "Chicken", count: 5 },
+  { category: "Seafood", count: 5 },
+  { category: "Vegetable", count: 5 },
+  { category: "Dessert", count: 5 },
+  { category: "Beverage", count: 5 },
 ];

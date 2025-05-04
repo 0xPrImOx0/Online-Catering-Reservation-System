@@ -19,7 +19,7 @@ import {
 import { toast } from "sonner";
 import { FOOD_CATEGORIES } from "@/types/menu-types";
 import axios from "axios";
-import api from "@/lib/axiosInstance";
+import api from "@/lib/api/axiosInstance";
 
 // Form schema using Zod
 const formSchema = z

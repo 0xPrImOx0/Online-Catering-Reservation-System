@@ -1,8 +1,14 @@
-"use client"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+"use client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { chartDataType } from "../../../lib/caterer/analytics-metadata";
-import { formatCurrency, formatNumber } from "@/lib/utils/format";
 import { useState } from "react";
+import { formatCurrency, formatNumber } from "@/utils/format-currency";
 
 interface ChartOrdersProps {
   chartData: {
@@ -25,8 +31,10 @@ interface ChartOrdersProps {
 }
 
 export default function ChartOrders({ chartData }: ChartOrdersProps) {
-  const [period, setPeriod] = useState<"monthly" | "weekly" | "daily">("monthly");
-  
+  const [period, setPeriod] = useState<"monthly" | "weekly" | "daily">(
+    "monthly"
+  );
+
   const currentData = chartData[period].data;
   const totalSales = chartData[period].totalSales;
   const avgSales = chartData[period].avgSales;
@@ -35,7 +43,12 @@ export default function ChartOrders({ chartData }: ChartOrdersProps) {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Chart Orders</h2>
-        <Select defaultValue={period} onValueChange={(value) => setPeriod(value as "monthly" | "weekly" | "daily")}>
+        <Select
+          defaultValue={period}
+          onValueChange={(value) =>
+            setPeriod(value as "monthly" | "weekly" | "daily")
+          }
+        >
           <SelectTrigger className="w-[130px]">
             <SelectValue placeholder="Period" />
           </SelectTrigger>
@@ -49,14 +62,21 @@ export default function ChartOrders({ chartData }: ChartOrdersProps) {
       <div className="flex gap-12 items-start mb-4">
         <div>
           <div className="flex gap-2 items-center">
-            <span className="text-xl font-bold">{formatCurrency(totalSales)}</span>
+            <span className="text-xl font-bold">
+              {formatCurrency(totalSales)}
+            </span>
           </div>
           <div className="text-sm text-muted-foreground">Total Sales</div>
         </div>
         <div>
           <div className="text-xl font-bold">{formatNumber(avgSales)}</div>
           <div className="text-sm text-muted-foreground">
-            Avg. Sales per {period === "daily" ? "day" : period === "weekly" ? "week" : "month"}
+            Avg. Sales per{" "}
+            {period === "daily"
+              ? "day"
+              : period === "weekly"
+              ? "week"
+              : "month"}
           </div>
         </div>
       </div>

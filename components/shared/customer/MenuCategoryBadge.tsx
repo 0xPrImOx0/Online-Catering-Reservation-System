@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { getCategoryIcon } from "@/lib/menu-category-badges";
+import { getCategoryIcon } from "@/lib/shared/menu-category-badges";
 import { CategoryBadgeProps, CategoryProps } from "@/types/menu-types";
 
 // Directly define colors based on category

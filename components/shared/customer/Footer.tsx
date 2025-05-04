@@ -6,7 +6,7 @@ import {
   businessMetadata,
   ownerMetadata,
 } from "@/lib/caterer/business-metadata";
-import { links } from "@/lib/customer/customer-links";
+import { links } from "@/lib/customer/customer-nav-links";
 import { Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 

@@ -7,7 +7,7 @@ import {
   unsubscribeFromMenuCreated,
   unsubscribeFromMenuDeleted,
   unsubscribeFromMenuUpdates,
-} from "@/lib/socket";
+} from "@/lib/api/socket";
 import { MenuItem } from "@/types/menu-types";
 import { useEffect } from "react";
 

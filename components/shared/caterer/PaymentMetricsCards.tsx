@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils/format";
+import { formatCurrency } from "@/utils/format-currency";
 import { DollarSign } from "lucide-react";
 
 interface PaymentMetricsCardsProps {
@@ -45,9 +45,7 @@ export function PaymentMetricsCards({
           <div className="text-2xl font-bold text-red-500">
             {formatCurrency(totalPending)}
           </div>
-          <p className="text-xs text-muted-foreground">
-            Outstanding payments
-          </p>
+          <p className="text-xs text-muted-foreground">Outstanding payments</p>
         </CardContent>
       </Card>
 
@@ -59,9 +57,7 @@ export function PaymentMetricsCards({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalPayments}</div>
-          <p className="text-xs text-muted-foreground">
-            All payment records
-          </p>
+          <p className="text-xs text-muted-foreground">All payment records</p>
         </CardContent>
       </Card>
 
