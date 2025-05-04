@@ -5,7 +5,7 @@ import Image from "next/image";
 import WhyChooseUs from "@/components/shared/WhyChooseUs";
 import { Metadata } from "next";
 import FooterCTA from "@/components/shared/customer/FooterCTA";
-import FounderSection from "@/components/shared/customer/FounderSection";
+import OwnerSection from "@/components/shared/customer/OwnerSection";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -27,7 +27,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Principles Section */}
       <section className="max-w-[1440px] mx-auto px-5 mt-10">
         <div>
           <h2 className="mb-4 text-3xl font-bold text-center">
@@ -43,8 +42,8 @@ export default function AboutPage() {
             <div>
               <Image
                 src={"/images/chefs.png"}
-                width={2560}
-                height={1707}
+                width={1000}
+                height={800}
                 alt="Chefs"
                 className="object-cover w-full h-full rounded-lg"
               />
@@ -64,7 +63,7 @@ export default function AboutPage() {
         </div>
 
         {/* Team Section */}
-        <FounderSection />
+        <OwnerSection />
 
         {/* Why Choose Us Section */}
         <WhyChooseUs />

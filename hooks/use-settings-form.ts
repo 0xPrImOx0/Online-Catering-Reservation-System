@@ -9,29 +9,57 @@ import * as z from "zod";
 
 const settingsSchema = z.object({
   businessName: z.string().min(1, "Name is required"),
+
   address: z.string().min(1, "Address is required"),
+
   map: z.object({
     link: z
       .string()
-      .url({ message: "Link URL must be a valid google maps URL" }),
-    zoom: z.number(),
+      .url({ message: "Link URL must be a valid URL" })
+      .refine(
+        (url) =>
+          url.includes("google.com/maps") || url.includes("maps.app.goo.gl"),
+        {
+          message: "Link must be a valid Google Maps URL",
+        }
+      ),
+
+    embeddedLink: z
+      .string()
+      .url({ message: "Embedded link must be a valid URL" })
+      .refine((url) => url.includes("google.com/maps/embed"), {
+        message: "Embedded link must be a valid embedded Google Maps URL",
+      }),
+
     address: z.string(),
   }),
+
   systemName: z.string().min(1, "Sys is required"),
+
   tagline: z.string().min(1, "Tagline is required"),
+
   businessLogo: z.string().min(1, "Logo is required"),
+
   businessHours: z.string().min(1, "Business Hours is required"),
+
   businessDays: z.string().min(1, "Business Days is required"),
+
   socialMediaLinks: z.array(
     z.object({
       platform: z.string().min(1, "Platform is required"),
+
       url: z.string().url("Invalid URL"),
     })
   ),
+
   ownerName: z.string().min(1, "Owner Name is required"),
+
   ownerDescription: z.string().min(1, "Owner Description is required"),
+
   ownerEmail: z.string().email("Invalid email"),
+
   ownerPhone: z.string().min(1, "Owner Phone is required"),
+
   ownerProfilePic: z.string().min(1, "Owner Profile Picture is required"),
 });
 
@@ -62,7 +90,7 @@ const defaultValues: SettingsValues = {
   address: address,
   map: {
     link: map.link,
-    zoom: map.zoom,
+    embeddedLink: map.embeddedLink,
     address: map.address,
   },
   systemName: systemName,
