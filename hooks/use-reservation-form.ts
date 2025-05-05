@@ -327,6 +327,7 @@ export function useReservationForm() {
       return null;
     }
   };
+
   ///Find all packages (will transfer to socket later on)
   const getPackageItem = (pkgId: string) => {
     const pkg = cateringPackages.find((item) => item._id === pkgId);

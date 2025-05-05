@@ -7,12 +7,12 @@ import { SignInFormValues } from "../../../types/auth-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/utils/form-validation";
 import Image from "next/image";
-import api from "@/lib/axiosInstance";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import api from "@/lib/api/axiosInstance";
 
 export default function LoginPage() {
   const form = useForm<SignInFormValues>({
