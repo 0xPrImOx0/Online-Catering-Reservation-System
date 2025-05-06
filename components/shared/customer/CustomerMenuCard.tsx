@@ -36,7 +36,7 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
   const [menuPricePax, setMenuPricePax] = useState(menu.prices[0].price);
   const [discount, setDiscount] = useState(menu.prices[0].discount);
 
-  const { calculateSavings, calculateSavingsPercentage } = useMenuForm();
+  const { calculateSavings } = useMenuForm();
 
   const searchParams = useSearchParams();
 

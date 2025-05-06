@@ -10,9 +10,8 @@ export default function CustomerLayout({
   return (
     <div>
       <CustomerSiteHeader />
-      <main className="">{children}</main>
+      <main>{children}</main>
       <Footer />
     </div>
   );
 }
-  
