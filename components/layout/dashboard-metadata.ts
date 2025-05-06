@@ -1,13 +1,11 @@
 import {
   BarChart,
   Boxes,
-  BriefcaseBusiness,
   ChefHat,
   ClipboardList,
   HandCoins,
   LayoutDashboard,
   Settings,
-  User,
   UsersRound,
 } from "lucide-react";
 

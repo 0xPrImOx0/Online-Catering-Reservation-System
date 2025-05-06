@@ -25,12 +25,12 @@ import {
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Check, Clock, Info, Users } from "lucide-react";
-import { bookingSteps } from "@/lib/customer/packages-metadata";
 import type {
   BookingFormData,
   PackageBookFormProps,
   // PlatedPackage,
 } from "@/types/package-types";
+import { bookingSteps } from "@/lib/shared/packages-metadata";
 
 export default function PackageBookForm({
   package: pkg,

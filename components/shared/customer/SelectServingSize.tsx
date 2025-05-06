@@ -6,7 +6,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { menuItems } from "@/lib/menu-lists";
 import {
   MenuReservationDetails,
   paxArray,
@@ -24,7 +23,7 @@ export default function SelectServingSize({
   value,
   onChange,
 }: SelectServingSizeProps) {
-  const { setValue, watch } = useFormContext<ReservationValues>();
+  const { setValue } = useFormContext<ReservationValues>();
   const { getMenuItem } = useReservationForm();
 
   const currentCategory = value[category] || {};
@@ -68,7 +67,7 @@ export default function SelectServingSize({
       <SelectTrigger className="w-32">
         <SelectValue placeholder="Serving Size" />
       </SelectTrigger>
-      <SelectContent> 
+      <SelectContent>
         {paxArray.map((pax) => (
           <SelectItem value={pax} key={pax}>
             {pax}

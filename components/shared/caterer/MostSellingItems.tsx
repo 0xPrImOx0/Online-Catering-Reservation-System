@@ -1,17 +1,9 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, ShoppingBag } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { mostSellingMenusType } from "@/lib/caterer/analytics-metadata";
 import { CategoryBadge } from "../customer/MenuCategoryBadge";
 import { CategoryProps } from "@/types/menu-types";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
 
 interface MostSellingItemsProps {
   mostSellingMenus: mostSellingMenusType[];
@@ -26,16 +18,6 @@ export default function MostSellingItems({
     <div className="py-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Most Selling Items</h2>
-        {/* <Select defaultValue="monthly">
-          <SelectTrigger className="w-[130px]">
-            <SelectValue placeholder="Period" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="monthly">Monthly</SelectItem>
-            <SelectItem value="weekly">Weekly</SelectItem>
-            <SelectItem value="daily">Daily</SelectItem>
-          </SelectContent>
-        </Select> */}
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {mostSellingMenus.map((menu) => (

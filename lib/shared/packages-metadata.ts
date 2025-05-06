@@ -1462,3 +1462,27 @@ export const options = [
       "https://miro.medium.com/v2/resize:fit:4800/format:webp/0*jQSVrNafdz4IW5D7",
   },
 ];
+
+// Booking steps
+export const bookingSteps: FormStepType[] = [
+  {
+    id: "customer-info",
+    title: "Customer Information",
+    description: "Please provide your contact details",
+  },
+  {
+    id: "event-details",
+    title: "Event Details",
+    description: "Tell us about your event",
+  },
+  {
+    id: "package-selection",
+    title: "Package Selection",
+    description: "Review your selected package and add any special requests",
+  },
+  {
+    id: "review",
+    title: "Review",
+    description: "Review your booking details",
+  },
+];

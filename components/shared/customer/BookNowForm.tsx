@@ -28,7 +28,6 @@ import {
 
 export default function BookNowForm({ id }: { id: string }) {
   const router = useRouter();
-  const pathname = usePathname();
   const deconstructedId = id && id[0];
 
   const {

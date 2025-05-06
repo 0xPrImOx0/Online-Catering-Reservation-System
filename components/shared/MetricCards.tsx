@@ -14,7 +14,7 @@ type MetricCardProps = {
 export default function MetricCards({ metric }: MetricCardProps) {
   const { title, firstContent, secondContent, Icon } = metric;
   return (
-    <Card className="">
+    <Card>
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center text-sm font-medium text-muted-foreground">
           <Icon className="mr-1 w-4 h-4" />

@@ -52,7 +52,7 @@ export function MarkAsPaidDialog({
           <DialogTitle>Mark Payment as Paid</DialogTitle>
           <DialogDescription>
             Update the payment status for {payment.reservationId} to
-            "Paid".
+            &quot;Paid&quot;.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -111,15 +111,10 @@ export function MarkAsPaidDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => setIsOpen(false)}
-          >
+          <Button variant="outline" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={() => setIsOpen(false)}>
-            Confirm Payment
-          </Button>
+          <Button onClick={() => setIsOpen(false)}>Confirm Payment</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

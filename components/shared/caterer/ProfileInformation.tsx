@@ -1,5 +1,5 @@
 import React from "react";
-import { User, Mail, Upload } from "lucide-react";
+import { User, Mail } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,8 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { useFormContext } from "react-hook-form";
 import { SettingsValues } from "@/hooks/use-settings-form";
 import {
@@ -19,18 +17,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-type ProfileInformationProps = {
-  accountData: {
-    fullName: string;
-    email: string;
-    profilePicture: string;
-  };
-  updateField: (field: string, value: string) => void;
-  fileInputRef: React.RefObject<HTMLInputElement | null> | null;
-  triggerFileInput: () => void;
-  handleProfilePictureUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
 
 export function ProfileInformation() {
   const {

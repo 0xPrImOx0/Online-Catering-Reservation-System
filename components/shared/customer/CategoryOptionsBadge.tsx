@@ -13,7 +13,7 @@ export default function CategoryOptionsBadge({
   return (
     <div className="flex flex-wrap items-center gap-3">
       {categoryAndCount.map(({ category, count }) => {
-        let isLimitReached =
+        const isLimitReached =
           (Object.keys(selectedMenus[category] || {}).length || 0) >= count;
         return (
           <Badge

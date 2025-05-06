@@ -29,8 +29,8 @@ export function CustomerDeleteDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the customer "{customer.name}" and all
-            associated data.
+            This will permanently delete the customer &quot;{customer.name}
+            &quot; and all associated data.
             {customer.totalReservations > 0 && (
               <span className="block mt-2 font-medium text-destructive">
                 Warning: This customer has {customer.totalReservations}{" "}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, Trash2, Instagram, Facebook, Twitter } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { SettingsValues } from "@/hooks/use-settings-form";
 import { useFormContext } from "react-hook-form";
@@ -27,12 +26,6 @@ export function SocialMediaLinks() {
   const addSocialLink = () => {
     setValue("socialMediaLinks", [...socialLinks, { platform: "", url: "" }]);
   };
-  // const updateSocialLink = (index: number, field: string, value: string) => {
-  //   setValue(
-  //     `socialMediaLinks.${index}.${field}`,
-  //     value
-  //   );
-  // };
 
   return (
     <Card>
@@ -58,8 +51,8 @@ export function SocialMediaLinks() {
         <div className="space-y-4">
           {socialLinks.length === 0 ? (
             <div className="py-4 text-center text-muted-foreground">
-              No social media links added. Click "Add Link" to connect your
-              social accounts.
+              No social media links added. Click &quot;Add Link&quot; to connect
+              your social accounts.
             </div>
           ) : (
             <FormField

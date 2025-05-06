@@ -1,6 +1,13 @@
 import React from "react";
 import { AlertTriangle, AlertCircle } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -32,9 +39,7 @@ export function AccountManagement({
     <Card>
       <CardHeader>
         <CardTitle>Account Management</CardTitle>
-        <CardDescription>
-          Manage your account status and data
-        </CardDescription>
+        <CardDescription>Manage your account status and data</CardDescription>
       </CardHeader>
       <CardContent>
         <Alert
@@ -44,8 +49,8 @@ export function AccountManagement({
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Danger Zone</AlertTitle>
           <AlertDescription>
-            Deleting your account will permanently remove all your data
-            from our system. This action cannot be undone.
+            Deleting your account will permanently remove all your data from our
+            system. This action cannot be undone.
           </AlertDescription>
         </Alert>
       </CardContent>
@@ -54,10 +59,7 @@ export function AccountManagement({
           Account created on:{" "}
           <span className="font-medium">January 15, 2023</span>
         </p>
-        <Dialog
-          open={deleteDialogOpen}
-          onOpenChange={setDeleteDialogOpen}
-        >
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="destructive">Delete Account</Button>
           </DialogTrigger>
@@ -65,8 +67,8 @@ export function AccountManagement({
             <DialogHeader>
               <DialogTitle>Are you absolutely sure?</DialogTitle>
               <DialogDescription>
-                This action cannot be undone. This will permanently delete
-                your account and remove all your data from our servers.
+                This action cannot be undone. This will permanently delete your
+                account and remove all your data from our servers.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -74,14 +76,12 @@ export function AccountManagement({
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Warning</AlertTitle>
                 <AlertDescription>
-                  All your catering listings, reservations, and customer
-                  data will be permanently deleted.
+                  All your catering listings, reservations, and customer data
+                  will be permanently deleted.
                 </AlertDescription>
               </Alert>
               <div className="space-y-2">
-                <Label htmlFor="confirm-delete">
-                  Type "DELETE" to confirm
-                </Label>
+                <Label htmlFor="confirm-delete">Type DELETE to confirm</Label>
                 <Input id="confirm-delete" placeholder="DELETE" />
               </div>
             </div>

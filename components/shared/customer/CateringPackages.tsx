@@ -6,7 +6,6 @@ import CustomerPackageCard from "./CustomerPackageCard";
 import CustomPackageForm from "./CustomPacakgeForm";
 import SelectedEventContainer from "./EventPackageContainer";
 import PlatedWarning from "../PlatedWarning";
-// import { cateringPackages } from "@/lib/customer/packages-metadata";
 import TabsTriggerStyle from "../CustomTabsTrigger";
 import SearchInput from "../SearchInput";
 import { CatererPackageCard } from "../caterer/CatererPackageCard";
@@ -14,11 +13,6 @@ import { CateringPackagesProps } from "@/types/package-types";
 import axios from "axios";
 import useSocketPackages from "@/hooks/use-socket-packages";
 import api from "@/lib/api/axiosInstance";
-
-// async function fetchPackages() {
-//   const packages = await axios.get("http://localhost:5500/api/packages");
-//   return packages.data.data;
-// }
 
 export default function CateringPackages({
   isCaterer,
