@@ -28,15 +28,17 @@ import * as z from "zod";
 const reservationSchema = z
   .object({
     fullName: z
-      .string({ required_error: "Please provide your Full Name" })
+      .string()
       .min(2, "Full Name must be at least 2 characters")
       .max(50, "Full Name must not exceed 50 characters"),
-    email: z
-      .string({ required_error: "Please provide your email address" })
-      .email("Please enter a valid email address"),
+    email: z.string().email("Please enter a valid email address"),
     contactNumber: z
-      .string({ required_error: "Please provide your Contact Number" })
-      .regex(/^\d{11}$/, "Contact Number must have exactly 11 digits"),
+      .string()
+      .min(1, "Phone number is required")
+      .refine((val) => /^\+639\d{9}$/.test(val), {
+        message: "Phone number must start with +63 9 and have 12 digits total",
+      }),
+
     reservationType: z.enum(["event", "personal"]),
     eventType: z.enum(reservationEventTypes as [EventType, ...EventType[]], {
       required_error: "Please select an Event Type",

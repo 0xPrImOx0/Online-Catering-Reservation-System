@@ -90,7 +90,7 @@ export default function CustomerPackageCard({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="bg-black/70 backdrop-blur-sm rounded-full px-2.5 py-1.5">
+                  <div className="bg-black/70 backdrop-blur-sm rounded-md px-2.5 py-1.5">
                     {item.rating && RenderStarRatings(item.rating, "medium")}
                   </div>
                 </TooltipTrigger>
@@ -103,7 +103,7 @@ export default function CustomerPackageCard({
             </TooltipProvider>
           </div>
           <div className="absolute bottom-3 right-3">
-            <div className="bg-black/70 backdrop-blur-sm text-background dark:text-foreground rounded px-2 py-1 font-bold">
+            <div className="bg-black/70 backdrop-blur-sm text-white rounded px-2 py-1.5 font-bold text-base">
               &#8369; {item.pricePerPax.toFixed(2)} / pax
             </div>
           </div>

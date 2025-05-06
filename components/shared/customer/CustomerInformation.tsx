@@ -9,6 +9,8 @@ import {
 import { ReservationValues } from "@/hooks/use-reservation-form";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export default function CustomerInformation() {
   const { control } = useFormContext<ReservationValues>();
@@ -45,7 +47,7 @@ export default function CustomerInformation() {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={control}
           name="contactNumber"
           render={({ field }) => (
@@ -58,6 +60,31 @@ export default function CustomerInformation() {
                   placeholder="Enter your contact number"
                   type="number"
                   {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+        {/* Phone Field */}
+        <FormField
+          control={control}
+          name="contactNumber"
+          render={({ field }) => (
+            <FormItem className="grid gap-2">
+              <FormLabel htmlFor="phone">Phone Number</FormLabel>
+              <FormControl>
+                <PhoneInput
+                  {...field}
+                  defaultCountry="PH"
+                  placeholder="+63 912 345 6789"
+                  disableCountrySelect={true}
+                  value={
+                    parsePhoneNumberFromString(field.value || "", "PH")?.format(
+                      "E.164"
+                    ) || ""
+                  }
+                  onChange={(value) => field.onChange(value)}
                 />
               </FormControl>
               <FormMessage />

@@ -120,7 +120,7 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="bg-black/70 backdrop-blur-sm rounded px-2.5 py-1.5">
-                  {RenderStarRatings(menu.rating || 0, "medium")}
+                  {RenderStarRatings(menu.rating, "medium")}
                 </div>
               </TooltipTrigger>
               <TooltipContent>
