@@ -24,7 +24,7 @@ export default function MapComponent({
       ></iframe>
 
       {!isCaterer && (
-        <Button asChild variant="outline">
+        <Button variant="outline">
           <Link
             href={map.link}
             target="_blank"

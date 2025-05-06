@@ -29,12 +29,7 @@ export default function FooterCTA({
           </h2>
           <p className="text-background">{description}</p>
         </div>
-        <Button
-          variant={"outline"}
-          size={"landing"}
-          className="max-md:mt-6"
-          asChild
-        >
+        <Button variant={"outline"} size={"landing"} className="max-md:mt-6">
           <Link href={href}>
             <Icon /> {buttonLabel}
           </Link>

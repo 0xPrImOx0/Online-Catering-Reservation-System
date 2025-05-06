@@ -18,7 +18,7 @@ export default function Hero() {
             clicks!
           </p>
           <div>
-            <Button className="mt-4 max-w-fit" size={"landing"} asChild>
+            <Button className="mt-4 max-w-fit" size={"landing"}>
               <Link href={"/book-now"}>
                 <Calendar /> Book Now
               </Link>
@@ -27,7 +27,6 @@ export default function Hero() {
               className="mt-4 max-w-fit"
               size={"landing"}
               variant={"link"}
-              asChild
             >
               <Link href={"/contact-us"}>
                 <Phone /> Contact Us
