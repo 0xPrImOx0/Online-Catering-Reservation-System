@@ -223,7 +223,7 @@ export function useMenuForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
-    mode: "onChange",
+    mode: "all",
     reValidateMode: "onSubmit",
   });
 
@@ -271,6 +271,8 @@ export function useMenuForm({
         ...currentIngredients,
         newIngredient.trim(),
       ]);
+      console.log(form.getValues("ingredients"));
+      console.log("sdasdasdsad", form.formState.errors.ingredients);
       setNewIngredient("");
     }
   };

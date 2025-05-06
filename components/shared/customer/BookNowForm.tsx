@@ -38,7 +38,7 @@ export default function BookNowForm({ id }: { id: string }) {
     setShowPackageSelection,
     getMenuItem,
   } = useReservationForm();
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { watch, setValue } = reservationForm;
@@ -100,7 +100,7 @@ export default function BookNowForm({ id }: { id: string }) {
   };
 
   useEffect(() => {
-    async function fetchMenuOrPackage() {
+    const fetchMenuOrPackage = async () => {
       const menu = await getMenuItem(id as string);
       const isPackage = cateringPackages.some((pkg) => pkg._id === id);
 
@@ -127,11 +127,11 @@ export default function BookNowForm({ id }: { id: string }) {
           return;
         }
       }
-    }
+    };
     fetchMenuOrPackage();
   }, [deconstructedId]);
 
-  const reservationFormComponents = [
+  const reservationFormStepComponents = [
     <CustomerInformation key={"customer-information"} />,
     <PackageSelection
       key={"package-selection"}
@@ -161,7 +161,7 @@ export default function BookNowForm({ id }: { id: string }) {
         isReservationForm
         setShowPackageSelection={setShowPackageSelection}
       >
-        {reservationFormComponents}
+        {reservationFormStepComponents}
       </MultiStepForm>
     </Form>
   );

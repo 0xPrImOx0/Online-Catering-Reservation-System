@@ -18,10 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AddMenuFormProps, categories } from "@/types/menu-types";
+import { categories } from "@/types/menu-types";
+import { useFormContext } from "react-hook-form";
+import { FormValues } from "@/hooks/use-menu-form";
 
-export function BasicInfoStep({ formHook }: AddMenuFormProps) {
-  const { form, isValidationAttempted } = formHook;
+export function BasicInfoStep() {
+  const form = useFormContext<FormValues>();
 
   return (
     <div className="space-y-4">
@@ -37,7 +39,7 @@ export function BasicInfoStep({ formHook }: AddMenuFormProps) {
             <FormControl>
               <Input placeholder="Enter menu item name" {...field} />
             </FormControl>
-            {isValidationAttempted && <FormMessage />}
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -63,7 +65,7 @@ export function BasicInfoStep({ formHook }: AddMenuFormProps) {
                 ))}
               </SelectContent>
             </Select>
-            {isValidationAttempted && <FormMessage />}
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -86,7 +88,7 @@ export function BasicInfoStep({ formHook }: AddMenuFormProps) {
             <FormDescription>
               A short summary that appears in menu listings
             </FormDescription>
-            {isValidationAttempted && <FormMessage />}
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -107,7 +109,7 @@ export function BasicInfoStep({ formHook }: AddMenuFormProps) {
                 {...field}
               />
             </FormControl>
-            {isValidationAttempted && <FormMessage />}
+            <FormMessage />
           </FormItem>
         )}
       />

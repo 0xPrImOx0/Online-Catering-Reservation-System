@@ -25,8 +25,8 @@ export function AddMenuDialog({
   setIsAddMenuOpen,
 }: AddMenuDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const { form, onSubmit, validateStep, resetForm } = useMenuForm();
   const menuFormHook = useMenuForm();
-  const { form, onSubmit, validateStep, resetForm } = menuFormHook;
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
 
@@ -74,7 +74,7 @@ export function AddMenuDialog({
 
   // Create the form steps components
   const formStepComponents = [
-    <BasicInfoStep key="basic-info" formHook={menuFormHook} />,
+    <BasicInfoStep key="basic-info" />,
     <IngredientsStep key="ingredients" formHook={menuFormHook} />,
     <PreparationStep key="preparation" formHook={menuFormHook} />,
     <PricingStep key="pricing" formHook={menuFormHook} />,
