@@ -30,7 +30,7 @@ export default function FooterCTA({
           <p className="text-background">{description}</p>
         </div>
         <Button variant={"outline"} size={"landing"} className="max-md:mt-6">
-          <Link href={href}>
+          <Link href={href} className="flex gap-2 items-center">
             <Icon /> {buttonLabel}
           </Link>
         </Button>

@@ -17,18 +17,14 @@ export default function Hero() {
             in one platform. Reserve your perfect event catering in just a few
             clicks!
           </p>
-          <div>
-            <Button className="mt-4 max-w-fit" size={"landing"}>
-              <Link href={"/book-now"}>
+          <div className="gap-2">
+            <Button size={"landing"}>
+              <Link href={"/book-now"} className="flex gap-2 items-center">
                 <Calendar /> Book Now
               </Link>
             </Button>
-            <Button
-              className="mt-4 max-w-fit"
-              size={"landing"}
-              variant={"link"}
-            >
-              <Link href={"/contact-us"}>
+            <Button size={"landing"} variant={"link"}>
+              <Link href={"/contact-us"} className="flex gap-2 items-center">
                 <Phone /> Contact Us
               </Link>
             </Button>

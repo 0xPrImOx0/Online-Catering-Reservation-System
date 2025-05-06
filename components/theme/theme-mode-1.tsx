@@ -33,14 +33,16 @@ export function ThemeSwitchToggle({ className }: ThemeToggleProps) {
       variant={"ghost"}
       asChild
     >
-      <div>
-        <p className="flex items-center space-x-2">
+      <div className="cursor-pointer">
+        <p className="flex items-center space-x-2 cursor-pointer">
           {isDarkMode ? (
             <Moon className="h-4 w-4" />
           ) : (
             <Sun className="h-4 w-4" />
           )}
-          <Label htmlFor="theme-mode">Dark Mode</Label>
+          <Label htmlFor="theme-mode" className="cursor-pointer">
+            Dark Mode
+          </Label>
         </p>
         <Switch
           id="theme-mode"
