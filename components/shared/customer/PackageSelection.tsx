@@ -66,7 +66,7 @@ export default function PackageSelection({
             )}
           />
         )}
-        {/* <h3 className="text-base font-medium">Main Cuisine Packages</h3> */}
+
         {showPackageSelection && (
           <FormField
             control={control}

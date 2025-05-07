@@ -9,16 +9,18 @@ import { FormControl } from "@/components/ui/form";
 import { CateringPackagesProps } from "@/types/package-types";
 import React, { useState } from "react";
 import PackageDetailsDialog from "./PackageDetailsDialog";
-import { EyeIcon, User } from "lucide-react";
+import { EyeIcon } from "lucide-react";
 import clsx from "clsx";
 import { cn } from "@/lib/utils";
+import { ControllerRenderProps } from "react-hook-form";
+import { ReservationValues } from "@/hooks/use-reservation-form";
 
 export default function MiniCateringPackageCard({
   pkg,
   field,
 }: {
   pkg: CateringPackagesProps;
-  field: any;
+  field: ControllerRenderProps<ReservationValues, "selectedPackage">;
 }) {
   const [open, setOpenChange] = useState(false);
 
