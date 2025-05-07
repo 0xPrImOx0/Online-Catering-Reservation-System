@@ -55,7 +55,9 @@ export default function PackageSelection({
                       </CardHeader>
                       <CardContent className="mt-4 space-y-2">
                         <CardTitle>{option.label}</CardTitle>
-                        <CardDescription>{option.description}</CardDescription>
+                        <CardDescription className="text-justify">
+                          {option.description}
+                        </CardDescription>
                       </CardContent>
                     </Card>
                   </FormControl>
@@ -70,7 +72,7 @@ export default function PackageSelection({
             control={control}
             name="selectedPackage"
             render={({ field }) => (
-              <FormItem className="grid gap-4 space-y-0 sm:grid-cols-2">
+              <FormItem className="grid gap-4 space-y-0 md:grid-cols-2">
                 {cateringPackages.map((pkg) => (
                   <MiniCateringPackageCard
                     pkg={pkg}
