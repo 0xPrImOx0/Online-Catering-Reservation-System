@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { Label } from "./label";
 
 type PhoneInputProps = Omit<
   React.ComponentProps<"input">,
@@ -76,8 +77,8 @@ const InputComponent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <Input
     className={cn("rounded-e-lg rounded-s-none h-auto", className)}
-    {...props}
     ref={ref}
+    {...props}
   />
 ));
 InputComponent.displayName = "InputComponent";
@@ -117,6 +118,10 @@ const CountrySelect = ({
           country={effectiveCountry}
           countryName={effectiveCountry}
         />
+
+        <Label className="ml-2">
+          +{RPNInput.getCountryCallingCode(defaultCountry || selectedCountry)}
+        </Label>
       </Button>
     );
   }
