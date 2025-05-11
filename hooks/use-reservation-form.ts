@@ -36,8 +36,8 @@ const reservationSchema = z
     contactNumber: z
       .string()
       .min(1, "Phone number is required")
-      .refine((val) => /^\+639\d{9}$/.test(val), {
-        message: "Phone number must start with +63 9 and have 12 digits total",
+      .refine((val) => /^9\d{9}$/.test(val), {
+        message: "Phone number must start with 9 and have 10 digits total",
       }),
 
     reservationType: z.enum(["event", "personal"]),

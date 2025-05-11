@@ -11,9 +11,17 @@ import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { useEffect } from "react";
 
 export default function CustomerInformation() {
-  const { control } = useFormContext<ReservationValues>();
+  const { control, watch } = useFormContext<ReservationValues>();
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      console.log(value.contactNumber); // Corrected spelling
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <div className="space-y-4">
@@ -65,7 +73,7 @@ export default function CustomerInformation() {
                 <PhoneInput
                   {...field}
                   defaultCountry="PH"
-                  placeholder="+63 912 345 6789"
+                  placeholder="912 345 6789"
                   disableCountrySelect={true}
                   value={
                     parsePhoneNumberFromString(field.value || "", "PH")?.format(

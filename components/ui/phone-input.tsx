@@ -74,13 +74,22 @@ PhoneInput.displayName = "PhoneInput";
 const InputComponent = React.forwardRef<
   HTMLInputElement,
   React.ComponentProps<"input">
->(({ className, ...props }, ref) => (
-  <Input
-    className={cn("rounded-e-lg rounded-s-none h-auto", className)}
-    ref={ref}
-    {...props}
-  />
-));
+>(({ className, value, ...props }, ref) => {
+  // Remove the + from display only (internal value remains unchanged)
+  const displayValue =
+    typeof value === "string" && value.startsWith("+")
+      ? value.substring(1)
+      : value;
+
+  return (
+    <Input
+      className={cn("rounded-e-lg rounded-s-none h-auto", className)}
+      ref={ref}
+      value={displayValue}
+      {...props}
+    />
+  );
+});
 InputComponent.displayName = "InputComponent";
 
 type CountryEntry = { label: string; value: RPNInput.Country | undefined };
