@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { CheckIcon, ChevronsUpDown } from "lucide-react";
 import * as RPNInput from "react-phone-number-input";
@@ -28,17 +30,28 @@ type PhoneInputProps = Omit<
 > &
   Omit<RPNInput.Props<typeof RPNInput.default>, "onChange"> & {
     onChange?: (value: RPNInput.Value) => void;
+    disableCountrySelect?: boolean; // New prop to disable country selection
+    defaultCountry?: RPNInput.Country; // New prop to set a default country
   };
 
 const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
   React.forwardRef<React.ElementRef<typeof RPNInput.default>, PhoneInputProps>(
-    ({ className, onChange, ...props }, ref) => {
+    (
+      { className, onChange, disableCountrySelect, defaultCountry, ...props },
+      ref
+    ) => {
       return (
         <RPNInput.default
           ref={ref}
           className={cn("flex", className)}
           flagComponent={FlagComponent}
-          countrySelectComponent={CountrySelect}
+          countrySelectComponent={(countrySelectProps) => (
+            <CountrySelect
+              {...countrySelectProps}
+              disabled={disableCountrySelect}
+              defaultCountry={defaultCountry}
+            />
+          )}
           inputComponent={InputComponent}
           smartCaret={false}
           /**
@@ -66,7 +79,6 @@ const InputComponent = React.forwardRef<
     className={cn("rounded-e-lg rounded-s-none h-auto", className)}
     {...props}
     ref={ref}
-    disabled={false}
   />
 ));
 InputComponent.displayName = "InputComponent";
@@ -121,18 +133,12 @@ const CountrySelect = ({
           type="button"
           variant="outline"
           className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10"
-          disabled={disabled}
         >
           <FlagComponent
             country={selectedCountry}
             countryName={selectedCountry}
           />
-          <ChevronsUpDown
-            className={cn(
-              "-mr-2 size-4 opacity-50",
-              disabled ? "hidden" : "opacity-100"
-            )}
-          />
+          <ChevronsUpDown className="size-4 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0">

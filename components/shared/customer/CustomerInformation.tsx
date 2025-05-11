@@ -18,7 +18,7 @@ export default function CustomerInformation() {
 
   useEffect(() => {
     const subscription = watch((value) => {
-      console.log(value.contactNumber); // Corrected spelling
+      console.log(value.contactNumber);
     });
     return () => subscription.unsubscribe();
   }, [watch]);
@@ -74,13 +74,7 @@ export default function CustomerInformation() {
                   {...field}
                   defaultCountry="PH"
                   placeholder="912 345 6789"
-                  disableCountrySelect={true}
-                  value={
-                    parsePhoneNumberFromString(field.value || "", "PH")?.format(
-                      "E.164"
-                    ) || ""
-                  }
-                  onChange={(value) => field.onChange(value)}
+                  disabled
                 />
               </FormControl>
               <FormMessage />
