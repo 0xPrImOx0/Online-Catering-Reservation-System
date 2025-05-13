@@ -87,10 +87,10 @@ export default function CategoryOptions() {
   }, [cateringOptions, selectedPackage]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-hidden">
       {selectedPackage && (
         <div>
-          <h3 className="mb-2 font-medium">
+          <h3 className="mb-2 text-base font-medium">
             Available Categories for {currentPackage}
           </h3>
 
@@ -144,12 +144,6 @@ export default function CategoryOptions() {
                               {menuItemsMap[menu]?.name || "Loading..."}
                             </span>
                             <div className="flex space-x-2">
-                              <AddRemoveMenuQuantity
-                                value={field.value}
-                                category={category}
-                                menu={menu}
-                                onChange={field.onChange}
-                              />
                               <SelectServingSize
                                 category={category}
                                 menu={menu}
