@@ -12,8 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
-import clsx from "clsx";
 import { cateringPackages, options } from "@/lib/shared/packages-metadata";
+import { cn } from "@/lib/utils";
 
 interface PackageSelectionProps {
   showPackageSelection: boolean;
@@ -37,7 +37,7 @@ export default function PackageSelection({
                   <FormControl key={option.value} className="flex-1">
                     <Card
                       onClick={() => field.onChange(option.value)}
-                      className={clsx(
+                      className={cn(
                         "flex-1 cursor-pointer border-2 transition-all",
                         {
                           "border-green-500": field.value === option.value,

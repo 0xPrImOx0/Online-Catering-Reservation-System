@@ -31,11 +31,14 @@ export default function MiniCateringPackageCard({
           onClick={() => field.onChange(pkg._id)}
           className={clsx(
             "flex flex-col flex-1 p-4 cursor-pointer border transition-all group hover:bg-muted-foreground/10 hover:border-green-500 h-full",
-            { "border-green-500 bg-green-50": field.value === pkg._id }
+            {
+              "border-green-500 bg-muted-foreground/10":
+                field.value === pkg._id,
+            }
           )}
         >
-          <CardTitle className="mb-2">{pkg.name}</CardTitle>
-          <CardDescription className="line-clamp-3 mb-4 text-justify">
+          <CardTitle className="text-base mb-2">{pkg.name}</CardTitle>
+          <CardDescription className="line-clamp-3 mb-4 text-justify text-muted-foreground">
             {pkg.description}
           </CardDescription>
           <CardFooter className="relative bottom-0 p-0 mt-auto flex justify-between items-center">
@@ -46,14 +49,14 @@ export default function MiniCateringPackageCard({
 
                   field.value === pkg._id
                     ? "bg-green-500 text-background"
-                    : "group-hover:bg-green-500 group-hover:text-background text-muted-foreground"
+                    : "group-hover:bg-green-500 group-hover:text-background text-foreground"
                 )}
               >
                 &#8369; {pkg.pricePerPax.toFixed(2)}/pax
               </span>
             </Button>
             <Button
-              variant={"link"}
+              variant={"ghost"}
               effect={"shineHover"}
               onClick={() => setOpenChange(true)}
               className="-mr-2"

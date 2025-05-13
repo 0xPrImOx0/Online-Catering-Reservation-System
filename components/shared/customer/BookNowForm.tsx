@@ -146,7 +146,7 @@ export default function BookNowForm({ id }: { id: string }) {
   }, [deconstructedId]);
 
   const reservationFormStepComponents = [
-    <CustomerInformation key={"customer-information"} />,
+    <CustomerInformation key={"customer-information"} />, // Already Fixed
     <PackageSelection
       key={"package-selection"}
       showPackageSelection={showPackageSelection}
