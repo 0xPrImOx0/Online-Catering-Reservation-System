@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import clsx from "clsx";
 import { SelectedMenus } from "@/types/reservation-types";
 
-export default function CheckboxMenus({
+export default function CheckboxMenusList({
   category,
   field,
   count,

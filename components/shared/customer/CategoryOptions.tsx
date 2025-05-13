@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
 import { PackageOption } from "@/types/package-types";
-import CheckboxMenus from "./CheckboxMenus";
 import CategoryOptionsBadge from "./CategoryOptionsBadge";
 import { Label } from "@/components/ui/label";
-import AddRemoveMenuQuantity from "./AddRemoveMenuQuantity";
 import SelectServingSize from "./SelectServingSize";
 import { defaultCategoryAndCount } from "@/types/menu-types";
+import CheckboxMenusList from "./CheckboxMenusList";
 
 export default function CategoryOptions() {
   const { control, setValue, watch, clearErrors } =
@@ -106,7 +105,7 @@ export default function CategoryOptions() {
         render={({ field }) => (
           <FormItem>
             {categoryAndCount.map(({ category, count }) => (
-              <CheckboxMenus
+              <CheckboxMenusList
                 key={category}
                 category={category}
                 field={field}
