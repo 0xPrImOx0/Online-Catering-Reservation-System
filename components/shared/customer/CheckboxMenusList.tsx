@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { useReservationForm } from "@/hooks/use-reservation-form";
 import { CategoryProps, MenuItem } from "@/types/menu-types";
 import React, { useEffect, useState } from "react";
-import ImageDialog from "../ImageDialog";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -16,6 +15,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import clsx from "clsx";
 import { SelectedMenus } from "@/types/reservation-types";
+import Image from "next/image";
 
 export default function CheckboxMenusList({
   category,
@@ -67,7 +67,6 @@ export default function CheckboxMenusList({
     );
   };
 
-  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("");
   return (
     <section>
@@ -117,13 +116,21 @@ export default function CheckboxMenusList({
                           })}
                           onClick={() => {
                             setActiveMenu(menu._id as string);
-                            setIsImageDialogOpen(true);
                           }}
                         >
                           {menu.name}
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>View Image</TooltipContent>
+                      <TooltipContent className="p-0">
+                        <div className="relative w-52 h-52">
+                          <Image
+                            src={menu.imageUrl || "placeholder.svg"}
+                            alt="catering logo"
+                            fill
+                            className="object-fill m-0 p-0"
+                          />
+                        </div>
+                      </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                   <Label
@@ -132,13 +139,6 @@ export default function CheckboxMenusList({
                   >
                     {menu.shortDescription}
                   </Label>
-                  {isImageDialogOpen && activeMenu === menu._id && (
-                    <ImageDialog
-                      item={menu}
-                      isImageDialogOpen={isImageDialogOpen}
-                      setIsImageDialogOpen={setIsImageDialogOpen}
-                    />
-                  )}
                 </div>
               </div>
             ))

@@ -104,15 +104,17 @@ export default function CategoryOptions() {
         name="selectedMenus"
         render={({ field }) => (
           <FormItem>
-            {categoryAndCount.map(({ category, count }) => (
-              <CheckboxMenusList
-                key={category}
-                category={category}
-                field={field}
-                selectedMenus={selectedMenus}
-                count={count}
-              />
-            ))}
+            {categoryAndCount.map(({ category, count }) => {
+              return (
+                <CheckboxMenusList
+                  key={category}
+                  category={category}
+                  field={field}
+                  selectedMenus={selectedMenus}
+                  count={count}
+                />
+              );
+            })}
             <FormMessage />
           </FormItem>
         )}
