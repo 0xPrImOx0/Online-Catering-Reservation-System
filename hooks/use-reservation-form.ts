@@ -14,8 +14,6 @@ import {
   paxArray,
   PaxArrayType,
   ReservationItem,
-  reservationStatusArray,
-  ReservationStatusType,
   SelectedMenu,
   SelectedMenus,
 } from "@/types/reservation-types";
@@ -39,7 +37,6 @@ const reservationSchema = z
       .refine((val) => /^\+639\d{9}$/.test(val), {
         message: "Phone number must start with 9 and have 10 digits total",
       }),
-    reservationType: z.enum(["event", "personal"]), // should be removed
     eventType: z.enum(reservationEventTypes as [EventType, ...EventType[]], {
       required_error: "Please select an Event Type",
     }),
@@ -47,12 +44,23 @@ const reservationSchema = z
       required_error: "Please provide the Event Date",
     }),
     reservationTime: z
-      .string({ required_error: "Please provide the Event Time" })
-      .regex(
-        /^([01]\d|2[0-3]):([0-5]\d)$/,
-        "Please enter a valid time (HH:mm)"
+      .string({
+        required_error: "Please provide the Event Time",
+      })
+      .refine(
+        (val) => {
+          if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) return false;
+          
+          const [hours, minutes] = val.split(':').map(Number);
+          const totalMinutes = hours * 60 + minutes;
+          
+          // Between 8:00 (480 minutes) and 17:00 (1020 minutes)
+          return totalMinutes >= 480 && totalMinutes <= 1020;
+        },
+        {
+          message: "Event Time must be in 24-hour format between 8:00 and 17:00",
+        }
       ),
-    period: z.enum(["A.M.", "P.M."]),
     guestCount: z.number({ required_error: "Please provide the Guest Count" }),
     venue: z
       .string({ required_error: "Please provide the Venue" })
@@ -103,43 +111,21 @@ const reservationSchema = z
       .string()
       .max(300, "Delivery Instructions must not exceed 300 characters")
       .optional(),
-    paymentReference: z
-      .string()
-      .min(1, "Payment Reference is required")
-      .max(100, "Payment Reference must not exceed 100 characters")
-      .optional(),
-    status: z.enum(
-      reservationStatusArray as [
-        ReservationStatusType,
-        ...ReservationStatusType[]
-      ]
-    ),
+    // paymentReference: z
+    //   .string()
+    //   .min(1, "Payment Reference is required")
+    //   .max(100, "Payment Reference must not exceed 100 characters")
+    //   .optional(),
+    // status: z.enum(
+    //   reservationStatusArray as [
+    //     ReservationStatusType,
+    //     ...ReservationStatusType[]
+    //   ]
+    // ),
     createdAt: z.date(),
     updatedAt: z.date(),
   })
   .superRefine((data, ctx) => {
-    const match = data.reservationTime.match(/^(\d+):([0-5]\d)$/);
-    if (match) {
-      const [_, hoursStr, minutesStr] = match;
-      const hours = parseInt(hoursStr);
-      const minutes = parseInt(minutesStr);
-      let hours24 = hours;
-      if (data.period === "P.M." && hours !== 12) {
-        hours24 += 12;
-      } else if (data.period === "A.M." && hours === 12) {
-        hours24 = 0;
-      }
-
-      const totalMinutes = hours24 * 60 + minutes;
-      const isValidTime = totalMinutes >= 8 * 60 && totalMinutes <= 17 * 60;
-      if (!isValidTime) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["reservationTime"],
-          message: "Time must be between 8:00 AM and 5:00 PM",
-        });
-      }
-    }
 
     if (data.selectedPackage) {
       const selectedPackage = cateringPackages.find(
@@ -189,18 +175,15 @@ export function useReservationForm() {
   const [showPackageSelection, setShowPackageSelection] = useState(false);
   const [isCategoryError, setIsCategoryError] = useState(false);
 
-
   const { customer } = useAuthContext();
 
   const defaultValues: ReservationValues = {
     fullName: customer?.fullName || "",
     email: customer?.email || "",
     contactNumber: customer?.contactNumber || "",
-    reservationType: "event",
-    eventType: "",
+    eventType: "Others",
     reservationDate: new Date(),
     reservationTime: "08:00",
-    period: "A.M.",
     guestCount: 20,
     venue: "",
     serviceType: "Buffet",
@@ -214,8 +197,8 @@ export function useReservationForm() {
     deliveryFee: 0,
     deliveryAddress: "",
     deliveryInstructions: "",
-    paymentReference: "",
-    status: "Pending",
+    // paymentReference: "",
+    // status: "Pending",
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -228,9 +211,10 @@ export function useReservationForm() {
   });
 
   const { watch, setValue } = reservationForm;
-  const [cateringOptions, setCateringOptions] = useState<"packages" | "menus">("packages");
+  const [cateringOptions, setCateringOptions] = useState<"packages" | "menus">(
+    "packages"
+  );
   const selectedPackage = watch("selectedPackage");
-  const reservationType = watch("reservationType");
   const serviceFee = watch("serviceFee");
   const deliveryFee = watch("deliveryFee");
   const selectedMenus = watch("selectedMenus");
@@ -277,14 +261,17 @@ export function useReservationForm() {
 
       setValue("selectedMenus", selectedMenus);
       setValue("guestCount", pkg.minimumPax);
-      setValue("eventType", pkg?.eventType ?? "No Event");
-      setValue("reservationType", "event");
+      setValue("eventType", pkg?.eventType ?? "Others");
     }
   }, [selectedPackage]);
 
   // Validate a specific step
   const validateStep = async (step: number): Promise<boolean> => {
-    if (cateringOptions === "packages" && selectedPackage === "" && step !== 0) {
+    if (
+      cateringOptions === "packages" &&
+      selectedPackage === "" &&
+      step !== 0
+    ) {
       setShowPackageSelection(true);
     }
     if (cateringOptions === "menus" && step === 1) {
@@ -361,20 +348,15 @@ export function useReservationForm() {
       case 2:
         return ["selectedMenus"];
       case 3:
-        if (reservationType === "event") {
-          return [
-            "eventType",
-            "reservationDate",
-            "reservationTime",
-            "guestCount",
-            "serviceType",
-            "serviceHours",
-            "paymentReference",
-          ];
-        }
-        if (reservationType === "personal") {
-          return ["reservationDate", "paymentReference"];
-        }
+        return [
+          "eventType",
+          "reservationDate",
+          "reservationTime",
+          "guestCount",
+          "serviceType",
+          "serviceHours",
+          // "paymentReference",
+        ];
       default:
         return [];
     }

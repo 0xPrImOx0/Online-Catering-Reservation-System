@@ -22,15 +22,15 @@ import CheckboxMenusList from "./CheckboxMenusList";
 
 export default function CategoryOptions({
   setIsCategoryError,
-  isCategoryError,
+  cateringOptions,
 }: {
   setIsCategoryError: (value: boolean) => void;
-  isCategoryError: boolean;
+  cateringOptions: string;
 }) {
   const { control, setValue, watch, clearErrors, setError } =
     useFormContext<ReservationValues>();
 
-  const { getMenuItem, getPackageItem, cateringOptions } = useReservationForm();
+  const { getMenuItem, getPackageItem } = useReservationForm();
 
   const selectedMenus = watch("selectedMenus");
 
@@ -78,6 +78,7 @@ export default function CategoryOptions({
       setValue("selectedMenus", {});
       clearErrors("selectedMenus");
       setCategoryAndCount(defaultCategoryAndCount);
+      console.log("selectedMenus: ", selectedMenus);
       return;
     }
     if (selectedPackage) {
@@ -91,23 +92,25 @@ export default function CategoryOptions({
   }, [cateringOptions, selectedPackage]);
 
   useEffect(() => {
-    const hasIncompleteCategory = categoryAndCount.some(
-      ({ category, count }) =>
-        Object.keys(selectedMenus[category] || {}).length !== count
-    );
+    if (cateringOptions === "packages" && selectedPackage) {
+      const hasIncompleteCategory = categoryAndCount.some(
+        ({ category, count }) =>
+          Object.keys(selectedMenus[category] || {}).length !== count
+      );
 
-    if (hasIncompleteCategory) {
-      setIsCategoryError(true);
-      setError("selectedMenus", {
-        type: "manual",
-        message:
-          "Please select the required number of items for each category.",
-      });
-    } else {
-      setIsCategoryError(false);
-      clearErrors("selectedMenus");
+      if (hasIncompleteCategory) {
+        setIsCategoryError(true);
+        setError("selectedMenus", {
+          type: "manual",
+          message:
+            "Please select the required number of items for each category.",
+        });
+      } else {
+        setIsCategoryError(false);
+        clearErrors("selectedMenus");
+      }
     }
-  }, [selectedMenus]);
+  }, [selectedMenus, categoryAndCount]);
 
   return (
     <div className="space-y-6 overflow-hidden">

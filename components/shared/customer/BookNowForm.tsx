@@ -47,10 +47,7 @@ export default function BookNowForm({ id }: { id: string }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const {
-    watch,
-    setValue,
-  } = reservationForm;
+  const { watch, setValue } = reservationForm;
 
   useEffect(() => {
     if (customer) {
@@ -90,7 +87,6 @@ export default function BookNowForm({ id }: { id: string }) {
         ? "Choose a Package"
         : "Next"
     );
-    console.log(currentStep);
   }, [showPackageSelection, currentStep, cateringOptions]);
 
   // Convert our form steps to the format expected by MultiStepForm
@@ -102,11 +98,12 @@ export default function BookNowForm({ id }: { id: string }) {
 
   // Handle next step validation
   const handleNextStep = async (currentStep: number) => {
+    console.log("isCategoryError: ", isCategoryError);
     if (!isCategoryError) {
       const isValid = await validateStep(currentStep);
       if (isValid && nextBtn === "Next") {
         setCurrentStep(currentStep + 1);
-        }
+      }
       return isValid;
     }
     return false;
@@ -138,6 +135,12 @@ export default function BookNowForm({ id }: { id: string }) {
     setCurrentStep(0);
     setIsSubmitComplete(false);
   };
+
+  useEffect(() => {
+    if (currentStep !== 2 || cateringOptions === "menus") {
+      setIsCategoryError(false);
+    }
+  }, [currentStep, cateringOptions]);
 
   useEffect(() => {
     const fetchMenuOrPackage = async () => {
@@ -179,15 +182,14 @@ export default function BookNowForm({ id }: { id: string }) {
       cateringOptions={cateringOptions}
       setCateringOptions={setCateringOptions}
     />,
-    <CategoryOptions key={"category-options"} setIsCategoryError={setIsCategoryError} isCategoryError={isCategoryError} />,
+    <CategoryOptions
+      key={"category-options"}
+      setIsCategoryError={setIsCategoryError}
+      cateringOptions={cateringOptions}
+    />,
     <ReservationDetails key={"reservation-details"} />,
     <SummaryBooking key={"summary-booking"} />,
   ];
-
-  useEffect(() => {
-    console.log("book now level: ", isCategoryError);
-  }, [isCategoryError]);
-
   const formContent = (
     <Form {...reservationForm}>
       <MultiStepForm

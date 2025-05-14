@@ -19,9 +19,15 @@ import {
   LucideIcon,
 } from "lucide-react";
 import { useFormContext } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { SelectedMenu } from "@/types/reservation-types";
 import { format } from "date-fns";
+
+interface MenuItem {
+  id: string;
+  name: string;
+}
 
 export default function SummaryBooking() {
   const { watch } = useFormContext<ReservationValues>();
@@ -29,6 +35,65 @@ export default function SummaryBooking() {
 
   // Use watch to get reactive form values
   const formValues = watch();
+
+  const [menuItems, setMenuItems] = useState<Record<string, MenuItem>>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch menu item names when the component mounts or when selectedMenus changes
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      if (!formValues.selectedMenus) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Get all unique menu IDs from selectedMenus
+      const menuIds = new Set<string>();
+      Object.values(formValues.selectedMenus).forEach((menuGroup) => {
+        Object.keys(menuGroup).forEach((id) => menuIds.add(id));
+      });
+
+      // Only fetch if there are menu items to process
+      if (menuIds.size === 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Fetch menu items in parallel
+        const menuPromises = Array.from(menuIds).map(async (id) => {
+          try {
+            const menu = await getMenuItem(id);
+            return menu ? { id, name: menu.name } : null;
+          } catch (error) {
+            console.error(`Error fetching menu item ${id}:`, error);
+            return null;
+          }
+        });
+
+        const menuItemsArray = await Promise.all(menuPromises);
+
+        // Convert array to map for easier lookups
+        const menuItemsMap = menuItemsArray.reduce<
+          Record<string, { id: string; name: string }>
+        >((acc, item) => {
+          if (item) {
+            acc[item.id] = item;
+          }
+          return acc;
+        }, {});
+
+        setMenuItems(menuItemsMap);
+      } catch (error) {
+        console.error("Error fetching menu items:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    setIsLoading(true);
+    fetchMenuItems();
+  }, [formValues.selectedMenus]);
 
   const formattedDate = formValues.reservationDate
     ? new Date(formValues.reservationDate).toLocaleDateString("en-US", {
@@ -39,7 +104,7 @@ export default function SummaryBooking() {
     : "No date selected";
 
   const formattedTime = formValues.reservationTime
-    ? `${formValues.reservationTime} ${formValues.period}`
+    ? `${formValues.reservationTime}`
     : "No time selected";
 
   const currency = (amount: number) =>
@@ -85,10 +150,7 @@ export default function SummaryBooking() {
       className="space-y-8"
     >
       {/* Customer Information & Reservation Details */}
-      <motion.div
-        variants={fadeIn}
-        className="grid grid-cols-1 gap-6 md:grid-cols-2"
-      >
+      <motion.div variants={fadeIn} className="grid grid-cols-1 gap-6">
         <Card className="overflow-hidden border-none shadow-md">
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
@@ -121,9 +183,9 @@ export default function SummaryBooking() {
               <DetailRow
                 icon={Utensils}
                 label="Reservation Type"
-                value={formValues.reservationType}
+                value={formValues.eventType}
               />
-              {formValues.eventType != "No Event" && (
+              {formValues.eventType != "Others" && (
                 <DetailRow
                   icon={Utensils}
                   label="Event Type"
@@ -137,27 +199,23 @@ export default function SummaryBooking() {
                 label="Guests"
                 value={formValues.guestCount || "Not provided"}
               />
-              {formValues.reservationType === "event" && (
+              <DetailRow
+                icon={Utensils}
+                label="Service Type"
+                value={formValues.serviceType || "Not provided"}
+              />
+              {formValues.serviceType === "Plated" && (
                 <>
                   <DetailRow
-                    icon={Utensils}
-                    label="Service Type"
-                    value={formValues.serviceType || "Not provided"}
+                    icon={Building}
+                    label="Venue"
+                    value={formValues.venue || "Not provided"}
                   />
-                  {formValues.serviceType === "Plated" && (
-                    <>
-                      <DetailRow
-                        icon={Building}
-                        label="Venue"
-                        value={formValues.venue || "Not provided"}
-                      />
-                      <DetailRow
-                        icon={Clock}
-                        label="Service Hours"
-                        value={formValues.serviceHours as string}
-                      />
-                    </>
-                  )}
+                  <DetailRow
+                    icon={Clock}
+                    label="Service Hours"
+                    value={formValues.serviceHours as string}
+                  />
                 </>
               )}
             </ul>
@@ -209,8 +267,10 @@ export default function SummaryBooking() {
                           </h4>
                           <ul className="space-y-3">
                             {menuIdArray.map((id) => {
-                              const menu = getMenuItem(id);
-                              return menu ? (
+                              const menu = menuItems[id];
+                              if (!menu) return null;
+
+                              return (
                                 <li
                                   key={id}
                                   className="flex gap-2 items-center text-gray-700"
@@ -226,8 +286,13 @@ export default function SummaryBooking() {
                                   )}
                                   <span>{menu.name}</span>
                                 </li>
-                              ) : null;
+                              );
                             })}
+                            {isLoading && menuIdArray.length === 0 && (
+                              <div className="text-sm text-gray-500">
+                                Loading menu items...
+                              </div>
+                            )}
                           </ul>
                         </div>
                       );
@@ -255,17 +320,21 @@ export default function SummaryBooking() {
                 label="Total Price"
                 value={currency(formValues.totalPrice)}
               />
-              <DetailRow
-                icon={Check}
-                label="Service Fee"
-                value={currency(formValues.serviceFee)}
-              />
-              <DetailRow
-                icon={Check}
-                label="Delivery Fee"
-                value={currency(formValues.deliveryFee)}
-              />
-              <DetailRow
+              {formValues.serviceFee > 0 && (
+                <DetailRow
+                  icon={Check}
+                  label="Service Fee"
+                  value={currency(formValues.serviceFee)}
+                />
+              )}
+              {formValues.deliveryFee > 0 && (
+                <DetailRow
+                  icon={Check}
+                  label="Delivery Fee"
+                  value={currency(formValues.deliveryFee)}
+                />
+              )}
+              {/* <DetailRow
                 icon={Check}
                 label="Payment Reference"
                 value={formValues.paymentReference as string}
@@ -274,7 +343,7 @@ export default function SummaryBooking() {
                 icon={Check}
                 label="Status"
                 value={formValues.status}
-              />
+              /> */}
             </ul>
           </CardContent>
         </Card>
@@ -320,9 +389,7 @@ export default function SummaryBooking() {
 
       {/* Additional Information */}
 
-      {(formValues.specialRequests ||
-        formValues.createdAt ||
-        formValues.updatedAt) && (
+      {formValues.specialRequests && (
         <motion.div variants={fadeIn}>
           <Card className="overflow-hidden border-none shadow-md">
             <CardContent className="p-6">
@@ -338,20 +405,6 @@ export default function SummaryBooking() {
                     icon={MessageSquare}
                     label="Special Requests"
                     value={formValues.specialRequests}
-                  />
-                )}
-                {formValues.createdAt && (
-                  <DetailRow
-                    icon={Clock}
-                    label="Created At"
-                    value={format(new Date(formValues.createdAt), "PPP - HH:mm:ss")}
-                  />
-                )}
-                {formValues.updatedAt && (
-                  <DetailRow
-                    icon={Clock}
-                    label="Last Updated"
-                    value={format(new Date(formValues.updatedAt), "PPP - HH:mm:ss")}
                   />
                 )}
               </ul>

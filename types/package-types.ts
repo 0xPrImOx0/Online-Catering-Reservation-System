@@ -25,7 +25,7 @@ export type EventType =
   | "Corporate"
   | "Graduation"
   | "All"
-  | "No Event"
+  | "Others"
   | "";
 
 export type PackageType = "BuffetPlated" | "Event";
@@ -151,6 +151,7 @@ export const eventTypes: EventType[] = [
   "Wedding",
   "Corporate",
   "Graduation",
+  "Others",
 ];
 
 export const reservationEventTypes: EventType[] = [
@@ -158,7 +159,7 @@ export const reservationEventTypes: EventType[] = [
   "Wedding",
   "Corporate",
   "Graduation",
-  "No Event",
+  "Others",
 ];
 
 export const hoursArray: HoursArrayTypes[] = [

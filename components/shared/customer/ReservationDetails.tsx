@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/select";
 import { useFormContext } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
-import WhatsTheOccasionCard from "./WhatsTheOccasionCard";
 import ReservationType from "./ReservationType";
 import ReservationDateAndTime from "./ReservationDateAndTime";
 import DeliveryDetails from "./DeliveryDetails";
@@ -35,26 +34,30 @@ import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { withMask } from "use-mask-input";
 import { HoursArrayTypes } from "@/types/reservation-types";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import clsx from "clsx";
 
 export default function ReservationDetails() {
-  const { control, getValues, watch, setValue, formState: { errors } } =
-    useFormContext<ReservationValues>();
+  const {
+    control,
+    getValues,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext<ReservationValues>();
   const { getPackageItem } = useReservationForm();
-  const reservationType = watch("reservationType");
-  const cateringOptions = watch("cateringOptions");
   const selectedPackage = getValues("selectedPackage");
   const serviceType = watch("serviceType");
   const serviceHours = watch("serviceHours");
-  const eventType = watch("eventType");
   const deliveryOption = watch("deliveryOption");
   const pkg = getPackageItem(selectedPackage);
 
-  useEffect(() => {
-    if (reservationType === "event") {
-      const hour = serviceHours?.slice(0, 2);
-      setValue("serviceFee", 100 * Number(hour));
-    }
-  }, [serviceHours]);
+  // useEffect(() => {
+  //   if (reservationType === "event") {
+  //     const hour = serviceHours?.slice(0, 2);
+  //     setValue("serviceFee", 100 * Number(hour));
+  //   }
+  // }, [serviceHours]);
 
   const getRecommendedPax = () => {
     if (pkg) {
@@ -77,151 +80,154 @@ export default function ReservationDetails() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {cateringOptions === "custom" && (
-          <WhatsTheOccasionCard control={control} />
-        )}
-        {reservationType === "event" && eventType !== "No Event" && (
-          <ReservationType control={control} />
-        )}
-        {reservationType === "event" && (
-          <FormField
-            control={control}
-            name="guestCount"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormLabel className="">
-                  Number of Guests <span className="text-destructive">*</span>{" "}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter expected guests"
-                    type="number"
-                    {...field}
-                    onChange={(e) => {
-                      // Handle the 0 issue by replacing the value completely
-                      const value = e.target.value;
-                      if (value === "0" || value === "") {
-                        field.onChange(0);
-                      } else {
-                        // Remove leading zeros and convert to number
-                        field.onChange(Number(value.replace(/^0+/, "")));
-                      }
+        <ReservationType control={control} />
+        <FormField
+          control={control}
+          name="guestCount"
+          render={({ field, fieldState }) => (
+            <FormItem>
+              <FormLabel className="">
+                Number of Guests <span className="text-destructive">*</span>{" "}
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter expected guests"
+                  type="number"
+                  {...field}
+                  onChange={(e) => {
+                    // Handle the 0 issue by replacing the value completely
+                    const value = e.target.value;
+                    if (value === "0" || value === "") {
+                      field.onChange(0);
+                    } else {
+                      // Remove leading zeros and convert to number
+                      field.onChange(Number(value.replace(/^0+/, "")));
+                    }
+                  }}
+                  value={field.value || ""}
+                />
+              </FormControl>
+              {fieldState.error ? (
+                <FormMessage />
+              ) : (
+                recommendedPax > 0 && (
+                  <span className="italic text-[0.8rem] font-medium text-muted-foreground">
+                    *Recommended pax is {recommendedPax} persons
+                  </span>
+                )
+              )}
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+        <FormField
+          control={control}
+          name="serviceType"
+          render={({ field }) => (
+            <FormItem className="col-span-2">
+              <FormLabel className="">
+                Service Type <span className="text-destructive">*</span>{" "}
+              </FormLabel>
+              <FormControl>
+                <div className="flex gap-4">
+                  <Card
+                    className={clsx(
+                      "flex cursor-pointer flex-1 flex-col gap-2 p-4",
+                      { "border-green-500": field.value === "Buffet" }
+                    )}
+                    onClick={() => {
+                      setValue("serviceType", "Buffet");
+                      setValue("serviceFee", 0);
+                      setValue("serviceHours", undefined);
                     }}
-                    value={field.value || ""}
-                  />
-                </FormControl>
-                {fieldState.error ? (
+                  >
+                    <CardTitle>Buffet</CardTitle>
+                    <CardDescription>No service fee applied</CardDescription>
+                  </Card>
+                  <Card
+                    className={clsx(
+                      "flex cursor-pointer flex-1 flex-col gap-2 p-4",
+                      { "border-green-500": field.value === "Plated" }
+                    )}
+                    onClick={() => {
+                      setValue("serviceType", "Plated");
+                      setValue("serviceFee", 100 * 4);
+                      setValue("serviceHours", serviceHours);
+                    }}
+                  >
+                    <CardTitle>Plated Service</CardTitle>
+                    <CardDescription>
+                      Additional service fee of &#8369; {100 * 4} applied
+                    </CardDescription>
+                  </Card>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {serviceType === "Plated" && (
+          <>
+            <FormField
+              control={control}
+              name="venue"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="">
+                    Venue <span className="text-destructive">*</span>{" "}
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter venue location" {...field} />
+                  </FormControl>
+                  {errors.venue ? (
+                    <FormMessage />
+                  ) : (
+                    <p className="text-muted-foreground italic text-sm">
+                      *Enter venue details for our staff
+                    </p>
+                  )}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="serviceHours"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="">
+                    Service Hours <span className="text-destructive">*</span>{" "}
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={!!pkg}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select service hours rendered" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {hoursArray.map((hour) => (
+                        <SelectItem key={hour} value={hour}>
+                          {hour}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
-                ) : (
-                  recommendedPax > 0 && (
-                    <span className="italic text-[0.8rem] font-medium text-muted-foreground">
-                      *Recommended pax is {recommendedPax} persons
-                    </span>
-                  )
-                )}
-              </FormItem>
-            )}
-          />
+                </FormItem>
+              )}
+            />
+          </>
         )}
       </div>
 
-      {reservationType === "event" && (
-        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-          <FormField
-            control={control}
-            name="serviceType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="">
-                  Service Type <span className="text-destructive">*</span>{" "}
-                </FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                    className="grid grid-cols-2 pt-2"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        onClick={() => {
-                          setValue("serviceFee", 0);
-                          setValue("serviceHours", undefined);
-                        }}
-                        value="Buffet"
-                        id="buffet"
-                      />
-                      <Label htmlFor="buffet">Buffet</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value="Plated"
-                        id="plated"
-                        onClick={() => {
-                          setValue("serviceFee", 100 * 4);
-                          setValue("serviceHours", serviceHours);
-                        }}
-                      />
-                      <Label htmlFor="plated">Plated Service</Label>
-                    </div>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {serviceType === "Plated" && (
-            <>
-              <FormField
-                control={control}
-                name="venue"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="">
-                      Venue <span className="text-destructive">*</span>{" "}
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter venue location" {...field} />
-                    </FormControl>
-                    {errors.venue ? <FormMessage /> : <p className="text-muted-foreground italic text-sm">*Enter venue details for our staff</p>}
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="serviceHours"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="">
-                      Service Hours <span className="text-destructive">*</span>{" "}
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      disabled={!!pkg}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select service hours rendered" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {hoursArray.map((hour) => (
-                          <SelectItem key={hour} value={hour}>
-                            {hour}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </>
-          )}
-        </div>
-      )}
       {!pkg && serviceType === "Plated" && <PlatedWarning />}
+      <DeliveryOption control={control} />
       <Separator className="" />
       <div>
         <div className="mb-4">
@@ -236,7 +242,6 @@ export default function ReservationDetails() {
           </p>
           <DeliveryWarning isDelivery={deliveryOption === "Delivery"} />
         </div>
-        <DeliveryOption control={control} />
         <ReservationDateAndTime
           control={control}
           deliveryOption={deliveryOption}
@@ -244,7 +249,8 @@ export default function ReservationDetails() {
         {deliveryOption === "Delivery" && <DeliveryDetails control={control} />}
       </div>
       <Separator />
-      <div className="mb-4">
+
+      {/* <div className="mb-4">
         <h3 className="text-lg font-semibold">Payment Details</h3>
         <p className="mb-4 text-sm text-muted-foreground">
           Please scan the GCash QR code below to complete your payment and enter
@@ -277,7 +283,7 @@ export default function ReservationDetails() {
             )}
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="flex items-end justify-between">
         <Label>Total Bill</Label>

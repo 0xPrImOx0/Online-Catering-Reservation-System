@@ -120,31 +120,6 @@ export default function EventDate({
               </FormItem>
             )}
           />
-          <FormField
-            control={control}
-            name="period"
-            render={({ field }) => (
-              <FormItem className="">
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select service hours rendered" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {["A.M.", "P.M."].map((period) => (
-                      <SelectItem key={period} value={period}>
-                        {period}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
         </div>
         {errors.reservationTime && (
           <span className="text-sm text-destructive">

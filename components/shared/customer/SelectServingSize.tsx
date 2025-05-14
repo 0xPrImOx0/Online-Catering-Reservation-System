@@ -28,8 +28,8 @@ export default function SelectServingSize({
 
   const currentCategory = value[category] || {};
   const paxSelected = value[category]?.[menu]?.paxSelected || "4-6 pax";
-  const handlePaxChange = (newPax: PaxArrayType) => {
-    const menuItem = getMenuItem(menu);
+  const handlePaxChange = async (newPax: PaxArrayType) => {
+    const menuItem = await getMenuItem(menu);
     if (!menuItem) return;
 
     const priceMap = {

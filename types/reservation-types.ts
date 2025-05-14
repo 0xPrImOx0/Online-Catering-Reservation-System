@@ -50,11 +50,9 @@ export interface ReservationItem {
   fullName: string;
   email: string;
   contactNumber: string;
-  reservationType: "event" | "personal";
   eventType: string;
   reservationDate: Date;
   reservationTime: string;
-  period: "A.M." | "P.M.";
   guestCount: number;
   venue: string;
   serviceType: ServiceType;
@@ -68,7 +66,8 @@ export interface ReservationItem {
   deliveryFee: number;
   deliveryAddress?: string;
   deliveryInstructions?: string;
-  status: ReservationStatusType;
+  // paymentReference?: string;
+  // status: ReservationStatusType;
   createdAt: Date;
   updatedAt: Date;
 }

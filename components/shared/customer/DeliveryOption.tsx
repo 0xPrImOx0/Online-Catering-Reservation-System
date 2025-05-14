@@ -4,10 +4,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { ReservationValues } from "@/hooks/use-reservation-form";
 import { useFormContext } from "react-hook-form";
+import clsx from "clsx";
 
 export default function DeliveryOption({ control }: { control: any }) {
   const { watch, setValue } = useFormContext<ReservationValues>();
@@ -24,32 +24,32 @@ export default function DeliveryOption({ control }: { control: any }) {
       control={control}
       name="deliveryOption"
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="col-span-2">
           <FormLabel className="">
-            Delivery Option <span className="text-destructive">*</span>{" "}
+            {field.value} Option <span className="text-destructive">*</span>{" "}
           </FormLabel>
-          <RadioGroup
-            defaultValue={field.value}
-            onValueChange={field.onChange}
-            className="grid grid-cols-2 pt-2"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                value="Pickup"
-                id="pickup"
-                onClick={handlePickupOption}
-              />
-              <Label htmlFor="pickup">Pickup</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                value="Delivery"
-                id="delivery"
-                onClick={handleDeliveryOption}
-              />
-              <Label htmlFor="delivery">Delivery</Label>
-            </div>
-          </RadioGroup>
+          <div className="flex gap-4 pt-2">
+            <Card
+              className={clsx("flex cursor-pointer flex-1 flex-col gap-2 p-4", {"border-green-500": field.value === "Pickup"})}
+              onClick={() => {
+                field.onChange("Pickup");
+                handlePickupOption();
+              }}
+            >
+              <CardTitle>Pickup</CardTitle>
+              <CardDescription>No delivery fee applied</CardDescription>
+            </Card>
+            <Card
+              className={clsx("flex cursor-pointer flex-1 flex-col gap-2 p-4", {"border-green-500": field.value === "Delivery"})}
+              onClick={() => {
+                field.onChange("Delivery");
+                handleDeliveryOption();
+              }}
+            >
+              <CardTitle>Delivery</CardTitle>
+              <CardDescription>Additional delivery fee of ₱300 applied</CardDescription>
+            </Card>
+          </div>
           <FormMessage />
         </FormItem>
       )}

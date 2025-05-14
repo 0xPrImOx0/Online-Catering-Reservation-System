@@ -67,7 +67,6 @@ export default function CheckboxMenusList({
     );
   };
 
-  const [activeMenu, setActiveMenu] = useState("");
   return (
     <section>
       <div key={category} className="space-y-3">
@@ -106,19 +105,18 @@ export default function CheckboxMenusList({
                         <Button
                           size={"custom"}
                           variant={"link"}
-                          className={clsx("font-medium max-w-fit -mt-1 overflow-hidden line-clamp-2", {
-                            "text-green-500":
-                              field.value[category]?.[menu._id as string],
-                            "text-muted-foreground": isDisabled(
-                              field,
-                              menu._id as string
-                            ),
-                          })}
-                          onClick={() => {
-                            setActiveMenu(menu._id as string);
-                          }}
+                          className={clsx(
+                            "font-medium max-w-fit -mt-1 overflow-hidden line-clamp-2 cursor-pointer",
+                            {
+                              "text-green-500":
+                                field.value[category]?.[menu._id as string],
+                              "text-muted-foreground hover:no-underline cursor-not-allowed":
+                                isDisabled(field, menu._id as string),
+                            }
+                          )}
+                          asChild
                         >
-                          {menu.name}
+                          <Label htmlFor={menu._id}>{menu.name}</Label>
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent className="p-0">
@@ -135,7 +133,15 @@ export default function CheckboxMenusList({
                   </TooltipProvider>
                   <Label
                     htmlFor={menu._id}
-                    className="text-sm cursor-pointer text-muted-foreground"
+                    className={clsx(
+                      "text-sm text-muted-foreground overflow-hidden line-clamp-2 cursor-pointer",
+                      {
+                        "text-muted-foreground cursor-not-allowed": isDisabled(
+                          field,
+                          menu._id as string
+                        ),
+                      }
+                    )}
                   >
                     {menu.shortDescription}
                   </Label>
