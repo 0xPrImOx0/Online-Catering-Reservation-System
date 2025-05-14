@@ -279,6 +279,12 @@ export function useMenuForm({
         shouldDirty: true,
       });
 
+      // ✅ Update localStorage
+      localStorage.setItem("ingredients", JSON.stringify(updatedIngredients));
+
+      // ✅ Force revalidation immediately
+      await form.trigger("ingredients");
+
       console.log(
         "THIS IS THE INGREDIENTS ADDED",
         form.getValues("ingredients")
@@ -293,10 +299,11 @@ export function useMenuForm({
   // Remove ingredient function
   const removeIngredient = async (index: number) => {
     const currentIngredients = form.getValues("ingredients");
-    form.setValue(
-      "ingredients",
-      currentIngredients.filter((_, i) => i !== index)
-    );
+    const updatedIngredients = currentIngredients.filter((_, i) => i !== index);
+    form.setValue("ingredients", updatedIngredients);
+
+    // ✅ Update localStorage
+    localStorage.setItem("ingredients", JSON.stringify(updatedIngredients));
 
     await form.trigger("ingredients"); // Forces immediate validation display
   };

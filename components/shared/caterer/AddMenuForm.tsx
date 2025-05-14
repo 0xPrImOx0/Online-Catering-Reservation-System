@@ -39,12 +39,24 @@ export function AddMenuDialog({
 
   // Handle next step validation
   const handleNextStep = async (currentStep: number) => {
+    if (currentStep === 1) {
+      // Retrieve ingredients from localStorage
+      const getIngredients = localStorage.getItem("ingredients");
+
+      // Parse the ingredients and handle null or invalid JSON
+      const ingredients = getIngredients ? JSON.parse(getIngredients) : [];
+
+      // Set ingredients in the form
+      form.setValue("ingredients", ingredients);
+    }
+
     const isValid = await validateStep(currentStep);
     console.log("CURRENT STEP: ", currentStep);
     if (isValid) {
       setCurrentStep(currentStep + 1);
     }
     console.log(!isValid && "NOT VALID IN HANDLE NEXTS");
+
     return isValid;
   };
 
@@ -77,7 +89,7 @@ export function AddMenuDialog({
   // Create the form steps components
   const formStepComponents = [
     <BasicInfoStep key="basic-info" />,
-    <IngredientsStep key="ingredients" />,
+    <IngredientsStep key="ingredients" formHook={menuFormHook} />,
     <PreparationStep key="preparation" formHook={menuFormHook} />,
     <PricingStep key="pricing" formHook={menuFormHook} />,
     <NutritionStep key="nutrition" formHook={menuFormHook} />,

@@ -14,17 +14,30 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { allergens } from "@/types/menu-types";
-import { useMenuForm } from "@/hooks/use-menu-form";
+import { AddMenuFormProps, allergens } from "@/types/menu-types";
+import { useWatch } from "react-hook-form";
+import { useEffect } from "react";
 
-export function IngredientsStep() {
+export function IngredientsStep({ formHook }: AddMenuFormProps) {
   const {
     form,
     newIngredient,
     setNewIngredient,
     addIngredient,
     removeIngredient,
-  } = useMenuForm();
+  } = formHook;
+
+  const ingredients = useWatch({
+    control: form.control,
+    name: "ingredients",
+  });
+
+  useEffect(() => {
+    console.log(
+      "THIS SI THE FORM WATCH INGREDIENT IN USE EFFECT",
+      form.watch("ingredients")
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -48,7 +61,7 @@ export function IngredientsStep() {
         </div>
 
         <div className="flex flex-wrap gap-2 mt-2">
-          {form.watch("ingredients")?.map((ingredient, index) => {
+          {ingredients?.map((ingredient, index) => {
             return (
               <Badge
                 key={index}
