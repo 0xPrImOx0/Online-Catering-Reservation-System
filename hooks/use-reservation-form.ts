@@ -50,15 +50,16 @@ const reservationSchema = z
       .refine(
         (val) => {
           if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) return false;
-          
-          const [hours, minutes] = val.split(':').map(Number);
+
+          const [hours, minutes] = val.split(":").map(Number);
           const totalMinutes = hours * 60 + minutes;
-          
+
           // Between 8:00 (480 minutes) and 17:00 (1020 minutes)
           return totalMinutes >= 480 && totalMinutes <= 1020;
         },
         {
-          message: "Event Time must be in 24-hour format between 8:00 and 17:00",
+          message:
+            "Event Time must be in 24-hour format between 8:00 and 17:00",
         }
       ),
     guestCount: z.number({ required_error: "Please provide the Guest Count" }),
@@ -126,7 +127,6 @@ const reservationSchema = z
     updatedAt: z.date(),
   })
   .superRefine((data, ctx) => {
-
     if (data.selectedPackage) {
       const selectedPackage = cateringPackages.find(
         (pkg) => pkg._id === data.selectedPackage
@@ -209,6 +209,14 @@ export function useReservationForm() {
     mode: "onChange",
     reValidateMode: "onSubmit",
   });
+
+  useEffect(() => {
+    if (customer) {
+      reservationForm.setValue("fullName", customer.fullName || "");
+      reservationForm.setValue("email", customer.email || "");
+      reservationForm.setValue("contactNumber", customer.contactNumber || "");
+    }
+  }, [customer, reservationForm]);
 
   const { watch, setValue } = reservationForm;
   const [cateringOptions, setCateringOptions] = useState<"packages" | "menus">(
