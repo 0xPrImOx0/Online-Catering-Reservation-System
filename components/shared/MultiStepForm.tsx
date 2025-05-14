@@ -51,6 +51,7 @@ export function MultiStepForm({
     // If validation function is provided, use it
     if (onNextStep) {
       const isValid = await onNextStep(formStep);
+      console.log(!isValid && "NOT VALIDDD!!");
 
       if (nextButtonText === "Choose a Package" && setShowPackageSelection) {
         setShowPackageSelection(true);
