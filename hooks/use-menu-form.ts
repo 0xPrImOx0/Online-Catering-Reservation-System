@@ -50,7 +50,11 @@ const formSchema = z.object({
     .trim(),
 
   ingredients: z
-    .array(z.string())
+    .array(
+      z.string().min(5, {
+        message: "Each ingredient must be at least 5 characters long",
+      })
+    )
     .min(1, { message: "Add at least one ingredient" }),
 
   allergens: z.array(
@@ -264,13 +268,22 @@ export function useMenuForm({
   };
 
   // Add ingredient function
-  const addIngredient = () => {
+  const addIngredient = async () => {
     if (newIngredient.trim() !== "") {
       const currentIngredients = form.getValues("ingredients") || [];
-      form.setValue("ingredients", [
-        ...currentIngredients,
-        newIngredient.trim(),
-      ]);
+      const updatedIngredients = [...currentIngredients, newIngredient.trim()];
+
+      form.setValue("ingredients", updatedIngredients, {
+        shouldValidate: true,
+        shouldTouch: true,
+        shouldDirty: true,
+      });
+
+      console.log(
+        "THIS IS THE INGREDIENTS ADDED",
+        form.getValues("ingredients")
+      );
+
       console.log(form.getValues("ingredients"));
       console.log("sdasdasdsad", form.formState.errors.ingredients);
       setNewIngredient("");
@@ -278,12 +291,14 @@ export function useMenuForm({
   };
 
   // Remove ingredient function
-  const removeIngredient = (index: number) => {
+  const removeIngredient = async (index: number) => {
     const currentIngredients = form.getValues("ingredients");
     form.setValue(
       "ingredients",
       currentIngredients.filter((_, i) => i !== index)
     );
+
+    await form.trigger("ingredients"); // Forces immediate validation display
   };
 
   // Calculate price from discount
@@ -504,6 +519,21 @@ export function useMenuForm({
     setIsValidationAttempted(true);
     const fieldsToValidate = getFieldsToValidate(step);
     const isValid = await form.trigger(fieldsToValidate);
+
+    console.log("Current form values:", form.watch());
+
+    // ✅ Log only errors related to this step
+    const errors = form.formState.errors;
+    console.log("All errors:", errors);
+    console.log("THIS IS THE INGREIDIENTS", form.watch("ingredients"));
+
+    console.log("Errors for current step:");
+    fieldsToValidate.forEach((field) => {
+      const error = errors[field];
+      if (error) {
+        console.log(`${field}:`, error.message || error);
+      }
+    });
 
     if (isValid) {
       setIsValidationAttempted(false);

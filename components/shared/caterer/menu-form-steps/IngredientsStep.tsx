@@ -7,15 +7,17 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { AddMenuFormProps, allergens } from "@/types/menu-types";
+import { allergens } from "@/types/menu-types";
+import { useMenuForm } from "@/hooks/use-menu-form";
 
-export function IngredientsStep({ formHook }: AddMenuFormProps) {
+export function IngredientsStep() {
   const {
     form,
     newIngredient,
@@ -23,7 +25,7 @@ export function IngredientsStep({ formHook }: AddMenuFormProps) {
     addIngredient,
     removeIngredient,
     isValidationAttempted,
-  } = formHook;
+  } = useMenuForm();
 
   return (
     <div className="space-y-6">
@@ -47,30 +49,41 @@ export function IngredientsStep({ formHook }: AddMenuFormProps) {
         </div>
 
         <div className="flex flex-wrap gap-2 mt-2">
-          {form.watch("ingredients")?.map((ingredient, index) => (
-            <Badge
-              key={index}
-              variant="secondary"
-              className="px-3 py-1 text-sm flex items-center gap-1"
-            >
-              {ingredient}
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-4 w-4 p-0 ml-1"
-                onClick={() => removeIngredient(index)}
+          {form.watch("ingredients")?.map((ingredient, index) => {
+            return (
+              <Badge
+                key={index}
+                variant="secondary"
+                className="px-3 py-1 text-sm flex items-center gap-1"
               >
-                ×
-              </Button>
-            </Badge>
-          ))}
+                {ingredient}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-4 w-4 p-0 ml-1"
+                  onClick={() => removeIngredient(index)}
+                >
+                  ×
+                </Button>
+              </Badge>
+            );
+          })}
         </div>
-        {isValidationAttempted && form.formState.errors.ingredients && (
+        {form.formState.errors.ingredients?.message && (
           <p className="text-sm font-medium text-destructive">
             {form.formState.errors.ingredients.message}
           </p>
         )}
+
+        {Array.isArray(form.formState.errors.ingredients) &&
+          form.formState.errors.ingredients.map((error, index) =>
+            error?.message ? (
+              <p key={index} className="text-sm font-medium text-destructive">
+                Ingredient {index + 1}: {error.message}
+              </p>
+            ) : null
+          )}
       </div>
 
       <FormField
@@ -119,11 +132,7 @@ export function IngredientsStep({ formHook }: AddMenuFormProps) {
                 />
               ))}
             </div>
-            {isValidationAttempted && form.formState.errors.allergens && (
-              <p className="text-sm font-medium text-destructive">
-                {form.formState.errors.allergens.message}
-              </p>
-            )}
+            <FormMessage />
           </FormItem>
         )}
       />

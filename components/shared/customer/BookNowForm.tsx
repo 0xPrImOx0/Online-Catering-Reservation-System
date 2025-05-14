@@ -8,7 +8,7 @@ import SummaryBooking from "./SummaryBooking";
 import { Form } from "@/components/ui/form";
 import { useReservationForm } from "@/hooks/use-reservation-form";
 import { FormStepType, MultiStepForm } from "../MultiStepForm";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import PackageSelection from "./PackageSelection";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,10 +25,12 @@ import {
   cateringPackages,
   eventPackageFormSteps,
 } from "@/lib/shared/packages-metadata";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function BookNowForm({ id }: { id: string }) {
   const router = useRouter();
   const deconstructedId = id && id[0];
+  const { customer } = useAuthContext();
 
   const {
     reservationForm,
@@ -42,6 +44,18 @@ export default function BookNowForm({ id }: { id: string }) {
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { watch, setValue } = reservationForm;
+
+  useEffect(() => {
+    if (customer) {
+      const { fullName, email, contactNumber } = customer;
+
+      // if fullname, email, and contactNumber do have values then step should direct to step 2
+      if (fullName && email && contactNumber) setCurrentStep(1);
+      return;
+    }
+
+    return setCurrentStep(0);
+  }, [customer]);
 
   const cateringOptions = watch("cateringOptions");
 
@@ -132,7 +146,7 @@ export default function BookNowForm({ id }: { id: string }) {
   }, [deconstructedId]);
 
   const reservationFormStepComponents = [
-    <CustomerInformation key={"customer-information"} />,
+    <CustomerInformation key={"customer-information"} />, // Already Fixed
     <PackageSelection
       key={"package-selection"}
       showPackageSelection={showPackageSelection}

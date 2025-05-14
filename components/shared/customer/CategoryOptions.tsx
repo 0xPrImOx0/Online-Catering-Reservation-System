@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
 import { PackageOption } from "@/types/package-types";
-import CheckboxMenus from "./CheckboxMenus";
 import CategoryOptionsBadge from "./CategoryOptionsBadge";
 import { Label } from "@/components/ui/label";
-import AddRemoveMenuQuantity from "./AddRemoveMenuQuantity";
 import SelectServingSize from "./SelectServingSize";
 import { defaultCategoryAndCount } from "@/types/menu-types";
+import CheckboxMenusList from "./CheckboxMenusList";
 
 export default function CategoryOptions() {
   const { control, setValue, watch, clearErrors } =
@@ -87,10 +86,10 @@ export default function CategoryOptions() {
   }, [cateringOptions, selectedPackage]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-hidden">
       {selectedPackage && (
         <div>
-          <h3 className="mb-2 font-medium">
+          <h3 className="mb-2 text-base font-medium">
             Available Categories for {currentPackage}
           </h3>
 
@@ -105,15 +104,17 @@ export default function CategoryOptions() {
         name="selectedMenus"
         render={({ field }) => (
           <FormItem>
-            {categoryAndCount.map(({ category, count }) => (
-              <CheckboxMenus
-                key={category}
-                category={category}
-                field={field}
-                selectedMenus={selectedMenus}
-                count={count}
-              />
-            ))}
+            {categoryAndCount.map(({ category, count }) => {
+              return (
+                <CheckboxMenusList
+                  key={category}
+                  category={category}
+                  field={field}
+                  selectedMenus={selectedMenus}
+                  count={count}
+                />
+              );
+            })}
             <FormMessage />
           </FormItem>
         )}
@@ -144,12 +145,6 @@ export default function CategoryOptions() {
                               {menuItemsMap[menu]?.name || "Loading..."}
                             </span>
                             <div className="flex space-x-2">
-                              <AddRemoveMenuQuantity
-                                value={field.value}
-                                category={category}
-                                menu={menu}
-                                onChange={field.onChange}
-                              />
                               <SelectServingSize
                                 category={category}
                                 menu={menu}

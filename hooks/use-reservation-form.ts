@@ -1,3 +1,4 @@
+import { useAuthContext } from "@/contexts/AuthContext";
 import api from "@/lib/api/axiosInstance";
 import { cateringPackages } from "@/lib/shared/packages-metadata";
 import { MenuItem } from "@/types/menu-types";
@@ -36,7 +37,7 @@ const reservationSchema = z
       .string()
       .min(1, "Phone number is required")
       .refine((val) => /^\+639\d{9}$/.test(val), {
-        message: "Phone number must start with +63 9 and have 12 digits total",
+        message: "Phone number must start with 9 and have 10 digits total",
       }),
 
     reservationType: z.enum(["event", "personal"]),
@@ -150,7 +151,7 @@ const reservationSchema = z
       const selectedPackage = cateringPackages.find(
         (pkg) => pkg._id === data.selectedPackage
       );
-      let minimumGuestCount = selectedPackage?.minimumPax || 20;
+      const minimumGuestCount = selectedPackage?.minimumPax || 20;
       const allCategoriesHaveMenus = Object.values(data.selectedMenus).every(
         (categoryMenus) => Object.keys(categoryMenus).length > 0
       );
@@ -189,38 +190,40 @@ const reservationSchema = z
 
 export type ReservationValues = z.infer<typeof reservationSchema>;
 
-const defaultValues: ReservationValues = {
-  fullName: "",
-  email: "",
-  contactNumber: "",
-  reservationType: "event",
-  eventType: "",
-  reservationDate: new Date(),
-  reservationTime: "08:00",
-  period: "A.M.",
-  guestCount: 20,
-  venue: "",
-  cateringOptions: "event",
-  serviceType: "Buffet",
-  serviceFee: 0,
-  serviceHours: "4 hours",
-  selectedPackage: "",
-  selectedMenus: {},
-  totalPrice: 0,
-  specialRequests: "",
-  deliveryOption: "Pickup",
-  deliveryFee: 0,
-  deliveryAddress: "",
-  deliveryInstructions: "",
-  paymentReference: "",
-  status: "Pending",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
 export function useReservationForm() {
   const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
   const [showPackageSelection, setShowPackageSelection] = useState(false);
+
+  const { customer } = useAuthContext();
+
+  const defaultValues: ReservationValues = {
+    fullName: customer?.fullName || "",
+    email: customer?.email || "",
+    contactNumber: customer?.contactNumber || "",
+    reservationType: "event",
+    eventType: "",
+    reservationDate: new Date(),
+    reservationTime: "08:00",
+    period: "A.M.",
+    guestCount: 20,
+    venue: "",
+    cateringOptions: "event",
+    serviceType: "Buffet",
+    serviceFee: 0,
+    serviceHours: "4 hours",
+    selectedPackage: "",
+    selectedMenus: {},
+    totalPrice: 0,
+    specialRequests: "",
+    deliveryOption: "Pickup",
+    deliveryFee: 0,
+    deliveryAddress: "",
+    deliveryInstructions: "",
+    paymentReference: "",
+    status: "Pending",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
   const reservationForm = useForm<ReservationValues>({
     resolver: zodResolver(reservationSchema),

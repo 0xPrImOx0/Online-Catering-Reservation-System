@@ -11,19 +11,29 @@ import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { useEffect } from "react";
 
 export default function CustomerInformation() {
-  const { control } = useFormContext<ReservationValues>();
+  const { control, watch } = useFormContext<ReservationValues>();
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      console.log(value.contactNumber);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-4">
+        {/* Full Name Field */}
         <FormField
           control={control}
           name="fullName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="">
-                Full Name <span className="text-destructive">*</span>{" "}
+              <FormLabel>
+                Full Name <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <Input placeholder="Enter your full name" {...field} />
@@ -32,6 +42,8 @@ export default function CustomerInformation() {
             </FormItem>
           )}
         />
+
+        {/* Email Field */}
         <FormField
           control={control}
           name="email"
@@ -47,44 +59,22 @@ export default function CustomerInformation() {
             </FormItem>
           )}
         />
-        {/* <FormField
-          control={control}
-          name="contactNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="">
-                Contact Number <span className="text-destructive">*</span>{" "}
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter your contact number"
-                  type="number"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
+
         {/* Phone Field */}
         <FormField
           control={control}
           name="contactNumber"
           render={({ field }) => (
             <FormItem className="grid gap-2">
-              <FormLabel htmlFor="phone">Phone Number</FormLabel>
+              <FormLabel htmlFor="phone">
+                Phone Number <span className="text-destructive">*</span>
+              </FormLabel>
               <FormControl>
                 <PhoneInput
                   {...field}
                   defaultCountry="PH"
-                  placeholder="+63 912 345 6789"
-                  disableCountrySelect={true}
-                  value={
-                    parsePhoneNumberFromString(field.value || "", "PH")?.format(
-                      "E.164"
-                    ) || ""
-                  }
-                  onChange={(value) => field.onChange(value)}
+                  placeholder="912 345 6789"
+                  disabled
                 />
               </FormControl>
               <FormMessage />

@@ -70,7 +70,6 @@ export default function CustomerSiteHeader() {
                 variant={`${
                   isDarkMode && isMediumScreen ? "none" : "secondary"
                 }`}
-                effect={`${isMediumScreen ? "none" : "hoverUnderline"}`}
                 className="max-lg:bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground max-md:rounded-full max-md:size-10 dark:hover:bg-sidebar-accent"
                 asChild
               >
