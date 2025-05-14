@@ -1,6 +1,11 @@
 "use client";
 
-import { FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { ReservationValues } from "@/hooks/use-reservation-form";
 import { useFormContext } from "react-hook-form";
 import MiniCateringPackageCard from "./MiniCateringPackageCard";
@@ -17,10 +22,16 @@ import { cn } from "@/lib/utils";
 
 interface PackageSelectionProps {
   showPackageSelection: boolean;
+  cateringOptions: "packages" | "menus";
+  setCateringOptions: React.Dispatch<
+    React.SetStateAction<"packages" | "menus">
+  >;
 }
 
 export default function PackageSelection({
   showPackageSelection,
+  cateringOptions,
+  setCateringOptions,
 }: PackageSelectionProps) {
   const { control } = useFormContext<ReservationValues>();
 
@@ -28,43 +39,35 @@ export default function PackageSelection({
     <section>
       <div className="space-y-3">
         {!showPackageSelection && (
-          <FormField
-            control={control}
-            name="cateringOptions"
-            render={({ field }) => (
-              <FormItem className="flex gap-4 space-y-0 max-sm:flex-col">
-                {options.map((option) => (
-                  <FormControl key={option.value} className="flex-1">
-                    <Card
-                      onClick={() => field.onChange(option.value)}
-                      className={cn(
-                        "flex-1 cursor-pointer border-2 transition-all",
-                        {
-                          "border-green-500": field.value === option.value,
-                        }
-                      )}
-                    >
-                      <CardHeader className="p-0">
-                        <Image
-                          src={option.imageUrl}
-                          alt={option.label}
-                          width={200}
-                          height={200}
-                          className="object-cover w-full h-40 mb-2 rounded-t-lg"
-                        />
-                      </CardHeader>
-                      <CardContent className="mt-4 space-y-2">
-                        <CardTitle>{option.label}</CardTitle>
-                        <CardDescription className="text-justify">
-                          {option.description}
-                        </CardDescription>
-                      </CardContent>
-                    </Card>
-                  </FormControl>
-                ))}
-              </FormItem>
-            )}
-          />
+          <div className="flex gap-4 space-y-0 max-sm:flex-col">
+            {options.map((option) => (
+              <Card
+                key={option.value}
+                onClick={() =>
+                  setCateringOptions(option.value as typeof cateringOptions)
+                }
+                className={cn("flex-1 cursor-pointer border-2 transition-all", {
+                  "border-green-500": cateringOptions === option.value,
+                })}
+              >
+                <CardHeader className="p-0">
+                  <Image
+                    src={option.imageUrl}
+                    alt={option.label}
+                    width={200}
+                    height={200}
+                    className="object-cover w-full h-40 mb-2 rounded-t-lg"
+                  />
+                </CardHeader>
+                <CardContent className="mt-4 space-y-2">
+                  <CardTitle>{option.label}</CardTitle>
+                  <CardDescription className="text-justify">
+                    {option.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
 
         {showPackageSelection && (
@@ -78,8 +81,9 @@ export default function PackageSelection({
                     pkg={pkg}
                     field={field}
                     key={pkg._id}
-                  />
+                  />  
                 ))}
+                <FormMessage />
               </FormItem>
             )}
           />

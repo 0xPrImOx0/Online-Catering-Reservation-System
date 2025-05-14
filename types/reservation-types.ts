@@ -57,7 +57,6 @@ export interface ReservationItem {
   period: "A.M." | "P.M.";
   guestCount: number;
   venue: string;
-  cateringOptions: "event" | "custom";
   serviceType: ServiceType;
   serviceFee: number;
   serviceHours?: HoursArrayTypes;

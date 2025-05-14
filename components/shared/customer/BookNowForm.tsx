@@ -39,8 +39,10 @@ export default function BookNowForm({ id }: { id: string }) {
     showPackageSelection,
     setShowPackageSelection,
     getMenuItem,
+    cateringOptions,
+    setCateringOptions,
   } = useReservationForm();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { watch, setValue } = reservationForm;
@@ -57,18 +59,34 @@ export default function BookNowForm({ id }: { id: string }) {
     return setCurrentStep(0);
   }, [customer]);
 
-  const cateringOptions = watch("cateringOptions");
-
-  const dynamicPreviousBtn =
+  const [previousBtn, setPreviousBtn] = useState<string>(
     showPackageSelection && currentStep === 1
       ? "Change Catering Options"
-      : "Previous";
-  const dynamicNextBtn =
-    cateringOptions === "custom" || currentStep !== 1
+      : "Previous"
+  );
+  const [nextBtn, setNextBtn] = useState<string>(
+    cateringOptions === "menus" || currentStep !== 1
       ? "Next"
       : !showPackageSelection
       ? "Choose a Package"
-      : "Next";
+      : "Next"
+  );
+
+  useEffect(() => {
+    setPreviousBtn(
+      showPackageSelection && currentStep === 1
+        ? "Change Catering Options"
+        : "Previous"
+    );
+    setNextBtn(
+      cateringOptions === "menus" || currentStep !== 1
+        ? "Next"
+        : !showPackageSelection
+        ? "Choose a Package"
+        : "Next"
+    );
+    console.log(currentStep);
+  }, [showPackageSelection, currentStep, cateringOptions]);
 
   // Convert our form steps to the format expected by MultiStepForm
   const multiFormSteps: FormStepType[] = eventPackageFormSteps.map((step) => ({
@@ -80,14 +98,14 @@ export default function BookNowForm({ id }: { id: string }) {
   // Handle next step validation
   const handleNextStep = async (currentStep: number) => {
     const isValid = await validateStep(currentStep);
-    if (isValid && dynamicNextBtn === "Next") {
+    if (isValid && nextBtn === "Next") {
       setCurrentStep(currentStep + 1);
     }
     return isValid;
   };
 
   const handlePreviousStep = (currentStep: number) => {
-    if (currentStep > 0 && dynamicPreviousBtn === "Previous") {
+    if (currentStep > 0 && previousBtn === "Previous") {
       setCurrentStep(currentStep - 1);
       return true;
     }
@@ -120,7 +138,7 @@ export default function BookNowForm({ id }: { id: string }) {
 
       if (menu) {
         const prev = watch("selectedMenus") || {};
-        setValue("cateringOptions", "custom");
+        setCateringOptions("menus");
         setValue("selectedMenus", {
           ...prev,
           [menu.category]: {
@@ -134,7 +152,7 @@ export default function BookNowForm({ id }: { id: string }) {
         });
       }
       if (isPackage) {
-        setValue("cateringOptions", "event");
+        setCateringOptions("packages");
         setValue("selectedPackage", id as string);
         setShowPackageSelection(true);
         return;
@@ -150,6 +168,8 @@ export default function BookNowForm({ id }: { id: string }) {
     <PackageSelection
       key={"package-selection"}
       showPackageSelection={showPackageSelection}
+      cateringOptions={cateringOptions}
+      setCateringOptions={setCateringOptions}
     />,
     <CategoryOptions key={"category-options"} />,
     <ReservationDetails key={"reservation-details"} />,
@@ -168,8 +188,8 @@ export default function BookNowForm({ id }: { id: string }) {
         onComplete={handleComplete}
         onCancel={handleCancel}
         initialStep={currentStep}
-        nextButtonText={dynamicNextBtn}
-        previousButtonText={dynamicPreviousBtn}
+        nextButtonText={nextBtn}
+        previousButtonText={previousBtn}
         isSubmitComplete={isSubmitComplete}
         doneButtonText="Close"
         isReservationForm

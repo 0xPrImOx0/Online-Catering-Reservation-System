@@ -39,8 +39,7 @@ const reservationSchema = z
       .refine((val) => /^\+639\d{9}$/.test(val), {
         message: "Phone number must start with 9 and have 10 digits total",
       }),
-
-    reservationType: z.enum(["event", "personal"]),
+    reservationType: z.enum(["event", "personal"]), // should be removed
     eventType: z.enum(reservationEventTypes as [EventType, ...EventType[]], {
       required_error: "Please select an Event Type",
     }),
@@ -59,9 +58,6 @@ const reservationSchema = z
       .string({ required_error: "Please provide the Venue" })
       .min(3, "Venue must be at least 3 characters")
       .max(100, "Venue must not exceed 100 characters"),
-    cateringOptions: z.enum(["event", "custom"], {
-      required_error: "Please select a Service Mode",
-    }),
     serviceType: z.enum(["Buffet", "Plated"], {
       required_error: "Please select a Service Type",
     }),
@@ -69,9 +65,7 @@ const reservationSchema = z
     serviceHours: z
       .enum(hoursArray as [HoursArrayTypes, ...HoursArrayTypes[]])
       .optional(),
-    selectedPackage: z
-      .string({ required_error: "Please select a Package" })
-      .min(1, "Package selection is required"),
+    selectedPackage: z.string().min(1, "Please select a Package"),
     selectedMenus: z
       .record(
         z.string(), // category
@@ -207,7 +201,6 @@ export function useReservationForm() {
     period: "A.M.",
     guestCount: 20,
     venue: "",
-    cateringOptions: "event",
     serviceType: "Buffet",
     serviceFee: 0,
     serviceHours: "4 hours",
@@ -233,7 +226,7 @@ export function useReservationForm() {
   });
 
   const { watch, setValue } = reservationForm;
-  const cateringOptions = watch("cateringOptions");
+  const [cateringOptions, setCateringOptions] = useState<"packages" | "menus">("packages");
   const selectedPackage = watch("selectedPackage");
   const reservationType = watch("reservationType");
   const serviceFee = watch("serviceFee");
@@ -289,10 +282,10 @@ export function useReservationForm() {
 
   // Validate a specific step
   const validateStep = async (step: number): Promise<boolean> => {
-    if (cateringOptions === "event" && selectedPackage === "" && step !== 0) {
+    if (cateringOptions === "packages" && selectedPackage === "" && step !== 0) {
       setShowPackageSelection(true);
     }
-    if (cateringOptions === "custom" && step === 1) {
+    if (cateringOptions === "menus" && step === 1) {
       return true;
     }
     const fieldsToValidate = getFieldsToValidate(step);
@@ -362,7 +355,7 @@ export function useReservationForm() {
       case 0:
         return ["fullName", "email", "contactNumber"];
       case 1:
-        return ["cateringOptions", "selectedPackage"];
+        return ["selectedPackage"];
       case 2:
         return ["selectedMenus"];
       case 3:
@@ -502,6 +495,8 @@ export function useReservationForm() {
   };
 
   return {
+    cateringOptions,
+    setCateringOptions,
     reservationForm,
     validateStep,
     getMenuItem,
