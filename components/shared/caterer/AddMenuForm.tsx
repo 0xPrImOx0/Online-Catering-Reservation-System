@@ -39,6 +39,10 @@ export function AddMenuDialog({
 
   // Handle next step validation
   const handleNextStep = async (currentStep: number) => {
+    console.log(
+      "BEFORE GETTING LOCAL STORAGE IN INGREDIENT",
+      form.getValues("ingredients")
+    );
     if (currentStep === 1) {
       // Retrieve ingredients from localStorage
       const getIngredients = localStorage.getItem("ingredients");

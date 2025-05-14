@@ -41,6 +41,21 @@ export default function EditMenuForm({
 
   // Handle next step validation
   const handleNextStep = async (currentStep: number) => {
+    if (currentStep === 1) {
+      const initialIngredients = form.getValues("ingredients");
+
+      localStorage.setItem("ingredients", JSON.stringify(initialIngredients));
+
+      // Retrieve ingredients from localStorage
+      const getIngredients = localStorage.getItem("ingredients");
+
+      // Parse the ingredients and handle null or invalid JSON
+      const ingredients = getIngredients ? JSON.parse(getIngredients) : [];
+
+      // Set ingredients in the form
+      form.setValue("ingredients", ingredients);
+    }
+
     const isValid = await validateStep(currentStep);
     if (isValid) {
       setCurrentStep(currentStep + 1);
@@ -75,7 +90,7 @@ export default function EditMenuForm({
 
   // Create the form steps components
   const formStepComponents = [
-    <BasicInfoStep key="basic-info" formHook={menuFormHook} />,
+    <BasicInfoStep key="basic-info" />,
     <IngredientsStep key="ingredients" formHook={menuFormHook} />,
     <PreparationStep key="preparation" formHook={menuFormHook} />,
     <PricingStep key="pricing" formHook={menuFormHook} />,
