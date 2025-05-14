@@ -106,7 +106,7 @@ export default function CheckboxMenusList({
                           size={"custom"}
                           variant={"link"}
                           className={clsx(
-                            "font-medium max-w-fit -mt-1 overflow-hidden line-clamp-2 cursor-pointer",
+                            "font-medium max-w-fit -mt-0.5 overflow-hidden line-clamp-1 cursor-pointer",
                             {
                               "text-green-500":
                                 field.value[category]?.[menu._id as string],

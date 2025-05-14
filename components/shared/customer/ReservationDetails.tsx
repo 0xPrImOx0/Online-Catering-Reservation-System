@@ -62,6 +62,7 @@ export default function ReservationDetails() {
     }
     return 0;
   };
+
   useEffect(() => {
     if (pkg) {
       setValue(
@@ -165,6 +166,13 @@ export default function ReservationDetails() {
             </FormItem>
           )}
         />
+
+        {!pkg && serviceType === "Plated" && (
+          <div className="col-span-1 md:col-span-2">
+            <PlatedWarning />
+          </div>
+        )}
+
         {serviceType === "Plated" && (
           <>
             <FormField
@@ -223,31 +231,41 @@ export default function ReservationDetails() {
         )}
       </div>
 
-      {!pkg && serviceType === "Plated" && <PlatedWarning />}
-      <DeliveryOption control={control} />
-      <Separator className="" />
-      <div>
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold">{deliveryOption} Details</h3>
-          <p className="mb-4 text-sm text-muted-foreground">
-            Please provide details about the{" "}
-            {deliveryOption === "Delivery"
-              ? "delivery location"
-              : "pickup details"}{" "}
-            and any special instructions for the{" "}
-            {deliveryOption === "Delivery" ? "delivery team" : "catering team"}.
-          </p>
-          <DeliveryWarning isDelivery={deliveryOption === "Delivery"} />
-        </div>
-        <ReservationDateAndTime
-          control={control}
-          deliveryOption={deliveryOption}
-        />
-        {deliveryOption === "Delivery" && <DeliveryDetails control={control} />}
-      </div>
-      <Separator />
+      {serviceType !== "Plated" && (
+        <>
+          <DeliveryOption control={control} />
 
-      {/* <div className="mb-4">
+          <Separator className="" />
+
+          <div>
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold">
+                {deliveryOption} Details
+              </h3>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Please provide details about the{" "}
+                {deliveryOption === "Delivery"
+                  ? "delivery location"
+                  : "pickup details"}{" "}
+                and any special instructions for the{" "}
+                {deliveryOption === "Delivery"
+                  ? "delivery team"
+                  : "catering team"}
+                .
+              </p>
+              <DeliveryWarning isDelivery={deliveryOption === "Delivery"} />
+            </div>
+            <ReservationDateAndTime
+              control={control}
+              deliveryOption={deliveryOption}
+            />
+            {deliveryOption === "Delivery" && (
+              <DeliveryDetails control={control} />
+            )}
+          </div>
+          <Separator />
+
+          {/* <div className="mb-4">
         <h3 className="text-lg font-semibold">Payment Details</h3>
         <p className="mb-4 text-sm text-muted-foreground">
           Please scan the GCash QR code below to complete your payment and enter
@@ -282,13 +300,17 @@ export default function ReservationDetails() {
         </div>
       </div> */}
 
-      <div className="flex items-end justify-between">
-        <Label>Total Bill</Label>
-        <span className="text-2xl text-green-500 underline underline-offset-4">
-          &#8369;{" "}
-          {`${new Intl.NumberFormat("en-US").format(watch("totalPrice"))}.00`}
-        </span>
-      </div>
+          <div className="flex items-end justify-between">
+            <Label>Total Bill</Label>
+            <span className="text-2xl text-green-500 underline underline-offset-4">
+              &#8369;{" "}
+              {`${new Intl.NumberFormat("en-US").format(
+                watch("totalPrice")
+              )}.00`}
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 }
