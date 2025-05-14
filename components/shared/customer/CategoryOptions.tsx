@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useFormContext } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import { PackageOption } from "@/types/package-types";
 import CategoryOptionsBadge from "./CategoryOptionsBadge";
 import { Label } from "@/components/ui/label";
@@ -20,11 +20,17 @@ import SelectServingSize from "./SelectServingSize";
 import { defaultCategoryAndCount } from "@/types/menu-types";
 import CheckboxMenusList from "./CheckboxMenusList";
 
-export default function CategoryOptions() {
-  const { control, setValue, watch, clearErrors } =
+export default function CategoryOptions({
+  setIsCategoryError,
+  isCategoryError,
+}: {
+  setIsCategoryError: (value: boolean) => void;
+  isCategoryError: boolean;
+}) {
+  const { control, setValue, watch, clearErrors, setError } =
     useFormContext<ReservationValues>();
 
-  const { getMenuItem, getPackageItem } = useReservationForm();
+  const { getMenuItem, getPackageItem, cateringOptions } = useReservationForm();
 
   const selectedMenus = watch("selectedMenus");
 
@@ -56,7 +62,6 @@ export default function CategoryOptions() {
     }
     loadMenuItems();
   }, [selectedMenus]);
-  const cateringOptions = watch("cateringOptions");
   const selectedPackage = watch("selectedPackage");
   const serviceFee = watch("serviceFee");
   const deliveryFee = watch("deliveryFee");
@@ -67,7 +72,7 @@ export default function CategoryOptions() {
   );
 
   useEffect(() => {
-    if (cateringOptions === "custom" && !!selectedPackage) {
+    if (cateringOptions === "menus" && !!selectedPackage) {
       setCurrentPackage("");
       setValue("selectedPackage", "");
       setValue("selectedMenus", {});
@@ -84,6 +89,25 @@ export default function CategoryOptions() {
       }
     }
   }, [cateringOptions, selectedPackage]);
+
+  useEffect(() => {
+    const hasIncompleteCategory = categoryAndCount.some(
+      ({ category, count }) =>
+        Object.keys(selectedMenus[category] || {}).length !== count
+    );
+
+    if (hasIncompleteCategory) {
+      setIsCategoryError(true);
+      setError("selectedMenus", {
+        type: "manual",
+        message:
+          "Please select the required number of items for each category.",
+      });
+    } else {
+      setIsCategoryError(false);
+      clearErrors("selectedMenus");
+    }
+  }, [selectedMenus]);
 
   return (
     <div className="space-y-6 overflow-hidden">
@@ -178,7 +202,7 @@ export default function CategoryOptions() {
           </FormItem>
         )}
       />
-      {watch("totalPrice") > 0 && (
+      {watch("totalPrice") > 0 && watch("selectedPackage") === "" && (
         <div className="flex justify-between items-end">
           <Label>{serviceFee && deliveryFee ? "Total" : "Partial"} Price</Label>
           <span className="text-2xl text-green-500 underline underline-offset-4">

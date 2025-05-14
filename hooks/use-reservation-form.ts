@@ -187,6 +187,8 @@ export type ReservationValues = z.infer<typeof reservationSchema>;
 export function useReservationForm() {
   const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
   const [showPackageSelection, setShowPackageSelection] = useState(false);
+  const [isCategoryError, setIsCategoryError] = useState(false);
+
 
   const { customer } = useAuthContext();
 
@@ -509,5 +511,7 @@ export function useReservationForm() {
     handleReduceQuantity,
     handleAddQuantity,
     getAllMenus,
+    isCategoryError,
+    setIsCategoryError,
   };
 }

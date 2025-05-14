@@ -21,7 +21,7 @@ export default function CategoryOptionsBadge({
             className={clsx(
               "flex-1 max-w-fit",
               isLimitReached
-                ? "bg-green-500 border-green-500 text-foreground space-x-2 hover:text-background hover:bg-green-500"
+                ? "bg-green-500 border-green-500 text-background dark:text-foreground space-x-2 hover:text-background hover:bg-green-500"
                 : "border-green-500 "
             )}
             key={category}

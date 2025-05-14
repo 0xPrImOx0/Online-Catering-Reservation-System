@@ -41,11 +41,16 @@ export default function BookNowForm({ id }: { id: string }) {
     getMenuItem,
     cateringOptions,
     setCateringOptions,
+    isCategoryError,
+    setIsCategoryError,
   } = useReservationForm();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const { watch, setValue } = reservationForm;
+  const {
+    watch,
+    setValue,
+  } = reservationForm;
 
   useEffect(() => {
     if (customer) {
@@ -97,11 +102,14 @@ export default function BookNowForm({ id }: { id: string }) {
 
   // Handle next step validation
   const handleNextStep = async (currentStep: number) => {
-    const isValid = await validateStep(currentStep);
-    if (isValid && nextBtn === "Next") {
-      setCurrentStep(currentStep + 1);
+    if (!isCategoryError) {
+      const isValid = await validateStep(currentStep);
+      if (isValid && nextBtn === "Next") {
+        setCurrentStep(currentStep + 1);
+        }
+      return isValid;
     }
-    return isValid;
+    return false;
   };
 
   const handlePreviousStep = (currentStep: number) => {
@@ -171,10 +179,14 @@ export default function BookNowForm({ id }: { id: string }) {
       cateringOptions={cateringOptions}
       setCateringOptions={setCateringOptions}
     />,
-    <CategoryOptions key={"category-options"} />,
+    <CategoryOptions key={"category-options"} setIsCategoryError={setIsCategoryError} isCategoryError={isCategoryError} />,
     <ReservationDetails key={"reservation-details"} />,
     <SummaryBooking key={"summary-booking"} />,
   ];
+
+  useEffect(() => {
+    console.log("book now level: ", isCategoryError);
+  }, [isCategoryError]);
 
   const formContent = (
     <Form {...reservationForm}>
@@ -194,6 +206,7 @@ export default function BookNowForm({ id }: { id: string }) {
         doneButtonText="Close"
         isReservationForm
         setShowPackageSelection={setShowPackageSelection}
+        isCategoryError={isCategoryError}
       >
         {reservationFormStepComponents}
       </MultiStepForm>

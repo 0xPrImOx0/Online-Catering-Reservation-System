@@ -41,6 +41,7 @@ export function MultiStepForm({
   setShowPackageSelection,
 }: MultiStepFormProps) {
   const [formStep, setFormStep] = useState<number>(initialStep || 0);
+  // const { trigger } = useFormContext<ReservationValues>();
   const [isNextButtonDisabled, setIsNextButtonDisabled] =
     useState<boolean>(false);
   const reservationRef = useRef<HTMLDivElement>(null);
@@ -51,14 +52,12 @@ export function MultiStepForm({
     // If validation function is provided, use it
     if (onNextStep) {
       const isValid = await onNextStep(formStep);
-      console.log(!isValid && "NOT VALIDDD!!");
 
       if (nextButtonText === "Choose a Package" && setShowPackageSelection) {
         setShowPackageSelection(true);
         setFormStep(formStep);
         return;
       }
-
       if (isValid) {
         setFormStep(formStep + 1);
       }

@@ -106,10 +106,10 @@ export default function CheckboxMenusList({
                         <Button
                           size={"custom"}
                           variant={"link"}
-                          className={clsx("font-medium max-w-fit -mt-1", {
+                          className={clsx("font-medium max-w-fit -mt-1 overflow-hidden line-clamp-2", {
                             "text-green-500":
                               field.value[category]?.[menu._id as string],
-                            "text-muted-foreground line-through": isDisabled(
+                            "text-muted-foreground": isDisabled(
                               field,
                               menu._id as string
                             ),

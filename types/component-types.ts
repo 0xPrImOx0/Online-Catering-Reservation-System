@@ -3,6 +3,8 @@ import { AllergenProps, MenuItem } from "./menu-types";
 import { SetStateBoolean } from "./global-types";
 import { CateringPackagesProps } from "./package-types";
 import { FormStepType } from "@/components/shared/MultiStepForm";
+import { FieldErrors } from "react-hook-form";
+import { ReservationValues } from "@/hooks/use-reservation-form";
 
 //Search Bar Types
 export type SearchInputProps = {
@@ -133,6 +135,7 @@ export type MultiStepFormProps = {
   cancelButtonText?: string;
   isReservationForm?: boolean;
   setShowPackageSelection?: Dispatch<SetStateAction<boolean>>;
+  isCategoryError?: boolean;
 };
 
 export interface CustomerType {
