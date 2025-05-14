@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   useReservationForm,
   type ReservationValues,
@@ -7,21 +7,15 @@ import {
 import {
   Calendar,
   Check,
-  Clock,
   MapPin,
   MessageSquare,
-  Phone,
   User,
-  Mail,
-  Users,
   Utensils,
-  Building,
-  LucideIcon,
 } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { SelectedMenu } from "@/types/reservation-types";
+import type { SelectedMenu } from "@/types/reservation-types";
 
 interface MenuItem {
   id: string;
@@ -29,23 +23,18 @@ interface MenuItem {
 }
 
 const DetailRow = ({
-  icon: Icon,
   label,
   value,
 }: {
-  icon?: LucideIcon;
   label: string;
   value: string | number;
 }) => {
   return (
     <li className="flex items-start">
-      <span className="flex flex-1 items-center text-gray-500 shrink-0">
-        {Icon && <Icon className="mr-2 w-4 h-4" />}
+      <span className="flex flex-1 items-center text-foreground font-medium shrink-0">
         {label}
       </span>
-      <span className="ml-2 font-medium text-gray-800">
-        {value || "Not provided"}
-      </span>
+      <span className="ml-2 text-foreground">{value || "Not provided"}</span>
     </li>
   );
 };
@@ -150,68 +139,62 @@ export default function SummaryBooking() {
     >
       {/* Customer Information & Reservation Details */}
       <motion.div variants={fadeIn} className="grid grid-cols-1 gap-6">
-        <Card className="overflow-hidden border-none shadow-md">
-          <CardContent className="p-6">
-            <div className="flex items-center mb-4">
-              <User className="mr-2 w-5 h-5 text-gray-500" />
-              <h3 className="text-lg font-semibold text-gray-800">
+        <Card className="overflow-hidden border-2 shadow-md">
+          <CardHeader className="py-4 border-b">
+            <div className="flex items-center">
+              <User className="mr-2 w-5 h-5 text-foreground" />
+              <h3 className="text-lg font-semibold text-foreground">
                 Customer Information
               </h3>
             </div>
+          </CardHeader>
+          <CardContent className="p-6">
             <ul className="space-y-4">
-              <DetailRow icon={User} label="Name" value={formValues.fullName} />
-              <DetailRow icon={Mail} label="Email" value={formValues.email} />
-              <DetailRow
-                icon={Phone}
-                label="Phone"
-                value={formValues.contactNumber}
-              />
+              <DetailRow label="Name" value={formValues.fullName} />
+              <DetailRow label="Email" value={formValues.email} />
+              <DetailRow label="Phone" value={formValues.contactNumber} />
             </ul>
           </CardContent>
         </Card>
 
-        <Card className="overflow-hidden border-none shadow-md">
-          <CardContent className="p-6">
-            <div className="flex items-center mb-4">
-              <Calendar className="mr-2 w-5 h-5 text-gray-500" />
-              <h3 className="text-lg font-semibold text-gray-800">
+        <Card className="overflow-hidden border-2 shadow-md">
+          <CardHeader className="py-4 border-b">
+            <div className="flex items-center">
+              <Calendar className="mr-2 w-5 h-5 text-foreground" />
+              <h3 className="text-lg font-semibold text-foreground">
                 Reservation Details
               </h3>
             </div>
+          </CardHeader>
+          <CardContent className="p-6">
             <ul className="space-y-4">
               <DetailRow
-                icon={Utensils}
                 label="Reservation Type"
                 value={formValues.eventType}
               />
               {formValues.eventType != "Others" && (
                 <DetailRow
-                  icon={Utensils}
                   label="Event Type"
                   value={formValues.eventType || "Not provided"}
                 />
               )}
-              <DetailRow icon={Calendar} label="Date" value={formattedDate} />
-              <DetailRow icon={Clock} label="Time" value={formattedTime} />
+              <DetailRow label="Date" value={formattedDate} />
+              <DetailRow label="Time" value={formattedTime} />
               <DetailRow
-                icon={Users}
                 label="Guests"
                 value={formValues.guestCount || "Not provided"}
               />
               <DetailRow
-                icon={Utensils}
                 label="Service Type"
                 value={formValues.serviceType || "Not provided"}
               />
               {formValues.serviceType === "Plated" && (
                 <>
                   <DetailRow
-                    icon={Building}
                     label="Venue"
                     value={formValues.venue || "Not provided"}
                   />
                   <DetailRow
-                    icon={Clock}
                     label="Service Hours"
                     value={formValues.serviceHours as string}
                   />
@@ -225,15 +208,17 @@ export default function SummaryBooking() {
       {/* Selected Package */}
       {formValues.selectedPackage && (
         <motion.div variants={fadeIn}>
-          <Card className="overflow-hidden border-none shadow-md">
-            <CardContent className="p-6">
-              <div className="flex items-center mb-6">
-                <Check className="mr-2 w-5 h-5 text-gray-500" />
-                <h3 className="text-lg font-semibold text-gray-800">
+          <Card className="overflow-hidden border-2 shadow-md">
+            <CardHeader className="py-4 border-b">
+              <div className="flex items-center">
+                <Check className="mr-2 w-5 h-5 text-foreground" />
+                <h3 className="text-lg font-semibold text-foreground">
                   Selected Package
                 </h3>
               </div>
-              <span className="font-medium text-gray-800 text-md">
+            </CardHeader>
+            <CardContent className="p-6">
+              <span className="font-medium text-foreground text-md">
                 {getPackageItem(formValues.selectedPackage)?.name}
               </span>
             </CardContent>
@@ -246,54 +231,73 @@ export default function SummaryBooking() {
       {formValues.selectedMenus &&
         Object.keys(formValues.selectedMenus).length > 0 && (
           <motion.div variants={fadeIn}>
-            <Card className="overflow-hidden border-none shadow-md">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-6">
-                  <Utensils className="mr-2 w-5 h-5 text-gray-500" />
-                  <h3 className="text-lg font-semibold text-gray-800">
+            <Card className="overflow-hidden border-2 shadow-md">
+              <CardHeader className="py-4 border-b">
+                <div className="flex items-center">
+                  <Utensils className="mr-2 w-5 h-5 text-foreground" />
+                  <h3 className="text-lg font-semibold text-foreground">
                     Selected Menus
                   </h3>
                 </div>
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              </CardHeader>
+              <CardContent className="p-6">
+                {/* Conditionally apply grid-cols-2 only if there are more than 1 categories */}
+                <div
+                  className={`grid grid-cols-1 gap-8 ${
+                    Object.entries(formValues.selectedMenus).filter(
+                      ([_, menuIds]) => Object.keys(menuIds).length > 0
+                    ).length > 1
+                      ? "md:grid-cols-2"
+                      : ""
+                  }`}
+                >
                   {Object.entries(formValues.selectedMenus).map(
                     ([category, menuIds]: [string, SelectedMenu]) => {
                       const menuIdArray = Object.keys(menuIds);
                       if (menuIdArray.length === 0) return null;
                       return (
-                        <div key={category} className="space-y-4">
-                          <h4 className="pb-2 font-medium text-gray-700 border-b border-gray-100 text-md">
-                            {category}
-                          </h4>
-                          <ul className="space-y-3">
-                            {menuIdArray.map((id) => {
-                              const menu = menuItems[id];
-                              if (!menu) return null;
+                        // Each category is now wrapped in its own Card component
+                        <Card
+                          key={category}
+                          className="overflow-hidden border shadow"
+                        >
+                          <CardHeader className="py-3 border-b bg-muted/30">
+                            <h4 className="font-medium text-foreground text-md">
+                              {category}
+                            </h4>
+                          </CardHeader>
+                          <CardContent className="p-4">
+                            <ul className="space-y-3">
+                              {menuIdArray.map((id) => {
+                                const menu = menuItems[id];
+                                if (!menu) return null;
 
-                              return (
-                                <li
-                                  key={id}
-                                  className="flex gap-2 items-center text-gray-700"
-                                >
-                                  {menuIds[id].quantity > 1 ? (
-                                    <span className="text-green-600">
-                                      {menuIds[id].quantity} X
-                                    </span>
-                                  ) : (
-                                    <div className="flex justify-center items-center w-6 h-6 bg-green-50 rounded-full">
-                                      <Check className="h-3.5 w-3.5 text-green-600" />
-                                    </div>
-                                  )}
-                                  <span>{menu.name}</span>
-                                </li>
-                              );
-                            })}
-                            {isLoading && menuIdArray.length === 0 && (
-                              <div className="text-sm text-gray-500">
-                                Loading menu items...
-                              </div>
-                            )}
-                          </ul>
-                        </div>
+                                return (
+                                  <li
+                                    key={id}
+                                    className="flex gap-2 items-center text-foreground"
+                                  >
+                                    {menuIds[id].quantity > 1 ? (
+                                      <span className="text-green-600">
+                                        {menuIds[id].quantity} X
+                                      </span>
+                                    ) : (
+                                      <div className="flex justify-center items-center w-6 h-6 bg-green-700 rounded-full">
+                                        <Check className="size-4 text-white" />
+                                      </div>
+                                    )}
+                                    <span>{menu.name}</span>
+                                  </li>
+                                );
+                              })}
+                              {isLoading && menuIdArray.length === 0 && (
+                                <div className="text-sm text-foreground">
+                                  Loading menu items...
+                                </div>
+                              )}
+                            </ul>
+                          </CardContent>
+                        </Card>
                       );
                     }
                   )}
@@ -305,30 +309,29 @@ export default function SummaryBooking() {
 
       {/* Payment & Status */}
       <motion.div variants={fadeIn}>
-        <Card className="overflow-hidden border-none shadow-md">
-          <CardContent className="p-6">
-            <div className="flex items-center mb-6">
-              <Check className="mr-2 w-5 h-5 text-gray-500" />
-              <h3 className="text-lg font-semibold text-gray-800">
+        <Card className="overflow-hidden border-2 shadow-md">
+          <CardHeader className="py-4 border-b">
+            <div className="flex items-center">
+              <Check className="mr-2 w-5 h-5 text-foreground" />
+              <h3 className="text-lg font-semibold text-foreground">
                 Payment & Status
               </h3>
             </div>
+          </CardHeader>
+          <CardContent className="p-6">
             <ul className="space-y-4">
               <DetailRow
-                icon={Check}
                 label="Total Price"
                 value={currency(formValues.totalPrice)}
               />
               {formValues.serviceFee > 0 && (
                 <DetailRow
-                  icon={Check}
                   label="Service Fee"
                   value={currency(formValues.serviceFee)}
                 />
               )}
               {formValues.deliveryFee > 0 && (
                 <DetailRow
-                  icon={Check}
                   label="Delivery Fee"
                   value={currency(formValues.deliveryFee)}
                 />
@@ -352,30 +355,29 @@ export default function SummaryBooking() {
       {formValues.deliveryOption === "Delivery" &&
         (formValues.deliveryAddress || formValues.deliveryInstructions) && (
           <motion.div variants={fadeIn}>
-            <Card className="overflow-hidden border-none shadow-md">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-6">
-                  <MapPin className="mr-2 w-5 h-5 text-gray-500" />
-                  <h3 className="text-lg font-semibold text-gray-800">
+            <Card className="overflow-hidden border-2 shadow-md">
+              <CardHeader className="py-4 border-b">
+                <div className="flex items-center">
+                  <MapPin className="mr-2 w-5 h-5 text-foreground" />
+                  <h3 className="text-lg font-semibold text-foreground">
                     Delivery Details
                   </h3>
                 </div>
+              </CardHeader>
+              <CardContent className="p-6">
                 <ul className="space-y-4">
                   <DetailRow
-                    icon={MapPin}
                     label="Delivery Option"
                     value={formValues.deliveryOption}
                   />
                   {formValues.deliveryAddress && (
                     <DetailRow
-                      icon={MapPin}
                       label="Address"
                       value={formValues.deliveryAddress}
                     />
                   )}
                   {formValues.deliveryInstructions && (
                     <DetailRow
-                      icon={MessageSquare}
                       label="Instructions"
                       value={formValues.deliveryInstructions}
                     />
@@ -390,18 +392,19 @@ export default function SummaryBooking() {
 
       {formValues.specialRequests && (
         <motion.div variants={fadeIn}>
-          <Card className="overflow-hidden border-none shadow-md">
-            <CardContent className="p-6">
-              <div className="flex items-center mb-6">
-                <MessageSquare className="mr-2 w-5 h-5 text-gray-500" />
-                <h3 className="text-lg font-semibold text-gray-800">
+          <Card className="overflow-hidden border-2 shadow-md">
+            <CardHeader className="py-4 border-b">
+              <div className="flex items-center">
+                <MessageSquare className="mr-2 w-5 h-5 text-foreground" />
+                <h3 className="text-lg font-semibold text-foreground">
                   Additional Information
                 </h3>
               </div>
+            </CardHeader>
+            <CardContent className="p-6">
               <ul className="space-y-4">
                 {formValues.specialRequests && (
                   <DetailRow
-                    icon={MessageSquare}
                     label="Special Requests"
                     value={formValues.specialRequests}
                   />
