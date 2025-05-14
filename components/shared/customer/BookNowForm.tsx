@@ -101,34 +101,34 @@ export default function BookNowForm({ id }: { id: string }) {
 
   useEffect(() => {
     const fetchMenuOrPackage = async () => {
-      const menu = await getMenuItem(id as string);
+      const menu = await getMenuItem(deconstructedId);
       const isPackage = cateringPackages.some((pkg) => pkg._id === id);
 
-      if (deconstructedId) {
-        if (menu) {
-          const prev = watch("selectedMenus") || {};
-          setValue("cateringOptions", "custom");
-          setValue("selectedMenus", {
-            ...prev,
-            [menu.category]: {
-              ...(prev?.[menu.category] || {}),
-              [deconstructedId as string]: {
-                quantity: 1,
-                paxSelected: "4-6 pax",
-                pricePerPax: menu.prices[0].price,
-              },
+      if (menu) {
+        const prev = watch("selectedMenus") || {};
+        setValue("cateringOptions", "custom");
+        setValue("selectedMenus", {
+          ...prev,
+          [menu.category]: {
+            ...(prev?.[menu.category] || {}),
+            [deconstructedId as string]: {
+              quantity: 1,
+              paxSelected: "4-6 pax",
+              pricePerPax: menu.prices[0].price,
             },
-          });
-        }
-        if (isPackage) {
-          setValue("cateringOptions", "event");
-          setValue("selectedPackage", id as string);
-          setShowPackageSelection(true);
-          return;
-        }
+          },
+        });
+      }
+      if (isPackage) {
+        setValue("cateringOptions", "event");
+        setValue("selectedPackage", id as string);
+        setShowPackageSelection(true);
+        return;
       }
     };
-    fetchMenuOrPackage();
+    if (deconstructedId) {
+      fetchMenuOrPackage();
+    }
   }, [deconstructedId]);
 
   const reservationFormStepComponents = [
