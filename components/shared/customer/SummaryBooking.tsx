@@ -22,12 +22,33 @@ import { useFormContext } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { SelectedMenu } from "@/types/reservation-types";
-import { format } from "date-fns";
 
 interface MenuItem {
   id: string;
   name: string;
 }
+
+const DetailRow = ({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon?: LucideIcon;
+  label: string;
+  value: string | number;
+}) => {
+  return (
+    <li className="flex items-start">
+      <span className="flex flex-1 items-center text-gray-500 shrink-0">
+        {Icon && <Icon className="mr-2 w-4 h-4" />}
+        {label}
+      </span>
+      <span className="ml-2 font-medium text-gray-800">
+        {value || "Not provided"}
+      </span>
+    </li>
+  );
+};
 
 export default function SummaryBooking() {
   const { watch } = useFormContext<ReservationValues>();
@@ -112,28 +133,6 @@ export default function SummaryBooking() {
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
-  };
-
-  const DetailRow = ({
-    icon: Icon,
-    label,
-    value,
-  }: {
-    icon: LucideIcon;
-    label: string;
-    value: string | number;
-  }) => {
-    return (
-      <li className="flex items-start">
-        <span className="flex flex-1 items-center text-gray-500 shrink-0">
-          <Icon className="mr-2 w-4 h-4" />
-          {label}
-        </span>
-        <span className="ml-2 font-medium text-gray-800">
-          {value || "Not provided"}
-        </span>
-      </li>
-    );
   };
 
   return (

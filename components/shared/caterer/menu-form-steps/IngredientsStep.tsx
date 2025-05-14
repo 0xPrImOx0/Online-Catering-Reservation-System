@@ -24,7 +24,6 @@ export function IngredientsStep() {
     setNewIngredient,
     addIngredient,
     removeIngredient,
-    isValidationAttempted,
   } = useMenuForm();
 
   return (

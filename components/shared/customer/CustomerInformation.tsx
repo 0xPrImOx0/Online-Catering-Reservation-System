@@ -10,7 +10,6 @@ import { ReservationValues } from "@/hooks/use-reservation-form";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { useEffect } from "react";
 
 export default function CustomerInformation() {

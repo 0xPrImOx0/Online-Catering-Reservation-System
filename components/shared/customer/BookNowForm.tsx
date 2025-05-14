@@ -44,7 +44,7 @@ export default function BookNowForm({ id }: { id: string }) {
     isCategoryError,
     setIsCategoryError,
   } = useReservationForm();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { watch, setValue } = reservationForm;
