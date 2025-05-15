@@ -31,8 +31,6 @@ import { hoursArray } from "@/types/package-types";
 import PlatedWarning from "../PlatedWarning";
 import DeliveryWarning from "./DeliveryWarning";
 import { useEffect } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { withMask } from "use-mask-input";
 import { HoursArrayTypes } from "@/types/reservation-types";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import clsx from "clsx";

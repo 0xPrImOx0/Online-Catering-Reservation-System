@@ -12,8 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ReservationValues } from "@/hooks/use-reservation-form";
 import { eventTypes } from "@/types/package-types";
-export default function ReservationType({ control }: { control: any }) {
+import { Control } from "react-hook-form";
+
+
+export default function ReservationType({ control }: { control: Control<ReservationValues> }) {
   return (
     <FormField
       control={control}

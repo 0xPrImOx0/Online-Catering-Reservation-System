@@ -8,8 +8,9 @@ import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { ReservationValues } from "@/hooks/use-reservation-form";
 import { useFormContext } from "react-hook-form";
 import clsx from "clsx";
+import { Control } from "react-hook-form";
 
-export default function DeliveryOption({ control }: { control: any }) {
+export default function DeliveryOption({ control }: { control: Control<ReservationValues> }) {
   const { watch, setValue } = useFormContext<ReservationValues>();
   const deliveryFee = watch("deliveryFee");
 
@@ -30,7 +31,9 @@ export default function DeliveryOption({ control }: { control: any }) {
           </FormLabel>
           <div className="flex gap-4 pt-2">
             <Card
-              className={clsx("flex cursor-pointer flex-1 flex-col gap-2 p-4", {"border-green-500": field.value === "Pickup"})}
+              className={clsx("flex cursor-pointer flex-1 flex-col gap-2 p-4", {
+                "border-green-500": field.value === "Pickup",
+              })}
               onClick={() => {
                 field.onChange("Pickup");
                 handlePickupOption();
@@ -40,14 +43,18 @@ export default function DeliveryOption({ control }: { control: any }) {
               <CardDescription>No delivery fee applied</CardDescription>
             </Card>
             <Card
-              className={clsx("flex cursor-pointer flex-1 flex-col gap-2 p-4", {"border-green-500": field.value === "Delivery"})}
+              className={clsx("flex cursor-pointer flex-1 flex-col gap-2 p-4", {
+                "border-green-500": field.value === "Delivery",
+              })}
               onClick={() => {
                 field.onChange("Delivery");
                 handleDeliveryOption();
               }}
             >
               <CardTitle>Delivery</CardTitle>
-              <CardDescription>Additional delivery fee of ₱300 applied</CardDescription>
+              <CardDescription>
+                Additional delivery fee of ₱300 applied
+              </CardDescription>
             </Card>
           </div>
           <FormMessage />

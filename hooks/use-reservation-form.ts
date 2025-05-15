@@ -20,7 +20,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { ControllerRenderProps, useForm } from "react-hook-form";
 import * as z from "zod";
 
 // Reservation Schema for Zod
@@ -364,7 +364,7 @@ export function useReservationForm() {
 
   const handleCheckboxChange = (
     checked: boolean | string,
-    field: any,
+    field: ControllerRenderProps<ReservationValues, "selectedMenus">,
     category: PackageCategory,
     menu: MenuItem,
     count: number,
