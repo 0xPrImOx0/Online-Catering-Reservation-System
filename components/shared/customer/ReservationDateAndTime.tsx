@@ -7,13 +7,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ReservationValues } from "@/hooks/use-reservation-form";
 import { useFormContext } from "react-hook-form";
 import { withMask } from "use-mask-input";
@@ -29,12 +22,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Control } from "react-hook-form";
 
 export default function EventDate({
   control,
   deliveryOption,
 }: {
-  control: any;
+  control: Control<ReservationValues>;
   deliveryOption: "Delivery" | "Pickup";
 }) {
   const toOrOf = deliveryOption === "Delivery" ? "of" : "to";

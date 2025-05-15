@@ -2,7 +2,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormControl, FormLabel } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
-import { useReservationForm } from "@/hooks/use-reservation-form";
+import { ReservationValues, useReservationForm } from "@/hooks/use-reservation-form";
 import { CategoryProps, MenuItem } from "@/types/menu-types";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -16,18 +16,21 @@ import { Separator } from "@/components/ui/separator";
 import clsx from "clsx";
 import { SelectedMenus } from "@/types/reservation-types";
 import Image from "next/image";
+import { ControllerRenderProps } from "react-hook-form";
+
+type CheckboxMenusListProps = {
+  category: CategoryProps;
+  field: ControllerRenderProps<ReservationValues, "selectedMenus">;
+  count: number;
+  selectedMenus: SelectedMenus;
+};
 
 export default function CheckboxMenusList({
   category,
   field,
   count,
   selectedMenus,
-}: {
-  category: CategoryProps;
-  field: any;
-  count: number;
-  selectedMenus: SelectedMenus;
-}) {
+}: CheckboxMenusListProps) {
   const { handleCheckboxChange, getMenuItem, getAllMenus } =
     useReservationForm();
   // getMenusByCategory is now used inside useEffect
@@ -59,7 +62,10 @@ export default function CheckboxMenusList({
     return menu ? menu.prices[0].price : 0;
   };
 
-  const isDisabled = (field: any, id: string) => {
+  const isDisabled = (
+    field: ControllerRenderProps<ReservationValues, "selectedMenus">,
+    id: string
+  ) => {
     return (
       field.value[category] &&
       Object.keys(field.value[category]).length >= count &&

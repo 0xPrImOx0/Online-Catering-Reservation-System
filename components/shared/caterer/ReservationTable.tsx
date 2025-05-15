@@ -86,16 +86,9 @@ export default function ReservationTable({
             {format(new Date(info.row.original.reservationDate), "MMM d, yyyy")}
           </div>
           <div className="text-xs text-muted-foreground">
-            {info.row.original.reservationTime} {info.row.original.period}
+            {info.row.original.reservationTime}
           </div>
         </div>
-      ),
-    },
-    {
-      header: "Type",
-      accessorKey: "reservationType",
-      cell: (info) => (
-        <span className="capitalize">{info.row.original.reservationType}</span>
       ),
     },
     {
@@ -132,7 +125,7 @@ export default function ReservationTable({
 
         return (
           <>
-            <StatusBadge
+            {/* <StatusBadge
               status={info.row.original.status}
               onClick={() => {
                 if (!dashboard) {
@@ -142,7 +135,7 @@ export default function ReservationTable({
                   router.push(`/caterer/reservations`);
                 }
               }}
-            />
+            /> */}
 
             <Dialog open={showDialog} onOpenChange={setShowDialog}>
               <DialogContent>
@@ -216,7 +209,7 @@ export default function ReservationTable({
   });
   const currentDate = new Date();
 
-  const isUrgent = (eventDate: any) => {
+  const isUrgent = (eventDate: Date) => {
     const diffTime = Math.abs(eventDate.getTime() - currentDate.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays <= 1;
