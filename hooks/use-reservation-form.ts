@@ -43,25 +43,35 @@ const reservationSchema = z
     reservationDate: z.date({
       required_error: "Please provide the Event Date",
     }),
-    reservationTime: z
-      .string({
-        required_error: "Please provide the Event Time",
-      })
-      .refine(
-        (val) => {
-          if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) return false;
+    reservationTime: z.string().refine(
+      (time) => {
+        // Check if the time matches the 12-hour format pattern (hh:mm AM/PM)
+        const timePattern = /^(0?[1-9]|1[0-2]):([0-5][0-9]) (AM|PM)$/i;
+        return timePattern.test(time);
+      },
+      {
+        message: "Please enter a valid time in 12-hour format (e.g., 09:30 AM)",
+      }
+    ),
+    // reservationTime: z
+    //   .string({
+    //     required_error: "Please provide the Event Time",
+    //   })
+    //   .refine(
+    //     (val) => {
+    //       if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) return false;
 
-          const [hours, minutes] = val.split(":").map(Number);
-          const totalMinutes = hours * 60 + minutes;
+    //       const [hours, minutes] = val.split(":").map(Number);
+    //       const totalMinutes = hours * 60 + minutes;
 
-          // Between 8:00 (480 minutes) and 17:00 (1020 minutes)
-          return totalMinutes >= 480 && totalMinutes <= 1020;
-        },
-        {
-          message:
-            "Event Time must be in 24-hour format between 8:00 and 17:00",
-        }
-      ),
+    //       // Between 8:00 (480 minutes) and 17:00 (1020 minutes)
+    //       return totalMinutes >= 480 && totalMinutes <= 1020;
+    //     },
+    //     {
+    //       message:
+    //         "Event Time must be in 24-hour format between 8:00 and 17:00",
+    //     }
+    //   ),
     guestCount: z.number({ required_error: "Please provide the Guest Count" }),
     venue: z
       .string({ required_error: "Please provide the Venue" })
@@ -183,7 +193,7 @@ export function useReservationForm() {
     contactNumber: customer?.contactNumber || "",
     eventType: "Others",
     reservationDate: new Date(),
-    reservationTime: "08:00",
+    reservationTime: "08:00 AM",
     guestCount: 20,
     venue: "",
     serviceType: "Buffet",
