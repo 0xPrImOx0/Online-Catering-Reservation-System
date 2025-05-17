@@ -23,6 +23,18 @@ import { useEffect, useState } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import * as z from "zod";
 
+// Helper to convert “hh:mm AM/PM” → minutes since midnight
+const timeToMinutes = (time: string) => {
+  const [, hh, mm, period] = time.match(
+    /(0?[1-9]|1[0-2]):([0-5][0-9]) (AM|PM)/i
+  )!;
+  let hours = parseInt(hh, 10);
+  const minutes = parseInt(mm, 10);
+  if (period.toUpperCase() === "PM" && hours !== 12) hours += 12;
+  if (period.toUpperCase() === "AM" && hours === 12) hours = 0;
+  return hours * 60 + minutes;
+};
+
 // Reservation Schema for Zod
 const reservationSchema = z
   .object({
@@ -43,35 +55,34 @@ const reservationSchema = z
     reservationDate: z.date({
       required_error: "Please provide the Event Date",
     }),
-    reservationTime: z.string().refine(
-      (time) => {
-        // Check if the time matches the 12-hour format pattern (hh:mm AM/PM)
-        const timePattern = /^(0?[1-9]|1[0-2]):([0-5][0-9]) (AM|PM)$/i;
-        return timePattern.test(time);
-      },
-      {
-        message: "Please enter a valid time in 12-hour format (e.g., 09:30 AM)",
-      }
-    ),
-    // reservationTime: z
-    //   .string({
-    //     required_error: "Please provide the Event Time",
-    //   })
-    //   .refine(
-    //     (val) => {
-    //       if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) return false;
+    // reservationTime: z.string().refine(
+    //   (time) => {
+    //     // Check if the time matches the 12-hour format pattern (hh:mm AM/PM)
+    //     const timePattern = /^(0?[1-9]|1[0-2]):([0-5][0-9]) (AM|PM)$/i;
+    //     return timePattern.test(time);
+    //   },
+    //   {
+    //     message: "Please enter a valid time in 12-hour format (e.g., 09:30 AM)",
+    //   }
+    // ),
+    reservationTime: z
+      .string({
+        required_error: "Please provide the Event Time",
+      })
+      .refine(
+        (time) => {
+          // 1. Format check
+          const timePattern = /^(0?[1-9]|1[0-2]):([0-5][0-9]) (AM|PM)$/i;
+          if (!timePattern.test(time)) return false;
 
-    //       const [hours, minutes] = val.split(":").map(Number);
-    //       const totalMinutes = hours * 60 + minutes;
-
-    //       // Between 8:00 (480 minutes) and 17:00 (1020 minutes)
-    //       return totalMinutes >= 480 && totalMinutes <= 1020;
-    //     },
-    //     {
-    //       message:
-    //         "Event Time must be in 24-hour format between 8:00 and 17:00",
-    //     }
-    //   ),
+          // 2. Range check: 08:00 AM (480 mins) to 05:00 PM (17*60 = 1020 mins)
+          const mins = timeToMinutes(time);
+          return mins >= 8 * 60 && mins <= 17 * 60;
+        },
+        {
+          message: "Food Sentinel is only open from 8:00 AM to 5:00 PM.",
+        }
+      ),
     guestCount: z.number({ required_error: "Please provide the Guest Count" }),
     venue: z
       .string({ required_error: "Please provide the Venue" })

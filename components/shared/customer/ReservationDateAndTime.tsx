@@ -2,6 +2,7 @@ import CustomDatePicker from "@/components/ui/custom-date-picker";
 import { TimePicker } from "@/components/ui/custom-time-picker";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -42,6 +43,10 @@ export default function CustomDateAndTime({
                   {...field}
                 />
               </FormControl>
+              <FormDescription>
+                We can&apos;t accept rush order the earlist booking is 3 days
+                after
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -61,6 +66,10 @@ export default function CustomDateAndTime({
                 <FormControl className="">
                   <TimePicker value={field.value} onChange={field.onChange} />
                 </FormControl>
+                <FormDescription>
+                  Food Sentinel can only offer {deliveryOption} service within
+                  8:00 AM to 5:00 PM
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

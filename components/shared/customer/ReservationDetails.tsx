@@ -3,6 +3,7 @@
 import { Label } from "@/components/ui/label";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -189,9 +190,9 @@ export default function ReservationDetails() {
                   {errors.venue ? (
                     <FormMessage />
                   ) : (
-                    <p className="text-muted-foreground italic text-sm">
-                      *Enter venue details for our staff
-                    </p>
+                    <FormDescription>
+                      Enter venue details for our staff
+                    </FormDescription>
                   )}
                 </FormItem>
               )}
