@@ -23,7 +23,6 @@ import {
 import { useFormContext } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import ReservationType from "./ReservationType";
-import ReservationDateAndTime from "./ReservationDateAndTimeDraft";
 import DeliveryDetails from "./DeliveryDetails";
 import DeliveryOption from "./DeliveryOption";
 import { hoursArray } from "@/types/package-types";
@@ -33,7 +32,7 @@ import { useEffect } from "react";
 import { HoursArrayTypes } from "@/types/reservation-types";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import clsx from "clsx";
-import CustomDateAndTime from "./ReservationDateAdnTime";
+import CustomDateAndTime from "./ReservationDateAndTime";
 
 export default function ReservationDetails() {
   const {
@@ -260,10 +259,6 @@ export default function ReservationDetails() {
               control={control}
               deliveryOption={deliveryOption}
             />
-            {/* <ReservationDateAndTime
-              control={control}
-              deliveryOption={deliveryOption}
-            /> */}
             {deliveryOption === "Delivery" && (
               <DeliveryDetails control={control} />
             )}
