@@ -335,6 +335,7 @@ export function useReservationForm() {
     const reservation: ReservationItem = {
       ...data,
     };
+
     // Here you would typically send this to your API
     // If there's an image file, you would upload it first and then update the imageUrl
 

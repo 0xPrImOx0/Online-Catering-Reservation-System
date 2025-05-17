@@ -33,7 +33,6 @@ export default function BookNowForm({ id }: { id: string }) {
   const { customer } = useAuthContext();
 
   const {
-    form,
     reservationForm,
     validateStep,
     onSubmit,
@@ -125,8 +124,8 @@ export default function BookNowForm({ id }: { id: string }) {
   // Handle form submission
   const handleSubmit = () => {
     setShowConfirmation(true);
+
     reservationForm.handleSubmit((data) => {
-      console.log(JSON.stringify(data, null, 2));
       onSubmit(data);
       setIsSubmitComplete(true);
     })();

@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useForm, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { PackageOption } from "@/types/package-types";
 import { MenuItem } from "@/types/menu-types";
 import CategoryOptionsBadge from "./CategoryOptionsBadge";
@@ -36,17 +36,21 @@ export default function CategoryOptions({
   const selectedMenus = watch("selectedMenus");
 
   // State to hold loaded menu items
-  const [menuItemsMap, setMenuItemsMap] = useState<Record<string, MenuItem>>({});
+  const [menuItemsMap, setMenuItemsMap] = useState<Record<string, MenuItem>>(
+    {}
+  );
 
   // Preload all menu items used in selectedMenus
   useEffect(() => {
     async function loadMenuItems() {
       const menuIds: string[] = [];
-      Object.values(selectedMenus || {}).forEach((category: Record<string, unknown>) => {
-        Object.keys(category || {}).forEach((menuId) => {
-          if (!menuIds.includes(menuId)) menuIds.push(menuId);
-        });
-      });
+      Object.values(selectedMenus || {}).forEach(
+        (category: Record<string, unknown>) => {
+          Object.keys(category || {}).forEach((menuId) => {
+            if (!menuIds.includes(menuId)) menuIds.push(menuId);
+          });
+        }
+      );
       // Only fetch missing ones
       const missing = menuIds.filter((id) => !menuItemsMap[id]);
       if (missing.length === 0) return;

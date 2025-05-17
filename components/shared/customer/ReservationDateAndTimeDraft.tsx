@@ -44,8 +44,8 @@ export default function EventDate({
         render={({ field }) => (
           <FormItem className="flex-1">
             <FormLabel className="">
-              Date {toOrOf} {deliveryOption}
-              <span className="text-destructive">*</span>{" "}
+              Date {toOrOf} {deliveryOption}{" "}
+              <span className="text-destructive">*</span>
             </FormLabel>
             <FormControl>
               <Popover>
@@ -97,7 +97,7 @@ export default function EventDate({
               <FormItem className="">
                 <FormLabel className="">
                   Time {toOrOf} {deliveryOption}{" "}
-                  <span className="text-destructive">*</span>{" "}
+                  <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl className="">
                   <Input
