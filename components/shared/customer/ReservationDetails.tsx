@@ -23,10 +23,9 @@ import {
 } from "@/components/ui/select";
 import { useFormContext } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
-import ReservationType from "./ReservationType";
 import DeliveryDetails from "./DeliveryDetails";
 import DeliveryOption from "./DeliveryOption";
-import { hoursArray } from "@/types/package-types";
+import { eventTypes, hoursArray } from "@/types/package-types";
 import PlatedWarning from "../PlatedWarning";
 import DeliveryWarning from "./DeliveryWarning";
 import { useEffect } from "react";
@@ -72,7 +71,32 @@ export default function ReservationDetails() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <ReservationType control={control} />
+        <FormField
+          control={control}
+          name="eventType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="">
+                Event Type <span className="text-destructive">*</span>{" "}
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="rounded-md">
+                    <SelectValue placeholder="Enter your event type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {eventTypes.map((event) => (
+                    <SelectItem key={event} value={event}>
+                      {event}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={control}
           name="guestCount"

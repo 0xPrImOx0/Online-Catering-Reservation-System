@@ -12,8 +12,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { cateringPackages, options } from "@/lib/shared/packages-metadata";
 import { cn } from "@/lib/utils";
+import api from "@/lib/api/axiosInstance";
+import axios from "axios";
+import { CateringPackagesProps } from "@/types/package-types";
+import { useEffect, useState } from "react";
+import { options } from "@/lib/shared/packages-metadata";
 
 interface PackageSelectionProps {
   showPackageSelection: boolean;
@@ -29,6 +33,31 @@ export default function PackageSelection({
   setCateringOptions,
 }: PackageSelectionProps) {
   const { control } = useFormContext<ReservationValues>();
+
+  const [cateringPackages, setCateringPackages] = useState<
+    CateringPackagesProps[] | null
+  >(null);
+
+  useEffect(() => {
+    const getPackages = async () => {
+      try {
+        const response = await api.get("/packages");
+        setCateringPackages(response.data.data);
+      } catch (err: unknown) {
+        console.log("ERRRORRR", err);
+
+        if (axios.isAxiosError<{ error: string }>(err)) {
+          const message = err.response?.data.error || "Unexpected Error Occur";
+
+          console.error("ERROR FETCHING PACKAGES", message);
+        } else {
+          console.error("Something went wrong. Please try again.");
+        }
+      }
+    };
+
+    getPackages();
+  }, []);
 
   return (
     <section>
@@ -71,13 +100,21 @@ export default function PackageSelection({
             name="selectedPackage"
             render={({ field }) => (
               <FormItem className="grid gap-4 space-y-0 md:grid-cols-2">
-                {cateringPackages.map((pkg) => (
-                  <MiniCateringPackageCard
-                    pkg={pkg}
-                    field={field}
-                    key={pkg._id}
-                  />
-                ))}
+                {cateringPackages ? (
+                  cateringPackages.map((pkg) => (
+                    <MiniCateringPackageCard
+                      pkg={pkg}
+                      field={field}
+                      key={pkg._id}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-3 min-h-[50vh] flex justify-center items-center">
+                    <span className="font-bold text-4xl">
+                      No Packages Found
+                    </span>
+                  </div>
+                )}
                 <FormMessage />
               </FormItem>
             )}

@@ -50,26 +50,26 @@ export interface ReservationItem {
   fullName: string;
   email: string;
   contactNumber: string;
-  eventType: string;
-  reservationDate: Date;
-  reservationTime: string;
-  guestCount: number;
-  venue: string;
-  serviceType: ServiceType;
-  serviceFee: number;
-  serviceHours?: HoursArrayTypes;
   selectedPackage: string;
   selectedMenus: SelectedMenus;
-  totalPrice: number;
-  specialRequests?: string;
+  eventType: string;
+  guestCount: number;
+  serviceType: ServiceType;
   orderType: "Pickup" | "Delivery" | "";
+  reservationDate: Date;
+  reservationTime: string;
   deliveryFee?: number;
   deliveryAddress?: string;
   deliveryInstructions?: string;
+  totalPrice: number;
+  specialRequests?: string;
+  venue: string;
+  serviceFee: number;
+  serviceHours?: HoursArrayTypes;
   // paymentReference?: string;
   // status: ReservationStatusType;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export type ReservationTableProps = {

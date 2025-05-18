@@ -144,8 +144,6 @@ const reservationSchema = z
     //     ...ReservationStatusType[]
     //   ]
     // ),
-    createdAt: z.date(),
-    updatedAt: z.date(),
   })
   .superRefine((data, ctx) => {
     if (data.selectedPackage) {
@@ -220,8 +218,6 @@ export function useReservationForm() {
     deliveryInstructions: "",
     // paymentReference: "",
     // status: "Pending",
-    createdAt: new Date(),
-    updatedAt: new Date(),
   };
 
   const reservationForm = useForm<ReservationValues>({
@@ -254,7 +250,6 @@ export function useReservationForm() {
   const deliveryAddress = watch("deliveryAddress");
   const deliveryInstructions = watch("deliveryInstructions");
   const orderType = watch("orderType") as OrderType;
-  const totalPrice = watch("totalPrice");
 
   //This was formerly from BookNowForm.tsx which calculates the partial/total price of the reservation
   useEffect(() => {
