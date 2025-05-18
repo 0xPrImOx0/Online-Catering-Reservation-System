@@ -212,7 +212,7 @@ export function MultiStepForm({
                 {!isSubmitComplete && formSteps[formStep].title}
               </CardTitle>
               <CardDescription>
-                {formSteps[formStep].description}
+                {!isSubmitComplete && formSteps[formStep].description}
               </CardDescription>
             </CardHeader>
             <CardContent className="px-0 pb-16">

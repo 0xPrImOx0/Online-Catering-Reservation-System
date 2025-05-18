@@ -254,6 +254,7 @@ export function useReservationForm() {
   const deliveryAddress = watch("deliveryAddress");
   const deliveryInstructions = watch("deliveryInstructions");
   const orderType = watch("orderType") as OrderType;
+  const totalPrice = watch("totalPrice");
 
   //This was formerly from BookNowForm.tsx which calculates the partial/total price of the reservation
   useEffect(() => {
@@ -290,6 +291,7 @@ export function useReservationForm() {
     selectedPackage,
     serviceType,
     setValue,
+    orderType,
   ]);
 
   //This was formerly from Package Selection, where if there is a selected package, it will assign the Menu Category but with a blank menu to trigger the zod validation which says "At least one menu item must be selected for each category"
@@ -387,7 +389,7 @@ export function useReservationForm() {
       setValue("deliveryInstructions", "");
     } else {
       // Restore previously saved values
-      setValue("orderType", deliveryInformation.orderType);
+      setValue("orderType", deliveryInformation.orderType || "Pickup");
       setValue("deliveryFee", deliveryInformation.deliveryFee);
       setValue("deliveryAddress", deliveryInformation.deliveryAddress);
       setValue(
@@ -413,7 +415,7 @@ export function useReservationForm() {
       setValue("deliveryInstructions", "");
     } else {
       // Restore previously saved values
-      setValue("deliveryFee", deliveryInformation.deliveryFee);
+      setValue("deliveryFee", 300);
       setValue("deliveryAddress", deliveryInformation.deliveryAddress);
       setValue(
         "deliveryInstructions",

@@ -26,6 +26,7 @@ import {
   eventPackageFormSteps,
 } from "@/lib/shared/packages-metadata";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 export default function BookNowForm({ id }: { id: string }) {
   const router = useRouter();
@@ -122,19 +123,25 @@ export default function BookNowForm({ id }: { id: string }) {
   };
 
   // Handle form submission
-  const handleSubmit = () => {
-    setShowConfirmation(true);
+  const handleSubmit = async () => {
+    const data = reservationForm.getValues();
+    const isSuccess = await onSubmit(data);
+    console.log("THIS IS ALL THE DATA IN BOOKING FOR RESERVATION", data);
 
-    reservationForm.handleSubmit((data) => {
-      onSubmit(data);
-      setIsSubmitComplete(true);
-    })();
+    if (!isSuccess) {
+      toast.error("Submission Failed");
+      return;
+    }
+
+    setIsSubmitComplete(true);
+    setShowConfirmation(true);
   };
 
   // Handle form completion (close dialog and reset)
   const handleComplete = () => {
     setCurrentStep(0);
     setIsSubmitComplete(false);
+    router.push("/");
   };
 
   useEffect(() => {
@@ -206,7 +213,7 @@ export default function BookNowForm({ id }: { id: string }) {
         nextButtonText={nextBtn}
         previousButtonText={previousBtn}
         isSubmitComplete={isSubmitComplete}
-        doneButtonText="Close"
+        doneButtonText="Go to Home"
         isReservationForm
         setShowPackageSelection={setShowPackageSelection}
         isCategoryError={isCategoryError}
