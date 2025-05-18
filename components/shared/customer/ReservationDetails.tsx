@@ -50,13 +50,6 @@ export default function ReservationDetails() {
   const orderType = watch("orderType");
   const pkg = getPackageItem(selectedPackage);
 
-  // useEffect(() => {
-  //   if (reservationType === "event") {
-  //     const hour = serviceHours?.slice(0, 2);
-  //     setValue("serviceFee", 100 * Number(hour));
-  //   }
-  // }, [serviceHours]);
-
   const getRecommendedPax = () => {
     if (pkg) {
       return pkg.recommendedPax;
@@ -72,7 +65,7 @@ export default function ReservationDetails() {
       );
       setValue("serviceFee", pkg.serviceHours);
     }
-  }, [serviceType]);
+  }, [serviceType, pkg, setValue]);
 
   const recommendedPax = getRecommendedPax();
 
@@ -138,6 +131,7 @@ export default function ReservationDetails() {
                     )}
                     onClick={() => {
                       setValue("serviceType", "Buffet");
+                      setValue("orderType", "Pickup");
                       setValue("serviceFee", 0);
                       setValue("serviceHours", undefined);
                     }}
@@ -255,41 +249,6 @@ export default function ReservationDetails() {
             {orderType === "Delivery" && <DeliveryDetails control={control} />}
           </div>
           <Separator />
-
-          {/* <div className="mb-4">
-        <h3 className="text-lg font-semibold">Payment Details</h3>
-        <p className="mb-4 text-sm text-muted-foreground">
-          Please scan the GCash QR code below to complete your payment and enter
-          the reference number from your transaction.
-        </p>
-        <div className="flex flex-col items-center space-y-4">
-          <div className="border border-gray-200 rounded-lg p-4 w-60 h-60 mx-auto">
-            <Skeleton className="w-full h-full" />
-          </div>
-          <FormField
-            control={control}
-            name="paymentReference"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>
-                  GCash Reference Number{" "}
-                  <span className="text-destructive">*</span>{" "}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter payment reference number"
-                    {...field}
-                    ref={withMask("9999-9999-99999", {
-                      showMaskOnHover: false,
-                    })}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      </div> */}
 
           <div className="flex items-end justify-between">
             <Label>Total Bill</Label>

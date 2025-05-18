@@ -138,7 +138,7 @@ export default function SummaryBooking() {
       className="space-y-8"
     >
       {/* Customer Information & Reservation Details */}
-      <motion.div variants={fadeIn} className="grid grid-cols-1 gap-6">
+      <motion.div variants={fadeIn}>
         <Card className="overflow-hidden border-2 shadow-md">
           <CardHeader className="py-4 border-b">
             <div className="flex items-center">
@@ -156,7 +156,9 @@ export default function SummaryBooking() {
             </ul>
           </CardContent>
         </Card>
+      </motion.div>
 
+      <motion.div variants={fadeIn}>
         <Card className="overflow-hidden border-2 shadow-md">
           <CardHeader className="py-4 border-b">
             <div className="flex items-center">
@@ -197,6 +199,30 @@ export default function SummaryBooking() {
                   <DetailRow
                     label="Service Hours"
                     value={formValues.serviceHours as string}
+                  />
+                </>
+              )}
+              {formValues.serviceType !== "Plated" &&
+              formValues.orderType === "Pickup" ? (
+                <>
+                  <DetailRow
+                    label="Order Type"
+                    value={formValues.orderType || "Not provided"}
+                  />
+                </>
+              ) : (
+                <>
+                  <DetailRow
+                    label="Order Type"
+                    value={formValues.orderType || "Not provided"}
+                  />
+                  <DetailRow
+                    label="Delivery Address"
+                    value={formValues.deliveryAddress || "Not provided"}
+                  />
+                  <DetailRow
+                    label="Delivery Instructions"
+                    value={formValues.deliveryInstructions || "Not provided"}
                   />
                 </>
               )}
@@ -350,40 +376,6 @@ export default function SummaryBooking() {
           </CardContent>
         </Card>
       </motion.div>
-
-      {/* Delivery Details */}
-      {formValues.orderType === "Delivery" &&
-        (formValues.deliveryAddress || formValues.deliveryInstructions) && (
-          <motion.div variants={fadeIn}>
-            <Card className="overflow-hidden border-2 shadow-md">
-              <CardHeader className="py-4 border-b">
-                <div className="flex items-center">
-                  <MapPin className="mr-2 w-5 h-5 text-foreground" />
-                  <h3 className="text-lg font-semibold text-foreground">
-                    Delivery Details
-                  </h3>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <ul className="space-y-4">
-                  <DetailRow label="Order Type" value={formValues.orderType} />
-                  {formValues.deliveryAddress && (
-                    <DetailRow
-                      label="Address"
-                      value={formValues.deliveryAddress}
-                    />
-                  )}
-                  {formValues.deliveryInstructions && (
-                    <DetailRow
-                      label="Instructions"
-                      value={formValues.deliveryInstructions}
-                    />
-                  )}
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
 
       {/* Additional Information */}
 

@@ -17,7 +17,7 @@ export default function CustomDateAndTime({
   orderType,
 }: {
   control: Control<ReservationValues>;
-  orderType: "Delivery" | "Pickup";
+  orderType: "Delivery" | "Pickup" | "";
 }) {
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

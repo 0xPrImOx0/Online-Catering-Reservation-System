@@ -7,7 +7,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-export default function DeliveryDetails({ control }: { control: any }) {
+import { ReservationValues } from "@/hooks/use-reservation-form";
+import { Control } from "react-hook-form";
+export default function DeliveryDetails({
+  control,
+}: {
+  control: Control<ReservationValues>;
+}) {
   return (
     <div className="space-y-4 mt-4">
       <FormField

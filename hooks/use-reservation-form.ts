@@ -19,7 +19,7 @@ import {
 } from "@/types/reservation-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -239,7 +239,7 @@ export function useReservationForm() {
     }
   }, [customer, reservationForm]);
 
-  type OrderType = "" | "Pickup" | "Delivery";
+  type OrderType = "Pickup" | "Delivery" | "";
 
   const { watch, setValue } = reservationForm;
   const [cateringOptions, setCateringOptions] = useState<"packages" | "menus">(
@@ -247,12 +247,13 @@ export function useReservationForm() {
   );
   const selectedPackage = watch("selectedPackage");
   const serviceFee = watch("serviceFee");
-  const deliveryFee = watch("deliveryFee");
   const selectedMenus = watch("selectedMenus");
   const guestCount = watch("guestCount") || 1;
   const serviceType = watch("serviceType");
+  const deliveryFee = watch("deliveryFee");
+  const deliveryAddress = watch("deliveryAddress");
+  const deliveryInstructions = watch("deliveryInstructions");
   const orderType = watch("orderType") as OrderType;
-  const oldOrderType = useRef<OrderType>(orderType);
 
   //This was formerly from BookNowForm.tsx which calculates the partial/total price of the reservation
   useEffect(() => {
@@ -281,7 +282,15 @@ export function useReservationForm() {
       }
     };
     calculateTotal();
-  }, [selectedMenus, serviceFee, deliveryFee, guestCount]);
+  }, [
+    selectedMenus,
+    serviceFee,
+    deliveryFee,
+    guestCount,
+    selectedPackage,
+    serviceType,
+    setValue,
+  ]);
 
   //This was formerly from Package Selection, where if there is a selected package, it will assign the Menu Category but with a blank menu to trigger the zod validation which says "At least one menu item must be selected for each category"
   useEffect(() => {
@@ -354,16 +363,64 @@ export function useReservationForm() {
     return pkg;
   };
 
+  const [deliveryInformation, setDeliveryInformation] = useState({
+    orderType: "" as OrderType,
+    deliveryFee: 0,
+    deliveryAddress: "",
+    deliveryInstructions: "",
+  });
+
   useEffect(() => {
     if (serviceType === "Plated") {
-      // Save current orderType before resetting it
-      oldOrderType.current = orderType;
-      reservationForm.setValue("orderType", "");
+      // Save current values BEFORE clearing them
+      setDeliveryInformation({
+        orderType: orderType,
+        deliveryFee: deliveryFee,
+        deliveryAddress: deliveryAddress || "",
+        deliveryInstructions: deliveryInstructions || "",
+      });
+
+      // Clear delivery-related values
+      setValue("orderType", "");
+      setValue("deliveryFee", 0);
+      setValue("deliveryAddress", "");
+      setValue("deliveryInstructions", "");
     } else {
-      // Restore old orderType
-      reservationForm.setValue("orderType", oldOrderType.current);
+      // Restore previously saved values
+      setValue("orderType", deliveryInformation.orderType);
+      setValue("deliveryFee", deliveryInformation.deliveryFee);
+      setValue("deliveryAddress", deliveryInformation.deliveryAddress);
+      setValue(
+        "deliveryInstructions",
+        deliveryInformation.deliveryInstructions
+      );
     }
-  }, [serviceType, reservationForm, orderType]); // only runs when serviceType changes
+  }, [serviceType]);
+
+  useEffect(() => {
+    if (orderType === "Pickup") {
+      // Save current values BEFORE clearing them
+      setDeliveryInformation({
+        orderType: orderType,
+        deliveryFee: deliveryFee,
+        deliveryAddress: deliveryAddress || "",
+        deliveryInstructions: deliveryInstructions || "",
+      });
+
+      // Clear delivery-related values
+      setValue("deliveryFee", 0);
+      setValue("deliveryAddress", "");
+      setValue("deliveryInstructions", "");
+    } else {
+      // Restore previously saved values
+      setValue("deliveryFee", deliveryInformation.deliveryFee);
+      setValue("deliveryAddress", deliveryInformation.deliveryAddress);
+      setValue(
+        "deliveryInstructions",
+        deliveryInformation.deliveryInstructions
+      );
+    }
+  }, [orderType]);
 
   // Submit form function
   const onSubmit = (data: ReservationValues) => {

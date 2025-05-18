@@ -1,14 +1,18 @@
+"use client";
+
+import { CardTitle, Card, CardDescription } from "@/components/ui/card";
+
 import {
-  FormField,
-  FormItem,
   FormLabel,
+  FormItem,
+  FormField,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+
+import { cn } from "@/lib/utils";
+import { Control, useFormContext } from "react-hook-form";
 import { ReservationValues } from "@/hooks/use-reservation-form";
-import { useFormContext } from "react-hook-form";
-import clsx from "clsx";
-import { Control } from "react-hook-form";
+import { useEffect } from "react";
 
 export default function DeliveryOption({
   control,
@@ -17,13 +21,20 @@ export default function DeliveryOption({
 }) {
   const { watch, setValue } = useFormContext<ReservationValues>();
   const deliveryFee = watch("deliveryFee");
+  const orderType = watch("orderType");
 
   const handleDeliveryOption = () => {
     setValue("deliveryFee", 300);
   };
+
   const handlePickupOption = () => {
-    setValue("deliveryFee", deliveryFee - 300);
+    setValue("deliveryFee", 0);
   };
+
+  useEffect(() => {
+    console.log("ORDER TYPE UPDATED", orderType || "no order type provided");
+  });
+
   return (
     <FormField
       control={control}
@@ -35,7 +46,7 @@ export default function DeliveryOption({
           </FormLabel>
           <div className="flex gap-4 pt-2">
             <Card
-              className={clsx("flex cursor-pointer flex-1 flex-col gap-2 p-4", {
+              className={cn("flex cursor-pointer flex-1 flex-col gap-2 p-4", {
                 "border-green-500": field.value === "Pickup",
               })}
               onClick={() => {
@@ -47,7 +58,7 @@ export default function DeliveryOption({
               <CardDescription>No delivery fee applied</CardDescription>
             </Card>
             <Card
-              className={clsx("flex cursor-pointer flex-1 flex-col gap-2 p-4", {
+              className={cn("flex cursor-pointer flex-1 flex-col gap-2 p-4", {
                 "border-green-500": field.value === "Delivery",
               })}
               onClick={() => {
