@@ -14,10 +14,10 @@ import { Control } from "react-hook-form";
 
 export default function CustomDateAndTime({
   control,
-  deliveryOption,
+  orderType,
 }: {
   control: Control<ReservationValues>;
-  deliveryOption: "Delivery" | "Pickup";
+  orderType: "Delivery" | "Pickup";
 }) {
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -28,8 +28,7 @@ export default function CustomDateAndTime({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel className="my-1">
-                {deliveryOption} Date{" "}
-                <span className="text-destructive">*</span>
+                {orderType} Date <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <CustomDatePicker
@@ -60,15 +59,14 @@ export default function CustomDateAndTime({
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel className="">
-                  {deliveryOption} Time{" "}
-                  <span className="text-destructive">*</span>
+                  {orderType} Time <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl className="">
                   <TimePicker value={field.value} onChange={field.onChange} />
                 </FormControl>
                 <FormDescription>
-                  Food Sentinel can only offer {deliveryOption} service within
-                  8:00 AM to 5:00 PM
+                  Food Sentinel can only offer {orderType} service from 8:00 AM
+                  to 5:00 PM
                 </FormDescription>
                 <FormMessage />
               </FormItem>

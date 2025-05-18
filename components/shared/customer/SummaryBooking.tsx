@@ -352,7 +352,7 @@ export default function SummaryBooking() {
       </motion.div>
 
       {/* Delivery Details */}
-      {formValues.deliveryOption === "Delivery" &&
+      {formValues.orderType === "Delivery" &&
         (formValues.deliveryAddress || formValues.deliveryInstructions) && (
           <motion.div variants={fadeIn}>
             <Card className="overflow-hidden border-2 shadow-md">
@@ -366,10 +366,7 @@ export default function SummaryBooking() {
               </CardHeader>
               <CardContent className="p-6">
                 <ul className="space-y-4">
-                  <DetailRow
-                    label="Delivery Option"
-                    value={formValues.deliveryOption}
-                  />
+                  <DetailRow label="Order Type" value={formValues.orderType} />
                   {formValues.deliveryAddress && (
                     <DetailRow
                       label="Address"

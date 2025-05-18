@@ -151,50 +151,60 @@ export default function CategoryOptions({
           </FormItem>
         )}
       />
-      {Object.keys(selectedMenus).length > 0 && !selectedPackage && (
-        <FormField
-          control={control}
-          name="selectedMenus"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg font-semibold">
-                Menu Quantity
-              </FormLabel>
-              <FormControl>
-                <div className="space-y-6">
-                  {Object.keys(field.value).map((category) => (
-                    <div key={category} className="pb-4 border-b">
-                      <h3 className="mb-2 font-medium text-gray-700 text-md">
-                        {category}
-                      </h3>
-                      <ul className="space-y-2">
-                        {Object.keys(field.value[category]).map((menu) => (
-                          <li
-                            key={menu}
-                            className="flex justify-between items-center space-x-4"
-                          >
-                            <span>
-                              {menuItemsMap[menu]?.name || "Loading..."}
-                            </span>
-                            <div className="flex space-x-2">
-                              <SelectServingSize
-                                category={category}
-                                menu={menu}
-                                value={field.value}
-                                onChange={field.onChange}
-                              />
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      )}
+      {watch("selectedMenus") &&
+        Object.keys(watch("selectedMenus")).some(
+          (category) =>
+            Object.keys(watch("selectedMenus")[category] || {}).length > 0
+        ) &&
+        !selectedPackage && (
+          <FormField
+            control={control}
+            name="selectedMenus"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-lg font-semibold">
+                  Menu Quantity
+                </FormLabel>
+                <FormControl>
+                  <div className="space-y-6">
+                    {Object.keys(field.value)
+                      .filter(
+                        (category) =>
+                          Object.keys(field.value[category] || {}).length > 0
+                      )
+                      .map((category) => (
+                        <div key={category} className="pb-4 border-b">
+                          <h3 className="mb-2 font-medium text-gray-700 text-md">
+                            {category}
+                          </h3>
+                          <ul className="space-y-2">
+                            {Object.keys(field.value[category]).map((menu) => (
+                              <li
+                                key={menu}
+                                className="flex justify-between items-center space-x-4"
+                              >
+                                <span>
+                                  {menuItemsMap[menu]?.name || "Loading..."}
+                                </span>
+                                <div className="flex space-x-2">
+                                  <SelectServingSize
+                                    category={category}
+                                    menu={menu}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                  />
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        )}
       <FormField
         control={control}
         name="specialRequests"

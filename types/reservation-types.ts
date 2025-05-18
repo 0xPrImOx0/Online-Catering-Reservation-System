@@ -62,8 +62,8 @@ export interface ReservationItem {
   selectedMenus: SelectedMenus;
   totalPrice: number;
   specialRequests?: string;
-  deliveryOption: "Pickup" | "Delivery";
-  deliveryFee: number;
+  orderType: "Pickup" | "Delivery" | "";
+  deliveryFee?: number;
   deliveryAddress?: string;
   deliveryInstructions?: string;
   // paymentReference?: string;

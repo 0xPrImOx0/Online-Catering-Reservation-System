@@ -19,7 +19,7 @@ import {
 } from "@/types/reservation-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -120,8 +120,8 @@ const reservationSchema = z
       .string()
       .max(500, "Special Requests must not exceed 500 characters")
       .optional(),
-    deliveryOption: z.enum(["Pickup", "Delivery"], {
-      required_error: "Please select a Delivery Option",
+    orderType: z.enum(["Pickup", "Delivery", ""], {
+      required_error: "Please select an Order Type",
     }),
     deliveryFee: z.number(),
     deliveryAddress: z
@@ -214,7 +214,7 @@ export function useReservationForm() {
     selectedMenus: {},
     totalPrice: 0,
     specialRequests: "",
-    deliveryOption: "Pickup",
+    orderType: "Pickup",
     deliveryFee: 0,
     deliveryAddress: "",
     deliveryInstructions: "",
@@ -239,6 +239,8 @@ export function useReservationForm() {
     }
   }, [customer, reservationForm]);
 
+  type OrderType = "" | "Pickup" | "Delivery";
+
   const { watch, setValue } = reservationForm;
   const [cateringOptions, setCateringOptions] = useState<"packages" | "menus">(
     "packages"
@@ -249,6 +251,8 @@ export function useReservationForm() {
   const selectedMenus = watch("selectedMenus");
   const guestCount = watch("guestCount") || 1;
   const serviceType = watch("serviceType");
+  const orderType = watch("orderType") as OrderType;
+  const oldOrderType = useRef<OrderType>(orderType);
 
   //This was formerly from BookNowForm.tsx which calculates the partial/total price of the reservation
   useEffect(() => {
@@ -350,12 +354,25 @@ export function useReservationForm() {
     return pkg;
   };
 
+  useEffect(() => {
+    if (serviceType === "Plated") {
+      // Save current orderType before resetting it
+      oldOrderType.current = orderType;
+      reservationForm.setValue("orderType", "");
+    } else {
+      // Restore old orderType
+      reservationForm.setValue("orderType", oldOrderType.current);
+    }
+  }, [serviceType, reservationForm, orderType]); // only runs when serviceType changes
+
   // Submit form function
   const onSubmit = (data: ReservationValues) => {
     // Create menu item object
     const reservation: ReservationItem = {
       ...data,
     };
+
+    console.log("DATA AFTER SUBMITTING", data);
 
     // Here you would typically send this to your API
     // If there's an image file, you would upload it first and then update the imageUrl

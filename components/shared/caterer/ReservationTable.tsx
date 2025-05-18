@@ -110,7 +110,7 @@ export default function ReservationTable({
     },
     {
       header: "Delivery",
-      accessorKey: "deliveryOption",
+      accessorKey: "orderType",
       cell: (info) => <span>{info.row.original.deliveryOption}</span>,
     },
     {

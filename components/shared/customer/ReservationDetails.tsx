@@ -47,7 +47,7 @@ export default function ReservationDetails() {
   const selectedPackage = getValues("selectedPackage");
   const serviceType = watch("serviceType");
   const serviceHours = watch("serviceHours");
-  const deliveryOption = watch("deliveryOption");
+  const orderType = watch("orderType");
   const pkg = getPackageItem(selectedPackage);
 
   // useEffect(() => {
@@ -240,29 +240,19 @@ export default function ReservationDetails() {
 
           <div>
             <div className="mb-4">
-              <h3 className="text-lg font-semibold">
-                {deliveryOption} Details
-              </h3>
+              <h3 className="text-lg font-semibold">{orderType} Details</h3>
               <p className="mb-4 text-sm text-muted-foreground">
                 Please provide details about the{" "}
-                {deliveryOption === "Delivery"
+                {orderType === "Delivery"
                   ? "delivery location"
                   : "pickup details"}{" "}
                 and any special instructions for the{" "}
-                {deliveryOption === "Delivery"
-                  ? "delivery team"
-                  : "catering team"}
-                .
+                {orderType === "Delivery" ? "delivery team" : "catering team"}.
               </p>
-              <DeliveryWarning isDelivery={deliveryOption === "Delivery"} />
+              <DeliveryWarning isDelivery={orderType === "Delivery"} />
             </div>
-            <CustomDateAndTime
-              control={control}
-              deliveryOption={deliveryOption}
-            />
-            {deliveryOption === "Delivery" && (
-              <DeliveryDetails control={control} />
-            )}
+            <CustomDateAndTime control={control} orderType={orderType} />
+            {orderType === "Delivery" && <DeliveryDetails control={control} />}
           </div>
           <Separator />
 

@@ -10,7 +10,11 @@ import { useFormContext } from "react-hook-form";
 import clsx from "clsx";
 import { Control } from "react-hook-form";
 
-export default function DeliveryOption({ control }: { control: Control<ReservationValues> }) {
+export default function DeliveryOption({
+  control,
+}: {
+  control: Control<ReservationValues>;
+}) {
   const { watch, setValue } = useFormContext<ReservationValues>();
   const deliveryFee = watch("deliveryFee");
 
@@ -23,11 +27,11 @@ export default function DeliveryOption({ control }: { control: Control<Reservati
   return (
     <FormField
       control={control}
-      name="deliveryOption"
+      name="orderType"
       render={({ field }) => (
         <FormItem className="col-span-2">
           <FormLabel className="">
-            {field.value} Option <span className="text-destructive">*</span>{" "}
+            Order Type <span className="text-destructive">*</span>{" "}
           </FormLabel>
           <div className="flex gap-4 pt-2">
             <Card
