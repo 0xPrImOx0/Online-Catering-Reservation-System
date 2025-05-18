@@ -4,18 +4,12 @@ import {
   useReservationForm,
   type ReservationValues,
 } from "@/hooks/use-reservation-form";
-import {
-  Calendar,
-  Check,
-  MapPin,
-  MessageSquare,
-  User,
-  Utensils,
-} from "lucide-react";
+import { Calendar, Check, MessageSquare, User, Utensils } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import type { SelectedMenu } from "@/types/reservation-types";
+import { CateringPackagesProps } from "@/types/package-types";
 
 interface MenuItem {
   id: string;
@@ -40,7 +34,7 @@ const DetailRow = ({
 };
 
 export default function SummaryBooking() {
-  const { watch } = useFormContext<ReservationValues>();
+  const { watch, setValue } = useFormContext<ReservationValues>();
   const { getMenuItem, getPackageItem } = useReservationForm();
 
   // Use watch to get reactive form values
@@ -124,6 +118,32 @@ export default function SummaryBooking() {
     visible: { opacity: 1, y: 0 },
   };
 
+  const [selectedPackageData, setSelectedPackageData] =
+    useState<CateringPackagesProps | null>(null);
+
+  useEffect(() => {
+    if (!formValues.selectedPackage) {
+      setSelectedPackageData(null);
+      return;
+    }
+
+    async function fetchPackage() {
+      const pkg = await getPackageItem(formValues.selectedPackage);
+      setSelectedPackageData(pkg);
+    }
+
+    fetchPackage();
+  }, [formValues.selectedPackage]);
+
+  useEffect(() => {
+    if (formValues.serviceType === "Plated") {
+      setValue("orderType", "");
+      setValue("deliveryAddress", "");
+      setValue("deliveryInstructions", "");
+      setValue("deliveryFee", 0);
+    }
+  }, [formValues.serviceType, setValue]);
+
   return (
     <motion.div
       initial="hidden"
@@ -202,28 +222,31 @@ export default function SummaryBooking() {
                   />
                 </>
               )}
-              {formValues.serviceType !== "Plated" &&
-              formValues.orderType === "Pickup" ? (
+              {formValues.serviceType !== "Plated" && (
                 <>
-                  <DetailRow
-                    label="Order Type"
-                    value={formValues.orderType || "Not provided"}
-                  />
-                </>
-              ) : (
-                <>
-                  <DetailRow
-                    label="Order Type"
-                    value={formValues.orderType || "Not provided"}
-                  />
-                  <DetailRow
-                    label="Delivery Address"
-                    value={formValues.deliveryAddress || "Not provided"}
-                  />
-                  <DetailRow
-                    label="Delivery Instructions"
-                    value={formValues.deliveryInstructions || "Not provided"}
-                  />
+                  {formValues.orderType === "Pickup" ? (
+                    <DetailRow
+                      label="Order Type"
+                      value={formValues.orderType || "Not provided"}
+                    />
+                  ) : (
+                    <>
+                      <DetailRow
+                        label="Order Type"
+                        value={formValues.orderType || "Not provided"}
+                      />
+                      <DetailRow
+                        label="Delivery Address"
+                        value={formValues.deliveryAddress || "Not provided"}
+                      />
+                      <DetailRow
+                        label="Delivery Instructions"
+                        value={
+                          formValues.deliveryInstructions || "Not provided"
+                        }
+                      />
+                    </>
+                  )}
                 </>
               )}
             </ul>
@@ -245,7 +268,7 @@ export default function SummaryBooking() {
             </CardHeader>
             <CardContent className="p-6">
               <span className="font-medium text-foreground text-md">
-                {getPackageItem(formValues.selectedPackage)?.name}
+                {selectedPackageData?.name || "No package selected"}
               </span>
             </CardContent>
           </Card>

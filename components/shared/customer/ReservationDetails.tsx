@@ -25,10 +25,14 @@ import { useFormContext } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import DeliveryDetails from "./DeliveryDetails";
 import DeliveryOption from "./DeliveryOption";
-import { eventTypes, hoursArray } from "@/types/package-types";
+import {
+  CateringPackagesProps,
+  eventTypes,
+  hoursArray,
+} from "@/types/package-types";
 import PlatedWarning from "../PlatedWarning";
 import DeliveryWarning from "./DeliveryWarning";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { HoursArrayTypes } from "@/types/reservation-types";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import clsx from "clsx";
@@ -47,7 +51,21 @@ export default function ReservationDetails() {
   const serviceType = watch("serviceType");
   const serviceHours = watch("serviceHours");
   const orderType = watch("orderType");
-  const pkg = getPackageItem(selectedPackage);
+  const [pkg, setPkg] = useState<CateringPackagesProps | null>(null);
+
+  useEffect(() => {
+    if (!selectedPackage) {
+      setPkg(null);
+      return;
+    }
+
+    async function fetchPackage() {
+      const packageData = await getPackageItem(selectedPackage);
+      setPkg(packageData);
+    }
+
+    fetchPackage();
+  }, [selectedPackage]);
 
   const getRecommendedPax = () => {
     if (pkg) {
@@ -226,7 +244,7 @@ export default function ReservationDetails() {
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
                     disabled={!!pkg}
                   >
                     <FormControl>
@@ -273,18 +291,15 @@ export default function ReservationDetails() {
             {orderType === "Delivery" && <DeliveryDetails control={control} />}
           </div>
           <Separator />
-
-          <div className="flex items-end justify-between">
-            <Label>Total Bill</Label>
-            <span className="text-2xl text-green-500 underline underline-offset-4">
-              &#8369;{" "}
-              {`${new Intl.NumberFormat("en-US").format(
-                watch("totalPrice")
-              )}.00`}
-            </span>
-          </div>
         </>
       )}
+      <div className="flex items-end justify-between">
+        <Label>Total Bill</Label>
+        <span className="text-2xl text-green-500 underline underline-offset-4">
+          &#8369;{" "}
+          {`${new Intl.NumberFormat("en-US").format(watch("totalPrice"))}.00`}
+        </span>
+      </div>
     </div>
   );
 }
