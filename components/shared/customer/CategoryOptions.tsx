@@ -67,11 +67,16 @@ export default function CategoryOptions({
     }
     loadMenuItems();
   }, [selectedMenus]);
+
   const selectedPackage = watch("selectedPackage");
+
+  console.log("SELECTEDPACKAGE", selectedPackage);
   const serviceFee = watch("serviceFee");
   const deliveryFee = watch("deliveryFee");
 
   const [currentPackage, setCurrentPackage] = useState<string>();
+
+  console.log("CURRENTTTTNESS PACKAGGERSSSS", currentPackage);
   const [categoryAndCount, setCategoryAndCount] = useState<PackageOption[]>(
     defaultCategoryAndCount
   );
@@ -87,12 +92,18 @@ export default function CategoryOptions({
       return;
     }
     if (selectedPackage) {
-      const selectedPackageData = getPackageItem(selectedPackage);
+      async function fetchPackage() {
+        const selectedPackageData = await getPackageItem(selectedPackage);
 
-      if (selectedPackageData) {
-        setCurrentPackage(selectedPackageData.name);
-        setCategoryAndCount(selectedPackageData.options);
+        console.log("USE EFFECT IN SELECTED PACKAGE DATA", selectedPackageData);
+
+        if (selectedPackageData) {
+          setCurrentPackage(selectedPackageData.name);
+          setCategoryAndCount(selectedPackageData.options);
+        }
       }
+
+      fetchPackage();
     }
   }, [cateringOptions, selectedPackage]);
 

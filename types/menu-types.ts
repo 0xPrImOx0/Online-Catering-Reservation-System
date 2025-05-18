@@ -299,14 +299,14 @@ export const allergensSelect: CustomSelectItemProps[] = [
 ];
 
 export const defaultCategoryAndCount: PackageOption[] = [
-  { category: "Soup", count: 5 },
-  { category: "Salad", count: 5 },
-  { category: "Beef", count: 5 },
-  { category: "Pork", count: 5 },
-  { category: "Noodle", count: 5 },
-  { category: "Chicken", count: 5 },
-  { category: "Seafood", count: 5 },
-  { category: "Vegetable", count: 5 },
-  { category: "Dessert", count: 5 },
-  { category: "Beverage", count: 5 },
+  { category: "Soup", count: 1 },
+  { category: "Salad", count: 1 },
+  { category: "Beef", count: 1 },
+  { category: "Pork", count: 1 },
+  { category: "Noodle", count: 1 },
+  { category: "Chicken", count: 1 },
+  { category: "Seafood", count: 1 },
+  { category: "Vegetable", count: 1 },
+  { category: "Dessert", count: 1 },
+  { category: "Beverage", count: 1 },
 ];

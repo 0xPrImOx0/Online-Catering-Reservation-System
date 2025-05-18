@@ -1,7 +1,10 @@
 "use client";
 
 import { FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { ReservationValues } from "@/hooks/use-reservation-form";
+import {
+  ReservationValues,
+  useReservationForm,
+} from "@/hooks/use-reservation-form";
 import { useFormContext } from "react-hook-form";
 import MiniCateringPackageCard from "./MiniCateringPackageCard";
 import {
@@ -13,10 +16,6 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import api from "@/lib/api/axiosInstance";
-import axios from "axios";
-import { CateringPackagesProps } from "@/types/package-types";
-import { useEffect, useState } from "react";
 import { options } from "@/lib/shared/packages-metadata";
 
 interface PackageSelectionProps {
@@ -34,30 +33,7 @@ export default function PackageSelection({
 }: PackageSelectionProps) {
   const { control } = useFormContext<ReservationValues>();
 
-  const [cateringPackages, setCateringPackages] = useState<
-    CateringPackagesProps[] | null
-  >(null);
-
-  useEffect(() => {
-    const getPackages = async () => {
-      try {
-        const response = await api.get("/packages");
-        setCateringPackages(response.data.data);
-      } catch (err: unknown) {
-        console.log("ERRRORRR", err);
-
-        if (axios.isAxiosError<{ error: string }>(err)) {
-          const message = err.response?.data.error || "Unexpected Error Occur";
-
-          console.error("ERROR FETCHING PACKAGES", message);
-        } else {
-          console.error("Something went wrong. Please try again.");
-        }
-      }
-    };
-
-    getPackages();
-  }, []);
+  const { cateringPackages } = useReservationForm();
 
   return (
     <section>

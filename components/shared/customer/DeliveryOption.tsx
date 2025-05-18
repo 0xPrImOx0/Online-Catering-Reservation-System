@@ -20,7 +20,6 @@ export default function DeliveryOption({
   control: Control<ReservationValues>;
 }) {
   const { watch, setValue } = useFormContext<ReservationValues>();
-  const deliveryFee = watch("deliveryFee");
   const orderType = watch("orderType");
 
   const handleDeliveryOption = () => {

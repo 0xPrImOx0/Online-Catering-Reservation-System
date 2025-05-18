@@ -1,8 +1,8 @@
 import { useAuthContext } from "@/contexts/AuthContext";
 import api from "@/lib/api/axiosInstance";
-import { cateringPackages } from "@/lib/shared/packages-metadata";
 import { MenuItem } from "@/types/menu-types";
 import {
+  CateringPackagesProps,
   EventType,
   hoursArray,
   PackageCategory,
@@ -36,119 +36,129 @@ const timeToMinutes = (time: string) => {
 };
 
 // Reservation Schema for Zod
-const reservationSchema = z
-  .object({
-    fullName: z
-      .string()
-      .min(2, "Full Name must be at least 2 characters")
-      .max(50, "Full Name must not exceed 50 characters"),
-    email: z.string().email("Please enter a valid email address"),
-    contactNumber: z
-      .string()
-      .min(1, "Phone number is required")
-      .refine((val) => /^\+639\d{9}$/.test(val), {
-        message: "Phone number must start with 9 and have 10 digits total",
-      }),
-    eventType: z.enum(reservationEventTypes as [EventType, ...EventType[]], {
-      required_error: "Please select an Event Type",
+const reservationSchema = z.object({
+  fullName: z
+    .string()
+    .min(2, "Full Name must be at least 2 characters")
+    .max(50, "Full Name must not exceed 50 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  contactNumber: z
+    .string()
+    .min(1, "Phone number is required")
+    .refine((val) => /^\+639\d{9}$/.test(val), {
+      message: "Phone number must start with 9 and have 10 digits total",
     }),
-    reservationDate: z.date({
-      required_error: "Please provide the Event Date",
-    }),
-    // reservationTime: z.string().refine(
-    //   (time) => {
-    //     // Check if the time matches the 12-hour format pattern (hh:mm AM/PM)
-    //     const timePattern = /^(0?[1-9]|1[0-2]):([0-5][0-9]) (AM|PM)$/i;
-    //     return timePattern.test(time);
-    //   },
-    //   {
-    //     message: "Please enter a valid time in 12-hour format (e.g., 09:30 AM)",
-    //   }
-    // ),
-    reservationTime: z
-      .string({
-        required_error: "Please provide the Event Time",
-      })
-      .refine(
-        (time) => {
-          // 1. Format check
-          const timePattern = /^(0?[1-9]|1[0-2]):([0-5][0-9]) (AM|PM)$/i;
-          if (!timePattern.test(time)) return false;
+  eventType: z.enum(reservationEventTypes as [EventType, ...EventType[]], {
+    required_error: "Please select an Event Type",
+  }),
+  reservationDate: z.date({
+    required_error: "Please provide the Event Date",
+  }),
+  reservationTime: z
+    .string({
+      required_error: "Please provide the Event Time",
+    })
+    .refine(
+      (time) => {
+        // 1. Format check
+        const timePattern = /^(0?[1-9]|1[0-2]):([0-5][0-9]) (AM|PM)$/i;
+        if (!timePattern.test(time)) return false;
 
-          // 2. Range check: 08:00 AM (480 mins) to 05:00 PM (17*60 = 1020 mins)
-          const mins = timeToMinutes(time);
-          return mins >= 8 * 60 && mins <= 17 * 60;
-        },
-        {
-          message: "Food Sentinel is only open from 8:00 AM to 5:00 PM.",
-        }
-      ),
-    guestCount: z.number({ required_error: "Please provide the Guest Count" }),
-    venue: z
-      .string({ required_error: "Please provide the Venue" })
-      .min(3, "Venue must be at least 3 characters")
-      .max(100, "Venue must not exceed 100 characters"),
-    serviceType: z.enum(["Buffet", "Plated"], {
-      required_error: "Please select a Service Type",
-    }),
-    serviceFee: z.number(),
-    serviceHours: z
-      .enum(hoursArray as [HoursArrayTypes, ...HoursArrayTypes[]])
-      .optional(),
-    selectedPackage: z.string().min(1, "Please select a Package"),
-    selectedMenus: z
-      .record(
-        z.string(), // category
-        z.record(
-          z.string(), // dish ID
-          z.object({
-            quantity: z.number().min(1),
-            paxSelected: z.enum(paxArray as [PaxArrayType, ...PaxArrayType[]]),
-            pricePerPax: z.number().min(0),
-          })
-        )
+        // 2. Range check: 08:00 AM (480 mins) to 05:00 PM (17*60 = 1020 mins)
+        const mins = timeToMinutes(time);
+        return mins >= 8 * 60 && mins <= 17 * 60;
+      },
+      {
+        message: "Food Sentinel is only open from 8:00 AM to 5:00 PM.",
+      }
+    ),
+  guestCount: z.number({
+    required_error: "Please provide the Guest Count",
+  }),
+  venue: z
+    .string({ required_error: "Please provide the Venue" })
+    .min(3, "Venue must be at least 3 characters")
+    .max(100, "Venue must not exceed 100 characters"),
+  serviceType: z.enum(["Buffet", "Plated"], {
+    required_error: "Please select a Service Type",
+  }),
+  serviceFee: z.number(),
+  serviceHours: z
+    .enum(hoursArray as [HoursArrayTypes, ...HoursArrayTypes[]])
+    .optional(),
+  selectedPackage: z.string().min(1, "Please select a Package"),
+  selectedMenus: z
+    .record(
+      z.string(), // category
+      z.record(
+        z.string(), // dish ID
+        z.object({
+          quantity: z.number().min(1),
+          paxSelected: z.enum(paxArray as [PaxArrayType, ...PaxArrayType[]]),
+          pricePerPax: z.number().min(0),
+        })
       )
-      .refine(
-        (menus) =>
-          Object.values(menus).some(
-            (category) => Object.keys(category).length > 0
-          ),
-        { message: "You must select at least one menu item." }
-      ),
-    totalPrice: z.number(),
-    specialRequests: z
-      .string()
-      .max(500, "Special Requests must not exceed 500 characters")
-      .optional(),
-    orderType: z.enum(["Pickup", "Delivery", ""], {
-      required_error: "Please select an Order Type",
-    }),
-    deliveryFee: z.number(),
-    deliveryAddress: z
-      .string()
-      .min(1, "Delivery address is required")
-      .max(200, "Delivery address must not exceed 200 characters")
-      .optional(),
-    deliveryInstructions: z
-      .string()
-      .max(300, "Delivery Instructions must not exceed 300 characters")
-      .optional(),
-    // paymentReference: z
-    //   .string()
-    //   .min(1, "Payment Reference is required")
-    //   .max(100, "Payment Reference must not exceed 100 characters")
-    //   .optional(),
-    // status: z.enum(
-    //   reservationStatusArray as [
-    //     ReservationStatusType,
-    //     ...ReservationStatusType[]
-    //   ]
-    // ),
-  })
-  .superRefine((data, ctx) => {
+    )
+    .refine(
+      (menus) =>
+        Object.values(menus).some(
+          (category) => Object.keys(category).length > 0
+        ),
+      { message: "You must select at least one menu item." }
+    ),
+  totalPrice: z.number(),
+  specialRequests: z
+    .string()
+    .max(500, "Special Requests must not exceed 500 characters")
+    .optional(),
+  orderType: z.enum(["Pickup", "Delivery", ""], {
+    required_error: "Please select an Order Type",
+  }),
+  deliveryFee: z.number(),
+  deliveryAddress: z
+    .string()
+    .min(1, "Delivery address is required")
+    .max(200, "Delivery address must not exceed 200 characters")
+    .optional(),
+  deliveryInstructions: z
+    .string()
+    .max(300, "Delivery Instructions must not exceed 300 characters")
+    .optional(),
+  // paymentReference: z
+  //   .string()
+  //   .min(1, "Payment Reference is required")
+  //   .max(100, "Payment Reference must not exceed 100 characters")
+  //   .optional(),
+  // status: z.enum(
+  //   reservationStatusArray as [
+  //     ReservationStatusType,
+  //     ...ReservationStatusType[]
+  //   ]
+  // ),
+});
+
+export type ReservationValues = z.infer<typeof reservationSchema>;
+
+export function useReservationForm() {
+  const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
+  const [showPackageSelection, setShowPackageSelection] = useState(false);
+  const [isCategoryError, setIsCategoryError] = useState(false);
+  const [cateringPackages, setCateringPackages] = useState<
+    CateringPackagesProps[] | null
+  >(null);
+
+  const refinedSchema = reservationSchema.superRefine((data, ctx) => {
     if (data.selectedPackage) {
+      if (!cateringPackages) return;
+      console.log("THIS IS REFINED SELECTED PACKAGE", data.selectedPackage);
+      console.log("THIS IS REFINED CATERING PACKAGE", cateringPackages);
       const selectedPackage = cateringPackages.find(
         (pkg) => pkg._id === data.selectedPackage
+      );
+
+      console.log(
+        "THIS IS REFINED CATERING SELECTEDNESSSS PACKAGE",
+        selectedPackage
       );
       const minimumGuestCount = selectedPackage?.minimumPax || 20;
       const allCategoriesHaveMenus = Object.values(data.selectedMenus).every(
@@ -187,12 +197,26 @@ const reservationSchema = z
     }
   });
 
-export type ReservationValues = z.infer<typeof reservationSchema>;
+  useEffect(() => {
+    const getCateringPackages = async () => {
+      try {
+        const response = await api.get("/packages");
+        setCateringPackages(response.data.data);
+      } catch (err: unknown) {
+        console.log("ERRRORRR", err);
 
-export function useReservationForm() {
-  const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
-  const [showPackageSelection, setShowPackageSelection] = useState(false);
-  const [isCategoryError, setIsCategoryError] = useState(false);
+        if (axios.isAxiosError<{ error: string }>(err)) {
+          const message = err.response?.data.error || "Unexpected Error Occur";
+
+          console.error("ERROR FETCHING PACKAGES", message);
+        } else {
+          console.error("Something went wrong. Please try again.");
+        }
+      }
+    };
+
+    getCateringPackages();
+  }, []);
 
   const { customer } = useAuthContext();
 
@@ -221,7 +245,7 @@ export function useReservationForm() {
   };
 
   const reservationForm = useForm<ReservationValues>({
-    resolver: zodResolver(reservationSchema),
+    resolver: zodResolver(refinedSchema),
     defaultValues: defaultValues,
     mode: "onChange",
     reValidateMode: "onSubmit",
@@ -241,6 +265,7 @@ export function useReservationForm() {
   const [cateringOptions, setCateringOptions] = useState<"packages" | "menus">(
     "packages"
   );
+
   const selectedPackage = watch("selectedPackage");
   const serviceFee = watch("serviceFee");
   const selectedMenus = watch("selectedMenus");
@@ -253,6 +278,8 @@ export function useReservationForm() {
 
   //This was formerly from BookNowForm.tsx which calculates the partial/total price of the reservation
   useEffect(() => {
+    if (!cateringPackages) return;
+
     const isPackage = cateringPackages.find(
       (pkg) => pkg._id === selectedPackage
     );
@@ -291,6 +318,8 @@ export function useReservationForm() {
 
   //This was formerly from Package Selection, where if there is a selected package, it will assign the Menu Category but with a blank menu to trigger the zod validation which says "At least one menu item must be selected for each category"
   useEffect(() => {
+    if (!cateringPackages) return;
+
     const pkg = cateringPackages.find((pkg) => pkg._id === selectedPackage);
     if (pkg) {
       // Update the form with the blank categories
@@ -355,9 +384,21 @@ export function useReservationForm() {
   };
 
   ///Find all packages (will transfer to socket later on)
-  const getPackageItem = (pkgId: string) => {
-    const pkg = cateringPackages.find((item) => item._id === pkgId);
-    return pkg;
+  const getPackageItem = async (pkgId: string) => {
+    try {
+      const response = await api.get(`/packages/${pkgId}`);
+      return response.data.data;
+    } catch (err: unknown) {
+      console.log("ERRRORRR", err);
+
+      if (axios.isAxiosError<{ error: string }>(err)) {
+        const message = err.response?.data.error || "Unexpected Error Occur";
+
+        console.error("ERROR FETCHING PACKAGES", message);
+      } else {
+        console.error("Something went wrong. Please try again.");
+      }
+    }
   };
 
   const [deliveryInformation, setDeliveryInformation] = useState({
@@ -586,6 +627,7 @@ export function useReservationForm() {
     validateStep,
     getMenuItem,
     getPackageItem,
+    cateringPackages,
     onSubmit,
     isSubmitSuccess,
     handleCheckboxChange,
