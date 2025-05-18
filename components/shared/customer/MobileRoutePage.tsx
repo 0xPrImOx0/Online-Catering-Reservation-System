@@ -13,11 +13,13 @@ import { Separator } from "@/components/ui/separator";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useTheme } from "next-themes";
 import { links } from "@/lib/customer/customer-nav-links";
+import { usePathname } from "next/navigation";
 
 const MobileRoutePage = () => {
   const isMediumScreen = useMediaQuery("(max-width: 1024px)");
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
+  const pathname = usePathname();
 
   //This is to prevent Hydration Error
   const [mounted, setMounted] = useState(false);
@@ -59,21 +61,27 @@ const MobileRoutePage = () => {
             </div>
           </DropdownMenuLabel>
 
-          {links.map((data) => {
-            const { title, href, Icon } = data;
-            return (
-              <DropdownMenuItem
-                className="text-base cursor-pointer"
-                asChild
-                key={title}
-              >
-                <Link href={href}>
-                  <Icon />
-                  {title}
-                </Link>
-              </DropdownMenuItem>
-            );
-          })}
+          <div className="space-y-2">
+            {links.map(({ title, href, Icon }) => {
+              const isActive = pathname === href;
+              return (
+                <DropdownMenuItem
+                  className={`text-base cursor-pointer ${
+                    isActive
+                      ? "bg-sidebar-accent-foreground dark:bg-sidebar-accent text-white"
+                      : "hover:bg-sidebar-accent-foreground/30 dark:hover:bg-sidebar-accent/30"
+                  }`}
+                  asChild
+                  key={title}
+                >
+                  <Link href={href}>
+                    <Icon />
+                    {title}
+                  </Link>
+                </DropdownMenuItem>
+              );
+            })}
+          </div>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

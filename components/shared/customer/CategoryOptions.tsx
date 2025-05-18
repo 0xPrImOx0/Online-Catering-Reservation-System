@@ -70,13 +70,11 @@ export default function CategoryOptions({
 
   const selectedPackage = watch("selectedPackage");
 
-  console.log("SELECTEDPACKAGE", selectedPackage);
   const serviceFee = watch("serviceFee");
   const deliveryFee = watch("deliveryFee");
 
   const [currentPackage, setCurrentPackage] = useState<string>();
 
-  console.log("CURRENTTTTNESS PACKAGGERSSSS", currentPackage);
   const [categoryAndCount, setCategoryAndCount] = useState<PackageOption[]>(
     defaultCategoryAndCount
   );
@@ -88,14 +86,11 @@ export default function CategoryOptions({
       setValue("selectedMenus", {});
       clearErrors("selectedMenus");
       setCategoryAndCount(defaultCategoryAndCount);
-      console.log("selectedMenus: ", selectedMenus);
       return;
     }
     if (selectedPackage) {
       async function fetchPackage() {
         const selectedPackageData = await getPackageItem(selectedPackage);
-
-        console.log("USE EFFECT IN SELECTED PACKAGE DATA", selectedPackageData);
 
         if (selectedPackageData) {
           setCurrentPackage(selectedPackageData.name);

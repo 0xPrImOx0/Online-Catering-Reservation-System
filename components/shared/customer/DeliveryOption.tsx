@@ -12,15 +12,13 @@ import {
 import { cn } from "@/lib/utils";
 import { Control, useFormContext } from "react-hook-form";
 import { ReservationValues } from "@/hooks/use-reservation-form";
-import { useEffect } from "react";
 
 export default function DeliveryOption({
   control,
 }: {
   control: Control<ReservationValues>;
 }) {
-  const { watch, setValue } = useFormContext<ReservationValues>();
-  const orderType = watch("orderType");
+  const { setValue } = useFormContext<ReservationValues>();
 
   const handleDeliveryOption = () => {
     setValue("deliveryFee", 300);
@@ -29,10 +27,6 @@ export default function DeliveryOption({
   const handlePickupOption = () => {
     setValue("deliveryFee", 0);
   };
-
-  useEffect(() => {
-    console.log("ORDER TYPE UPDATED", orderType || "no order type provided");
-  });
 
   return (
     <FormField

@@ -150,16 +150,10 @@ export function useReservationForm() {
   const refinedSchema = reservationSchema.superRefine((data, ctx) => {
     if (data.selectedPackage) {
       if (!cateringPackages) return;
-      console.log("THIS IS REFINED SELECTED PACKAGE", data.selectedPackage);
-      console.log("THIS IS REFINED CATERING PACKAGE", cateringPackages);
       const selectedPackage = cateringPackages.find(
         (pkg) => pkg._id === data.selectedPackage
       );
 
-      console.log(
-        "THIS IS REFINED CATERING SELECTEDNESSSS PACKAGE",
-        selectedPackage
-      );
       const minimumGuestCount = selectedPackage?.minimumPax || 20;
       const allCategoriesHaveMenus = Object.values(data.selectedMenus).every(
         (categoryMenus) => Object.keys(categoryMenus).length > 0

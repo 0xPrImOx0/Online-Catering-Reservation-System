@@ -99,7 +99,6 @@ export default function BookNowForm({ id }: { id: string }) {
 
   // Handle next step validation
   const handleNextStep = async (currentStep: number) => {
-    console.log("isCategoryError: ", isCategoryError);
     if (!isCategoryError) {
       const isValid = await validateStep(currentStep);
       if (isValid && nextBtn === "Next") {

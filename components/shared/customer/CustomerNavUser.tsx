@@ -46,7 +46,10 @@ export default function CustomerNavUser({ customer }: CustomerNavUserProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="p-1 hover:bg-transparent">
+        <Button
+          variant="ghost"
+          className="p-1 hover:bg-sidebar-accent-foreground/30 dark:hover:bg-sidebar-accent/30 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+        >
           <>
             <Avatar className="realtive size-10 rounded-full">
               <AvatarImage
