@@ -39,13 +39,8 @@ import clsx from "clsx";
 import CustomDateAndTime from "./ReservationDateAndTime";
 
 export default function ReservationDetails() {
-  const {
-    control,
-    getValues,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useFormContext<ReservationValues>();
+  const { control, getValues, watch, setValue, trigger } =
+    useFormContext<ReservationValues>();
   const { getPackageItem } = useReservationForm();
   const selectedPackage = getValues("selectedPackage");
   const serviceType = watch("serviceType");
@@ -85,6 +80,16 @@ export default function ReservationDetails() {
   }, [serviceType, pkg, setValue]);
 
   const recommendedPax = getRecommendedPax();
+
+  useEffect(() => {
+    const venue = watch("venue");
+    if (
+      watch("serviceType") === "Plated" &&
+      (!venue || venue.trim().length < 1)
+    ) {
+      trigger("venue");
+    }
+  }, [watch("serviceType"), watch("venue")]); // optional: add dependencies
 
   return (
     <div className="space-y-4">
@@ -223,13 +228,10 @@ export default function ReservationDetails() {
                   <FormControl>
                     <Input placeholder="Enter venue location" {...field} />
                   </FormControl>
-                  {errors.venue ? (
-                    <FormMessage />
-                  ) : (
-                    <FormDescription>
-                      Enter venue details for our staff
-                    </FormDescription>
-                  )}
+                  <FormDescription>
+                    Enter venue details for our staff
+                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />

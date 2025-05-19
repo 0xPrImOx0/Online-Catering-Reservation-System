@@ -101,6 +101,7 @@ export default function BookNowForm({ id }: { id: string }) {
   const handleNextStep = async (currentStep: number) => {
     if (!isCategoryError) {
       const isValid = await validateStep(currentStep);
+
       if (isValid && nextBtn === "Next") {
         setCurrentStep(currentStep + 1);
       }
@@ -125,7 +126,6 @@ export default function BookNowForm({ id }: { id: string }) {
   const handleSubmit = async () => {
     const data = reservationForm.getValues();
     const isSuccess = await onSubmit(data);
-    console.log("THIS IS ALL THE DATA IN BOOKING FOR RESERVATION", data);
 
     if (!isSuccess) {
       toast.error("Submission Failed");
@@ -142,6 +142,14 @@ export default function BookNowForm({ id }: { id: string }) {
     setIsSubmitComplete(false);
     router.push("/");
   };
+
+  useEffect(() => {
+    console.log("ERRRORS IN BOOKING", reservationForm.formState.errors);
+  });
+
+  useEffect(() => {
+    console.log("ORDER TYPESSS", watch("orderType"));
+  });
 
   useEffect(() => {
     if (currentStep !== 2 || cateringOptions === "menus") {

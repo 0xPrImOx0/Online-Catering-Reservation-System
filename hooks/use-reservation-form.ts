@@ -13,7 +13,6 @@ import {
   PaxArrayType,
   ReservationEventTypes,
   reservationEventTypes,
-  ReservationItem,
   SelectedMenu,
   SelectedMenus,
 } from "@/types/reservation-types";
@@ -21,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 // Helper to convert “hh:mm AM/PM” → minutes since midnight
@@ -78,10 +78,11 @@ const reservationSchema = z.object({
     required_error: "Please provide the Guest Count",
   }),
   venue: z
-    .string({ required_error: "Please provide the Venue" })
+    .string()
     .min(3, "Venue must be at least 3 characters")
     .max(100, "Venue must not exceed 100 characters")
-    .optional(),
+    .optional()
+    .or(z.literal("")),
   serviceType: z.enum(["Buffet", "Plated"], {
     required_error: "Please select a Service Type",
   }),
@@ -122,7 +123,8 @@ const reservationSchema = z.object({
     .string()
     .min(1, "Delivery address is required")
     .max(200, "Delivery address must not exceed 200 characters")
-    .optional(),
+    .optional()
+    .or(z.literal("")), // Accepts empty string too if you want it considered "unset"
   deliveryInstructions: z
     .string()
     .max(300, "Delivery Instructions must not exceed 300 characters")
@@ -498,22 +500,35 @@ export function useReservationForm() {
   }, [orderType]);
 
   // Submit form function
-  const onSubmit = (data: ReservationValues) => {
-    // Create menu item object
-    const reservation: ReservationItem = {
-      ...data,
-    };
+  const onSubmit = async (data: ReservationValues) => {
+    console.log("DATA AFTER SUBMITTING RESERVATION", data);
 
-    console.log("DATA AFTER SUBMITTING", data);
+    let isSuccess = false;
 
-    // Here you would typically send this to your API
-    // If there's an image file, you would upload it first and then update the imageUrl
+    // Remove selectedPackage if it's empty this is to prevent object id error
+    if (data.selectedPackage === "") {
+      delete data.selectedPackage;
+    }
 
-    // Show success message
-    setIsSubmitSuccess(true);
+    try {
+      const response = await api.post("/reservations", data);
+      toast.success("Reservation booked successfully");
 
-    // Return the new menu item
-    return reservation;
+      isSuccess = true;
+      setIsSubmitSuccess(true);
+      console.log("LOG RESPONSE AFTER SUBMITTING", response.data);
+    } catch (err: unknown) {
+      isSuccess = false;
+      console.log("ERRORRRR", err);
+      if (axios.isAxiosError<{ error: string }>(err)) {
+        const message = err.response?.data.error || "Unexpected Error Occur";
+        toast.error(message);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    }
+
+    return isSuccess;
   };
 
   const getFieldsToValidate = (
@@ -535,6 +550,7 @@ export function useReservationForm() {
           "guestCount",
           "serviceType",
           "serviceHours",
+          "venue",
           // "paymentReference",
         ];
       default:

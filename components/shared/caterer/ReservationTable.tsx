@@ -23,7 +23,6 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 import { format } from "date-fns";
-import StatusBadge from "../StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Eye, MoreHorizontal } from "lucide-react";
 import ReservationDialog from "./ReservationDialog";

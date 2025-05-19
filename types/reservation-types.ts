@@ -57,6 +57,7 @@ export const reservationEventTypes = [
 export type ReservationEventTypes = (typeof reservationEventTypes)[number];
 
 export interface ReservationItem {
+  id?: string;
   fullName: string;
   email: string;
   contactNumber: string;

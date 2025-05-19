@@ -128,7 +128,7 @@ export default function SummaryBooking() {
     }
 
     async function fetchPackage() {
-      const pkg = await getPackageItem(formValues.selectedPackage);
+      const pkg = await getPackageItem(formValues.selectedPackage!);
       setSelectedPackageData(pkg);
     }
 
@@ -294,6 +294,7 @@ export default function SummaryBooking() {
                 <div
                   className={`grid grid-cols-1 gap-8 ${
                     Object.entries(formValues.selectedMenus).filter(
+                      // eslint-disable-next-line @typescript-eslint/no-unused-vars
                       ([_, menuIds]) => Object.keys(menuIds).length > 0
                     ).length > 1
                       ? "md:grid-cols-2"

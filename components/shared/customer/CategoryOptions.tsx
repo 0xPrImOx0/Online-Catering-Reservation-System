@@ -90,6 +90,8 @@ export default function CategoryOptions({
     }
     if (selectedPackage) {
       async function fetchPackage() {
+        if (!selectedPackage) return;
+
         const selectedPackageData = await getPackageItem(selectedPackage);
 
         if (selectedPackageData) {

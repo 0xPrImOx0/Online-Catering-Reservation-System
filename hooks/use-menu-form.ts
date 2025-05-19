@@ -446,7 +446,7 @@ export function useMenuForm({
       ...rest,
       rating: isEditMode && initialData ? initialData.rating : 0,
       ratingCount: isEditMode && initialData ? initialData.ratingCount : 0,
-      ...(imageUrl !== "" && { imageUrl }), // Exclude the imageUrl if its null
+      ...(imageUrl !== "" && { imageUrl }),
     };
 
     console.log(
