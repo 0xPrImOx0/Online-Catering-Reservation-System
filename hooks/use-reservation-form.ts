@@ -3,16 +3,16 @@ import api from "@/lib/api/axiosInstance";
 import { MenuItem } from "@/types/menu-types";
 import {
   CateringPackagesProps,
-  EventType,
   hoursArray,
   PackageCategory,
-  reservationEventTypes,
 } from "@/types/package-types";
 import {
   HoursArrayTypes,
   MenuReservationDetails,
   paxArray,
   PaxArrayType,
+  ReservationEventTypes,
+  reservationEventTypes,
   ReservationItem,
   SelectedMenu,
   SelectedMenus,
@@ -41,14 +41,16 @@ const reservationSchema = z.object({
     .string()
     .min(2, "Full Name must be at least 2 characters")
     .max(50, "Full Name must not exceed 50 characters"),
+
   email: z.string().email("Please enter a valid email address"),
+
   contactNumber: z
     .string()
     .min(1, "Phone number is required")
     .refine((val) => /^\+639\d{9}$/.test(val), {
       message: "Phone number must start with 9 and have 10 digits total",
     }),
-  eventType: z.enum(reservationEventTypes as [EventType, ...EventType[]], {
+  eventType: z.enum(reservationEventTypes, {
     required_error: "Please select an Event Type",
   }),
   reservationDate: z.date({
@@ -78,7 +80,8 @@ const reservationSchema = z.object({
   venue: z
     .string({ required_error: "Please provide the Venue" })
     .min(3, "Venue must be at least 3 characters")
-    .max(100, "Venue must not exceed 100 characters"),
+    .max(100, "Venue must not exceed 100 characters")
+    .optional(),
   serviceType: z.enum(["Buffet", "Plated"], {
     required_error: "Please select a Service Type",
   }),
@@ -86,7 +89,7 @@ const reservationSchema = z.object({
   serviceHours: z
     .enum(hoursArray as [HoursArrayTypes, ...HoursArrayTypes[]])
     .optional(),
-  selectedPackage: z.string().min(1, "Please select a Package"),
+  selectedPackage: z.string().optional(),
   selectedMenus: z
     .record(
       z.string(), // category
@@ -109,7 +112,7 @@ const reservationSchema = z.object({
   totalPrice: z.number(),
   specialRequests: z
     .string()
-    .max(500, "Special Requests must not exceed 500 characters")
+    .max(300, "Special Requests must not exceed 500 characters")
     .optional(),
   orderType: z.enum(["Pickup", "Delivery", ""], {
     required_error: "Please select an Order Type",
@@ -148,6 +151,39 @@ export function useReservationForm() {
   >(null);
 
   const refinedSchema = reservationSchema.superRefine((data, ctx) => {
+    if (
+      data.orderType === "Delivery" &&
+      (!data.deliveryAddress || data.deliveryAddress.trim() === "")
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["deliveryAddress"],
+        message: "Delivery address is required when order type is Delivery",
+      });
+    }
+
+    if (
+      data.serviceType === "Plated" &&
+      (!data.venue || data.venue.trim() === "")
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["venue"],
+        message: "Venue is required when service type is Plated",
+      });
+    }
+
+    if (
+      data.serviceType === "Plated" &&
+      (!data.serviceHours || data.serviceHours.trim() === "")
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["serviceHours"],
+        message: "Service hours is required when service type is Plated",
+      });
+    }
+
     if (data.selectedPackage) {
       if (!cateringPackages) return;
       const selectedPackage = cateringPackages.find(
@@ -314,6 +350,9 @@ export function useReservationForm() {
   useEffect(() => {
     if (!cateringPackages) return;
 
+    const isValidEventType = (value: string): value is ReservationEventTypes =>
+      reservationEventTypes.includes(value as ReservationEventTypes);
+
     const pkg = cateringPackages.find((pkg) => pkg._id === selectedPackage);
     if (pkg) {
       // Update the form with the blank categories
@@ -323,7 +362,11 @@ export function useReservationForm() {
 
       setValue("selectedMenus", selectedMenus);
       setValue("guestCount", pkg.minimumPax);
-      setValue("eventType", pkg?.eventType ?? "Others");
+      if (pkg.eventType && isValidEventType(pkg.eventType)) {
+        setValue("eventType", pkg.eventType);
+      } else {
+        setValue("eventType", "Others");
+      }
     }
   }, [selectedPackage]);
 
@@ -486,6 +529,7 @@ export function useReservationForm() {
       case 3:
         return [
           "eventType",
+          "deliveryAddress",
           "reservationDate",
           "reservationTime",
           "guestCount",
@@ -533,7 +577,11 @@ export function useReservationForm() {
     };
 
     // // Optional: remove the category entirely if it's empty
-    if (Object.keys(updatedMenus).length === 0 && selectedPackage.length < 0) {
+    if (
+      Object.keys(updatedMenus).length === 0 &&
+      selectedPackage !== undefined &&
+      selectedPackage.length < 0
+    ) {
       delete newMenus[category];
     }
 

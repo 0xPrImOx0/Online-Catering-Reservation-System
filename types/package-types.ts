@@ -154,14 +154,6 @@ export const eventTypes: EventType[] = [
   "Others",
 ];
 
-export const reservationEventTypes: EventType[] = [
-  "Birthday",
-  "Wedding",
-  "Corporate",
-  "Graduation",
-  "Others",
-];
-
 export const hoursArray: HoursArrayTypes[] = [
   "4 hours",
   "4.5 hours",

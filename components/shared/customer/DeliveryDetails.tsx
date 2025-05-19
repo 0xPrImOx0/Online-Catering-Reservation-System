@@ -21,7 +21,7 @@ export default function DeliveryDetails({
         name="deliveryAddress"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="">Delivery Address</FormLabel>
+            <FormLabel>Delivery Address</FormLabel>
             <FormControl>
               <Input
                 type="text"
@@ -38,7 +38,7 @@ export default function DeliveryDetails({
         name="deliveryInstructions"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="">Special Delivery Instructions</FormLabel>
+            <FormLabel>Special Delivery Instructions</FormLabel>
             <FormControl>
               <Textarea
                 placeholder="Provide any special instructions for the delivery team (e.g., landmarks, preferred time, etc.)"

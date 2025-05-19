@@ -60,7 +60,7 @@ export default function ReservationDetails() {
     }
 
     async function fetchPackage() {
-      const packageData = await getPackageItem(selectedPackage);
+      const packageData = await getPackageItem(selectedPackage!);
       setPkg(packageData);
     }
 

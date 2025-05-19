@@ -46,13 +46,23 @@ export type SelectedMenu = Record<string, MenuReservationDetails>;
 
 export type SelectedMenus = Record<string, SelectedMenu>;
 
+export const reservationEventTypes = [
+  "Birthday",
+  "Wedding",
+  "Corporate",
+  "Graduation",
+  "Others",
+] as const;
+
+export type ReservationEventTypes = (typeof reservationEventTypes)[number];
+
 export interface ReservationItem {
   fullName: string;
   email: string;
   contactNumber: string;
-  selectedPackage: string;
+  selectedPackage?: string;
   selectedMenus: SelectedMenus;
-  eventType: string;
+  eventType: ReservationEventTypes;
   guestCount: number;
   serviceType: ServiceType;
   orderType: "Pickup" | "Delivery" | "";
@@ -63,7 +73,7 @@ export interface ReservationItem {
   deliveryInstructions?: string;
   totalPrice: number;
   specialRequests?: string;
-  venue: string;
+  venue?: string;
   serviceFee: number;
   serviceHours?: HoursArrayTypes;
   // paymentReference?: string;

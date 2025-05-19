@@ -10,17 +10,9 @@ import { ReservationValues } from "@/hooks/use-reservation-form";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { useEffect } from "react";
 
 export default function CustomerInformation() {
-  const { control, watch } = useFormContext<ReservationValues>();
-
-  useEffect(() => {
-    const subscription = watch((value) => {
-      console.log(value.contactNumber);
-    });
-    return () => subscription.unsubscribe();
-  }, [watch]);
+  const { control } = useFormContext<ReservationValues>();
 
   return (
     <div className="space-y-4">
@@ -48,11 +40,11 @@ export default function CustomerInformation() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="">
-                Email <span className="text-destructive">*</span>{" "}
+              <FormLabel>
+                Email Address <span className="text-destructive">*</span>{" "}
               </FormLabel>
               <FormControl>
-                <Input placeholder="johndoe@example.com" {...field} />
+                <Input placeholder="food-sentinel@example.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
