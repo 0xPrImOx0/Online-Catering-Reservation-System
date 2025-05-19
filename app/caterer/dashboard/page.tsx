@@ -46,7 +46,7 @@ export default function DashboardPage() {
     );
   });
   return (
-    <main className="flex-1 overflow-auto space-y-8">
+    <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
       <div className="space-y-6">
         <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
 

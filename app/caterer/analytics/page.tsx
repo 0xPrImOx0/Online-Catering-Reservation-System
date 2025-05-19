@@ -12,7 +12,7 @@ import { formatCurrency, formatNumber } from "@/utils/format-currency";
 
 export default function AnalyticsDashboard() {
   return (
-    <main className="overflow-auto flex-1">
+    <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
       <div className="flex justify-between items-center">
         <div className="mb-6">
           <h1 className="text-2xl font-bold">Analytics</h1>

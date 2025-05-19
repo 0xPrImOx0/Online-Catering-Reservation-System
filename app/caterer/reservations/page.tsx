@@ -33,7 +33,7 @@ export default function ReservationsPage() {
   //   );
   // });
   return (
-    <main className="flex-1 overflow-auto px-[4px]">
+    <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
       {/* Main Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Reservations</h1>

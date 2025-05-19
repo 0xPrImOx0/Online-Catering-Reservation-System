@@ -111,8 +111,8 @@ export default function Page() {
   });
 
   return (
-    <div className="">
-      <main className="overflow-auto flex-1">
+    <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
+      <div className="overflow-auto flex-1">
         <PaymentFilters
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -139,7 +139,7 @@ export default function Page() {
           openPaymentDetails={openPaymentDetails}
           openMarkAsPaid={openMarkAsPaid}
         />
-      </main>
+      </div>
 
       <PaymentDetailsDialog
         payment={selectedPayment}
@@ -153,6 +153,6 @@ export default function Page() {
         isOpen={isMarkPaidOpen}
         setIsOpen={setIsMarkPaidOpen}
       />
-    </div>
+    </main>
   );
 }
