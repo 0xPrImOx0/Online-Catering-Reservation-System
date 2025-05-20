@@ -50,15 +50,27 @@ const settingsSchema = z.object({
     })
   ),
 
-  ownerName: z.string().min(1, "Owner Name is required"),
+  ownerName: z
+    .string()
+    .min(2, "Full Name must be at least 2 characters")
+    .max(50, "Full Name must not exceed 50 characters"),
 
   ownerDescription: z.string().min(1, "Owner Description is required"),
 
-  ownerEmail: z.string().email("Invalid email"),
+  ownerEmail: z.string().email("Please enter a valid email address"),
 
-  ownerPhone: z.string().min(1, "Owner Phone is required"),
+  ownerPhone: z
+    .string()
+    .min(1, "Owner Phone is required")
+    .refine((val) => /^\+639\d{9}$/.test(val), {
+      message: "Phone number must start with 9 and have 10 digits total",
+    }),
 
   ownerProfilePic: z.string().min(1, "Owner Profile Picture is required"),
+
+  ownerPassword: z
+    .string()
+    .min(6, "Password must be at least 6 characters long"),
 });
 
 export type SettingsValues = z.infer<typeof settingsSchema>;
@@ -100,6 +112,7 @@ const defaultValues: SettingsValues = {
   ownerEmail: email,
   ownerPhone: phone,
   ownerProfilePic: profilePic,
+  ownerPassword: "",
 };
 
 export function useSettingsForm() {

@@ -25,15 +25,6 @@ export interface SignUpFormProps {
   error: string;
 }
 
-export type ForgotPasswordFormValues = {
-  email: string;
-};
-
-export interface ForgotPasswordFormProps {
-  form: UseFormReturn<ForgotPasswordFormValues>;
-  onSubmit: (data: ForgotPasswordFormValues) => void;
-}
-
 export interface IAuthContext {
   customer: CustomerProps | null;
   setCustomer: (customer: CustomerProps | null) => void;

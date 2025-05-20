@@ -17,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 export function ProfileInformation() {
   const {
@@ -91,6 +92,28 @@ export function ProfileInformation() {
                       communications
                     </p>
                   )}
+                </FormItem>
+              )}
+            />
+
+            {/* Phone Field */}
+            <FormField
+              control={control}
+              name="ownerPhone"
+              render={({ field }) => (
+                <FormItem className="grid gap-2">
+                  <FormLabel htmlFor="phone">
+                    Phone Number <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <PhoneInput
+                      {...field}
+                      defaultCountry="PH"
+                      placeholder="912 345 6789"
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />

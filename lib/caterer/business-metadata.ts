@@ -33,7 +33,7 @@ const ownerMetadata = {
     "Awarded Asia's Best Female Chef in 2016, Margarita Forés is a Filipino that brings her distinguished culinary expertise to Food Sentinel with a vision to elevate authentic Filipino cuisine. Through her deep respect for tradition and innovative approach, each dish is thoughtfully crafted to capture the rich heritage of the Philippines, guided by the belief that every dish has a story to tell",
   role: "Asia's Best Female Chef 2016",
   email: "margarita.fores@food-sentinel.com",
-  phone: "09123456789",
+  phone: "+639123456789",
   profilePic: "/images/caterer-profile.jpg",
 };
 

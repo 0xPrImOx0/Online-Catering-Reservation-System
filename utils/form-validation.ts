@@ -3,8 +3,8 @@ import * as z from "zod";
 export const loginSchema = z.object({
   email: z
     .string()
-    .email("Invalid email address")
-    .nonempty({ message: "Email Address is required" }),
+    .nonempty({ message: "Email Address is required" })
+    .email("Invalid email address"),
   password: z
     .string()
     .nonempty({ message: "Password field is required" })
@@ -23,10 +23,6 @@ export const signUpSchema = z
       .string()
       .nonempty({ message: "Email Address is required" })
       .email({ message: "Invalid email address" }),
-    // phone: z
-    //   .string()
-    //   .nonempty({ message: "Phone Number is required" })
-    //   .min(10, { message: "Phone number must be valid" }),
     password: z
       .string()
       .nonempty({ message: "Password field is required" })
@@ -35,7 +31,10 @@ export const signUpSchema = z
       .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
     confirmPassword: z
       .string()
-      .nonempty({ message: "Confirm Password field is required" }),
+      .nonempty({ message: "Confirm Password field is required" })
+      .min(6, { message: "Password must be at least 6 characters long" })
+      .max(15, "Password must be at most 15 characters")
+      .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],

@@ -1,9 +1,7 @@
 import {
-  BarChart,
   Boxes,
   ChefHat,
   ClipboardList,
-  HandCoins,
   LayoutDashboard,
   Settings,
   UsersRound,
@@ -39,24 +37,24 @@ export const data = {
       children: [],
       url: "/caterer/reservations",
     },
-    {
-      title: "Payments",
-      icon: HandCoins,
-      children: [],
-      url: "/caterer/payments",
-    },
+    // {
+    //   title: "Payments",
+    //   icon: HandCoins,
+    //   children: [],
+    //   url: "/caterer/payments",
+    // },
     {
       title: "Customers",
       icon: UsersRound,
       children: [],
       url: "/caterer/customers",
     },
-    {
-      title: "Analytics",
-      icon: BarChart,
-      children: [],
-      url: "/caterer/analytics",
-    },
+    // {
+    //   title: "Analytics",
+    //   icon: BarChart,
+    //   children: [],
+    //   url: "/caterer/analytics",
+    // },
   ],
   navSecondary: [
     {

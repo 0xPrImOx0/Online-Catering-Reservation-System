@@ -17,6 +17,8 @@ import api from "@/lib/api/axiosInstance";
 export default function RegisterPage() {
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
+    mode: "all",
+    reValidateMode: "onSubmit",
     defaultValues: {
       fullName: "",
       email: "",
