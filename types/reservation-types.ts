@@ -37,7 +37,6 @@ export type HoursArrayTypes =
   | "10 hours";
 
 export interface MenuReservationDetails {
-  quantity: number;
   paxSelected: PaxArrayType;
   pricePerPax: number;
 }

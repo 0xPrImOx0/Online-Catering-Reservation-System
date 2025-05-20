@@ -41,11 +41,12 @@ export default function ReservationDialog({
 }: dialogProps) {
   return (
     <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Reservation Details</DialogTitle>
           <DialogDescription>
-            Created on {format(selectedReservation.createdAt, "MMM d, yyyy")}
+            Created on{" "}
+            {format(selectedReservation.createdAt ?? new Date(), "MMM d, yyyy")}
           </DialogDescription>
         </DialogHeader>
 
@@ -100,9 +101,7 @@ export default function ReservationDialog({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Time:</span>
-                  <span>
-                    {selectedReservation.reservationTime} {selectedReservation.period}
-                  </span>
+                  <span>{selectedReservation.reservationTime}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Guests:</span>
@@ -111,7 +110,7 @@ export default function ReservationDialog({
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Status:</span>
                   <span>
-                    <StatusBadge status={selectedReservation.status} />
+                    <StatusBadge status={selectedReservation.status || "---"} />
                   </span>
                 </div>
                 <Separator className="my-2" />
@@ -133,28 +132,44 @@ export default function ReservationDialog({
                 <TableHeader>
                   <TableRow>
                     <TableHead>Item</TableHead>
-                    <TableHead className="text-right">Quantity</TableHead>
+                    <TableHead className="text-right">Pax Range</TableHead>
                     <TableHead className="text-right">Price</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {Object.entries(selectedReservation.selectedMenus).map(
-                    ([category, menuItems]) =>
-                      Object.entries(menuItems).map(([menuId, details]) => (
-                        <TableRow key={`₱{category}-₱{menuId}`}>
-                          <TableCell>{menuId}</TableCell>
-                          <TableCell className="text-right">
-                            {details.quantity}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            ₱{details.pricePerPax / details.quantity}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            ₱{details.pricePerPax * details.quantity}
-                          </TableCell>
-                        </TableRow>
-                      ))
+                  {Object.entries(selectedReservation.selectedMenus).flatMap(
+                    ([, menuItems]) =>
+                      Object.entries(menuItems).map(
+                        ([menuId, details], index) => (
+                          <TableRow key={menuId + index}>
+                            <TableCell>{menuId}</TableCell>
+                            <TableCell className="text-right">
+                              {details.paxSelected}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ₱
+                              {Math.ceil(
+                                details.pricePerPax /
+                                  Number(
+                                    details.paxSelected
+                                      .split("-")[1]
+                                      .split(" ")[0]
+                                  )
+                              )}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ₱
+                              {details.pricePerPax *
+                                Number(
+                                  details.paxSelected
+                                    .split("-")[1]
+                                    .split(" ")[0]
+                                )}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      )
                   )}
                 </TableBody>
               </Table>
