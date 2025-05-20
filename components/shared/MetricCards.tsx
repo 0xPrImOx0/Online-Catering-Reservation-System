@@ -5,7 +5,7 @@ import { LucideIcon } from "lucide-react";
 type MetricCardProps = {
   metric: {
     title: string;
-    firstContent: number;
+    firstContent: string;
     secondContent: string;
     Icon: LucideIcon;
   };
@@ -24,7 +24,7 @@ export default function MetricCards({ metric }: MetricCardProps) {
       <CardContent>
         <div className="text-2xl font-bold">
           {title !== "Upcoming Reservations" && title !== "New Customers"
-            ? formatCurrency(firstContent)
+            ? formatCurrency(Number(firstContent))
             : firstContent}
         </div>
         <p className="text-xs text-muted-foreground">{secondContent}</p>

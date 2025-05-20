@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus } from "lucide-react";
 import MetricCards from "@/components/shared/MetricCards";
 import {
-  reservations,
+  dummyReservations,
   metricCards,
   items,
 } from "@/lib/caterer/reservation-metadata";
@@ -90,15 +90,15 @@ export default function ReservationsPage() {
 
         <TabsContent value="all" className="mt-4">
           {/*All Reservations table */}
-          <ReservationTable reservations={reservations} />
+          <ReservationTable reservations={dummyReservations} />
         </TabsContent>
         <TabsContent value="upcoming" className="mt-4">
           {/* Upcoming reservations would be shown here */}
-          <ReservationTable reservations={reservations} />
+          <ReservationTable reservations={dummyReservations} />
         </TabsContent>
         <TabsContent value="completed" className="mt-4">
           {/* Past reservations would be shown here */}
-          <ReservationTable reservations={reservations} />
+          <ReservationTable reservations={dummyReservations} />
         </TabsContent>
       </Tabs>
 

@@ -3,7 +3,7 @@
 import ReservationTable from "@/components/shared/caterer/ReservationTable";
 import MetricCards from "@/components/shared/MetricCards";
 import { Button } from "@/components/ui/button";
-import { reservations } from "@/lib/caterer/reservation-metadata";
+import { dummyReservations } from "@/lib/caterer/reservation-metadata";
 import { Calendar, LucideIcon, Users } from "lucide-react";
 import Link from "next/link";
 import { metricCards } from "../../../lib/caterer/dashboard-metadata";
@@ -65,7 +65,7 @@ export default function DashboardPage() {
           link="reservations"
           Icon={Calendar}
         />
-        <ReservationTable reservations={reservations} dashboard />
+        <ReservationTable reservations={dummyReservations} dashboard />
 
         {/* Recent Registered Customers */}
         <RecentHeaders title="Customers" link="customers" Icon={Users} />
