@@ -1,30 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import MetricCards from "@/components/shared/MetricCards";
 import {
   dummyReservations,
   metricCards,
-  items,
 } from "@/lib/caterer/reservation-metadata";
 import ReservationTable from "@/components/shared/caterer/ReservationTable";
-import DateSelector from "@/components/shared/DateSelector";
 import SearchInput from "@/components/shared/SearchInput";
-import CustomSelect from "@/components/shared/CustomSelect";
-import { ReservationStatusType } from "@/types/reservation-types";
+import CustomDatePicker from "@/components/ui/custom-date-picker";
+import { isSameDay } from "date-fns";
 
 // Current date for reference
 
 export default function ReservationsPage() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date>(new Date());
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<ReservationStatusType | "All" | string>(
-    "All"
-  );
-  const [customerType, setCustomerType] = useState<"All" | string>("All");
+  const [isClearFilterClicked, setIsClearFilterClicked] = useState(false);
+
+  const filteredReservations = dummyReservations.filter((reservation) => {
+    const matchesName = reservation.fullName
+      .toLowerCase()
+      .includes(query.toLowerCase());
+
+    const matchesDate =
+      !isClearFilterClicked && date
+        ? isSameDay(new Date(reservation.reservationDate), date)
+        : true; // <== This allows all dates if `date` is undefined
+
+    return matchesName && matchesDate;
+  });
+
+  useEffect(() => {
+    setIsClearFilterClicked(true);
+  }, []);
 
   // const filteredReservations = reservations.filter((reservation) => {
   //   return (
@@ -53,35 +64,47 @@ export default function ReservationsPage() {
       </div>
 
       {/* Search Bar and Filters */}
-      <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-center">
-        <div className="flex flex-1 items-center gap-2">
-          <SearchInput
-            query={query}
-            setQuery={setQuery}
-            placeholderTitle="reservations"
-          />
-          <DateSelector date={date} setDate={setDate} />
+      <div className="flex flex-col sm:flex-row items-center gap-2">
+        <div className="flex flex-1 items-center gap-2 w-full">
+          <div className="w-full">
+            <SearchInput
+              query={query}
+              setQuery={setQuery}
+              placeholderTitle="reservations"
+              iconStyle="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-4"
+              inputStyle="pl-10 pr-10 h-10 rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-transparent w-full"
+            />
+          </div>
+          <div className="min-w-56">
+            <CustomDatePicker
+              date={date}
+              setDate={(newDate) => {
+                setDate(newDate); // set the selected date
+                setIsClearFilterClicked(false); // mark as clicked
+              }}
+              customDateFormat="MMMM d, yyyy"
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <CustomSelect
-            defaultValue="All"
-            placeholder="Status"
-            items={items.status}
-            value={status}
-            onValueChange={setStatus}
-          />
-          <CustomSelect
-            defaultValue="All"
-            placeholder="Customer Type"
-            items={items.customerType}
-            value={customerType}
-            onValueChange={setCustomerType}
-          />
-        </div>
+        <Button
+          variant="destructive"
+          effect={"shineHover"}
+          className="text-sm foreground hover:text-background"
+          onClick={() => {
+            setQuery("");
+            setDate(new Date());
+            setIsClearFilterClicked(true);
+          }}
+        >
+          <Trash2 />
+          Clear Filters
+        </Button>
       </div>
 
+      <ReservationTable reservations={filteredReservations} />
+
       {/* Tabs */}
-      <Tabs defaultValue="all" className="mt-6">
+      {/* <Tabs defaultValue="all" className="mt-6">
         <TabsList>
           <TabsTrigger value="all">All Reservations</TabsTrigger>
           <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
@@ -89,18 +112,15 @@ export default function ReservationsPage() {
         </TabsList>
 
         <TabsContent value="all" className="mt-4">
-          {/*All Reservations table */}
-          <ReservationTable reservations={dummyReservations} />
+          <ReservationTable reservations={filteredReservations} />
         </TabsContent>
         <TabsContent value="upcoming" className="mt-4">
-          {/* Upcoming reservations would be shown here */}
-          <ReservationTable reservations={dummyReservations} />
+          <ReservationTable reservations={filteredReservations} />
         </TabsContent>
         <TabsContent value="completed" className="mt-4">
-          {/* Past reservations would be shown here */}
-          <ReservationTable reservations={dummyReservations} />
+          <ReservationTable reservations={filteredReservations} />
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
 
       {/* Pagination */}
       {/* <CustomPagination title={"reservations"} length={reservations.length} /> */}

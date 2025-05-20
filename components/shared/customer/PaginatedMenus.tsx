@@ -217,7 +217,7 @@ export default function PaginatedMenus({ open }: { open?: boolean }) {
           )
         ) : (
           <div className="col-span-3 min-h-[50vh] flex justify-center items-center">
-            <span className="font-bold text-4xl">No Menu Found</span>{" "}
+            <span className="font-bold text-4xl">No Menu Found</span>
           </div>
         )}
       </div>

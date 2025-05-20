@@ -13,44 +13,36 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Beef: {
         "Beef Caldereta": {
-          quantity: 2,
           paxSelected: "8-10 pax",
           pricePerPax: 350,
         },
         "Beef Steak": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 380,
         },
         "Beef Kare-Kare": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 400,
         },
         "Beef Mechado": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 370,
         },
       },
       Dessert: {
         "Leche Flan": {
-          quantity: 2,
           paxSelected: "8-10 pax",
           pricePerPax: 180,
         },
         "Buko Pandan": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 150,
         },
         "Halo-Halo": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 200,
         },
         "Ube Halaya": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 170,
         },
@@ -88,44 +80,36 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Salad: {
         "Caesar Salad": {
-          quantity: 3,
           paxSelected: "13-15 pax",
           pricePerPax: 200,
         },
         "Garden Salad": {
-          quantity: 2,
           paxSelected: "4-6 pax",
           pricePerPax: 180,
         },
         "Macaroni Salad": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 190,
         },
         "Potato Salad": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 210,
         },
       },
       Beverage: {
         "Iced Tea": {
-          quantity: 2,
           paxSelected: "18-20 pax",
           pricePerPax: 150,
         },
         "Calamansi Juice": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 130,
         },
         "Mango Shake": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 160,
         },
         "Buko Juice": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 140,
         },
@@ -163,44 +147,36 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Pork: {
         "Pork Sinigang": {
-          quantity: 2,
           paxSelected: "8-10 pax",
           pricePerPax: 300,
         },
         "Lechon Kawali": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 320,
         },
         "Pork Adobo": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 280,
         },
         "Pork Sisig": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 310,
         },
       },
       Dessert: {
         "Halo-Halo": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 180,
         },
         Bibingka: {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 150,
         },
         Puto: {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 120,
         },
         "Cassava Cake": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 160,
         },
@@ -237,44 +213,36 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Chicken: {
         "Chicken Adobo": {
-          quantity: 2,
           paxSelected: "13-15 pax",
           pricePerPax: 280,
         },
         "Chicken Inasal": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 290,
         },
         "Chicken Tinola": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 260,
         },
         "Chicken Afritada": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 270,
         },
       },
       Beverage: {
         "Calamansi Juice": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 120,
         },
         "Iced Tea": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 110,
         },
         "Sago't Gulaman": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 130,
         },
         "Pineapple Juice": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 125,
         },
@@ -309,44 +277,36 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Seafood: {
         "Fish Kare-Kare": {
-          quantity: 3,
           paxSelected: "13-15 pax",
           pricePerPax: 350,
         },
         "Shrimp Sinigang": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 380,
         },
         "Grilled Squid": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 360,
         },
         "Sweet and Sour Fish": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 340,
         },
       },
       Dessert: {
         Bibingka: {
-          quantity: 2,
           paxSelected: "8-10 pax",
           pricePerPax: 150,
         },
         "Leche Flan": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 180,
         },
         "Maja Blanca": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 140,
         },
         Biko: {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 130,
         },
@@ -384,66 +344,54 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Soup: {
         "Bulalo Soup": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 220,
         },
         "Mushroom Soup": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 200,
         },
         "Corn Soup": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 180,
         },
         "Crab and Corn Soup": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 240,
         },
       },
       Chicken: {
         "Chicken Adobo": {
-          quantity: 2,
           paxSelected: "8-10 pax",
           pricePerPax: 250,
         },
         "Chicken Curry": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 270,
         },
         "Chicken Inasal": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 260,
         },
         "Fried Chicken": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 240,
         },
       },
       Beverage: {
         "Buko Juice": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 130,
         },
         "Iced Tea": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 110,
         },
         Lemonade: {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 120,
         },
         "Mango Shake": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 140,
         },
@@ -480,44 +428,36 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Beef: {
         "Beef Caldereta": {
-          quantity: 2,
           paxSelected: "13-15 pax",
           pricePerPax: 350,
         },
         "Beef Nilaga": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 320,
         },
         "Beef Steak": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 380,
         },
         "Beef Kare-Kare": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 400,
         },
       },
       Dessert: {
         Puto: {
-          quantity: 2,
           paxSelected: "8-10 pax",
           pricePerPax: 120,
         },
         "Leche Flan": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 180,
         },
         "Buko Pandan": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 150,
         },
         "Halo-Halo": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 200,
         },
@@ -554,44 +494,36 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Vegetable: {
         Pinakbet: {
-          quantity: 2,
           paxSelected: "8-10 pax",
           pricePerPax: 250,
         },
         Chopsuey: {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 230,
         },
         "Ginisang Ampalaya": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 220,
         },
         "Ginataang Kalabasa": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 240,
         },
       },
       Beverage: {
         "Mango Shake": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 140,
         },
         "Iced Tea": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 110,
         },
         "Calamansi Juice": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 120,
         },
         "Buko Juice": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 130,
         },
@@ -627,44 +559,36 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Seafood: {
         "Fish Kare-Kare": {
-          quantity: 2,
           paxSelected: "8-10 pax",
           pricePerPax: 320,
         },
         "Shrimp Sinigang": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 350,
         },
         "Grilled Squid": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 370,
         },
         "Sweet and Sour Fish": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 330,
         },
       },
       Dessert: {
         "Leche Flan": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 180,
         },
         "Buko Pandan": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 150,
         },
         "Halo-Halo": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 200,
         },
         Bibingka: {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 160,
         },
@@ -701,66 +625,54 @@ export const dummyReservations: ReservationItem[] = [
     selectedMenus: {
       Noodle: {
         "Pancit Canton": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 260,
         },
         "Pancit Bihon": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 240,
         },
         "Pancit Malabon": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 280,
         },
         Spaghetti: {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 250,
         },
       },
       Pork: {
         "Pork Sinigang": {
-          quantity: 2,
           paxSelected: "13-15 pax",
           pricePerPax: 300,
         },
         "Lechon Kawali": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 320,
         },
         "Pork Adobo": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 280,
         },
         "Pork Sisig": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 310,
         },
       },
       Beverage: {
         "Sago't Gulaman": {
-          quantity: 1,
           paxSelected: "18-20 pax",
           pricePerPax: 120,
         },
         "Iced Tea": {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: 110,
         },
         "Calamansi Juice": {
-          quantity: 1,
           paxSelected: "8-10 pax",
           pricePerPax: 120,
         },
         "Mango Shake": {
-          quantity: 1,
           paxSelected: "13-15 pax",
           pricePerPax: 140,
         },

@@ -125,7 +125,10 @@ export default function CustomDatePicker({
       }
 
       if (numberOfFutureDaysDisable !== 0) {
-        if (today > minDate) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const minDate = addDays(today, numberOfFutureDaysDisable);
+        if (selectedDate > today && selectedDate < minDate) {
           return;
         }
       }
@@ -161,7 +164,7 @@ export default function CustomDatePicker({
     }
 
     if (numberOfFutureDaysDisable !== 0) {
-      return date < minDate;
+      return date > today && date < minDate;
     }
 
     return false;
@@ -176,13 +179,13 @@ export default function CustomDatePicker({
     let newDate = new Date(date);
     let shouldUpdateDate = false;
 
-    // If date is before minDate, reset to minDate
-    if (!date || date < minDate) {
+    // If numberOfFutureDaysDisable is set, check if date is valid
+    if (numberOfFutureDaysDisable !== 0 && date > today && date < minDate) {
       newDate = minDate;
       shouldUpdateDate = true;
     }
 
-    // Your existing restrictions
+    // Only apply previous months restrictions if the flag is true
     if (
       isPreviousMonthsUnselectable &&
       ((getYear(newDate) === currentYear && getMonth(newDate) < currentMonth) ||

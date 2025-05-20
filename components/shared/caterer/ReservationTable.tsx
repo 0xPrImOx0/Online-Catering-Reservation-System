@@ -25,16 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ReservationDialog from "./ReservationDialog";
-
-// Import the avatar fallback function
-const avatarFallBack = (name: string) => {
-  return name
-    .split(" ") // Split by space
-    .map((word) => word[0]) // Get first letter of each word
-    .join("") // Join them together
-    .toUpperCase() // Convert to uppercase
-    .slice(0, 2); // Limit to two letters
-};
+import { avatarFallBack } from "@/utils/avatar-fallback";
 
 export default function ReservationTable({
   reservations,
@@ -66,10 +57,10 @@ export default function ReservationTable({
         <TableBody>
           {reservations.length > 0 ? (
             reservations.map((reservation) => (
-              <TableRow key={reservation.id}>
-                <TableCell>
+              <TableRow key={reservation.id} className="gap-2">
+                <TableCell className="py-4">
                   <div className="flex items-center gap-2">
-                    <Avatar className="h-6 w-6">
+                    <Avatar className="size-10">
                       <AvatarFallback>
                         {avatarFallBack(reservation.fullName)}
                       </AvatarFallback>
@@ -107,7 +98,7 @@ export default function ReservationTable({
                   )}
                 </TableCell>
                 <TableCell>
-                  ₱{reservation.totalPrice.toLocaleString()}
+                  &#8369; {reservation.totalPrice.toLocaleString()}
                 </TableCell>
                 {!dashboard && (
                   <TableCell>
@@ -135,7 +126,11 @@ export default function ReservationTable({
           ) : (
             <TableRow>
               <TableCell colSpan={7} className="text-center">
-                No reservations found.
+                <div className="col-span-3 min-h-[50vh] flex justify-center items-center">
+                  <span className="font-bold text-4xl">
+                    No Reservations Found
+                  </span>
+                </div>
               </TableCell>
             </TableRow>
           )}
