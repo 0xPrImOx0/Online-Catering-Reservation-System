@@ -11,12 +11,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Menu, SidebarIcon } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import React from "react";
-import { NavUser } from "./nav-user";
+import { NavUser } from "./caterer-nav-user";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export function SiteHeader() {
+  const { customer } = useAuthContext(); // Temporary Basis if there is a user currently signed in
   const { toggleSidebar } = useSidebar();
   const pathname = usePathname();
   const [breadcrumbs, setBreadcrumbs] = useState<
@@ -74,10 +76,11 @@ export function SiteHeader() {
     generateBreadcrumbs();
   }, [pathname]);
 
+  //TEMPORARY
   const user = {
-    name: "Rey Daug",
-    email: "m@example.com",
-    avatar: "/daug-avatar.jpg",
+    name: customer?.fullName || "Rey Daug",
+    email: customer?.email || "m@example.com",
+    avatar: customer?.profileImage || "/daug-avatar.jpg",
   };
 
   return (

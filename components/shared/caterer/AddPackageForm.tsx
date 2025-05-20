@@ -16,6 +16,7 @@ import { ImageStep } from "./package-form-steps/ImageStep";
 import ReviewStep from "./package-form-steps/ReviewStep";
 import { FormStepType, MultiStepForm } from "../MultiStepForm";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Import VisuallyHidden
+import { toast } from "sonner";
 
 export default function AddPackageDialog({
   isAddPackageOpen,
@@ -49,11 +50,16 @@ export default function AddPackageDialog({
   };
 
   // Handle form submission
-  const handleSubmit = () => {
-    form.handleSubmit((data) => {
-      onSubmit(data);
-      setIsSubmitComplete(true);
-    })();
+  const handleSubmitForm = async () => {
+    const data = form.getValues();
+    const isSuccess = await onSubmit(data, "create");
+
+    if (!isSuccess) {
+      toast.error("Submission Failed");
+      return;
+    }
+
+    setIsSubmitComplete(true);
   };
 
   // Handle form completion (close dialog and reset)
@@ -85,7 +91,7 @@ export default function AddPackageDialog({
         title={"Add Package List"}
         description={"Complete the form to add a new package"}
         formSteps={multiFormSteps}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmitForm}
         onNextStep={handleNextStep}
         onComplete={handleComplete}
         onCancel={handleCancel}

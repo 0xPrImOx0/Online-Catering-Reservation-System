@@ -121,9 +121,10 @@ export function ImageStep({ formHook }: AddMenuFormProps) {
           <Label className="text-base font-medium">Image Preview</Label>
           <div className="mt-2 border rounded-md overflow-hidden aspect-video relative flex items-center justify-center bg-muted">
             {form.watch("imageUploadType") === "url" ? (
-              form.watch("imageUrl") && isValidUrl(form.watch("imageUrl")) ? (
+              form.watch("imageUrl") &&
+              isValidUrl(form.watch("imageUrl") || "") ? (
                 <Image
-                  src={form.watch("imageUrl")}
+                  src={form.watch("imageUrl") || ""}
                   alt="Menu item preview"
                   fill
                   className="max-h-full max-w-full object-contain"

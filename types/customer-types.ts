@@ -1,7 +1,3 @@
-import { MenuItem } from "@/types/menu-types";
-import { SetStateBoolean } from "@/types/global-types";
-import { Dispatch, SetStateAction } from "react";
-
 //Customer Related Types
 export type CustomerType = {
   id: string;
@@ -22,4 +18,16 @@ export type ConcernType = {
   submittedAt: Date;
   status: string;
   isRegistered: boolean;
+};
+
+export type CustomerProps = {
+  _id: string;
+  fullName: string;
+  email: string;
+  role: "customer" | "caterer";
+  contactNumber?: string;
+  profileImage?: string;
+  createdAt: string;
+  updatedAt: string;
+  __v?: number;
 };

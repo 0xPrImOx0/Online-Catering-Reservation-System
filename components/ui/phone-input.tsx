@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { Label } from "./label";
 
 type PhoneInputProps = Omit<
   React.ComponentProps<"input">,
@@ -62,9 +63,44 @@ const InputComponent = React.forwardRef<
   React.ComponentProps<"input">
 >(({ className, ...props }, ref) => (
   <Input
-    className={cn("rounded-e-lg rounded-s-none", className)}
+    type="number"
+    className={cn("rounded-e-lg rounded-s-none h-auto", className)}
     {...props}
     ref={ref}
+    disabled={false}
+    onChange={(e) => {
+      const inputValue = e.target.value;
+
+      // Check if the first character is '0' and remove it
+      if (inputValue.startsWith("0") && inputValue.length > 1) {
+        e.target.value = inputValue.slice(1); // Remove the first '0'
+      }
+
+      // Update the value by setting the target value
+      if (props.onChange) {
+        props.onChange(e); // Call the original onChange passed down if it exists
+      }
+    }}
+    onKeyDown={(e) => {
+      // Type assertion to tell TypeScript that e.target is an HTMLInputElement
+      const inputElement = e.target as HTMLInputElement;
+      const inputValue = inputElement.value;
+
+      // Prevent entering non-numeric characters, except Backspace
+      if (
+        !/[0-9]/.test(e.key) &&
+        e.key !== "Backspace" &&
+        e.key !== "ArrowLeft" &&
+        e.key !== "ArrowRight"
+      ) {
+        e.preventDefault();
+      }
+
+      // Prevent entering '0' as the first character
+      if (e.key === "0" && inputValue === "") {
+        e.preventDefault();
+      }
+    }}
   />
 ));
 InputComponent.displayName = "InputComponent";
@@ -76,6 +112,7 @@ type CountrySelectProps = {
   value: RPNInput.Country;
   options: CountryEntry[];
   onChange: (country: RPNInput.Country) => void;
+  defaultCountry?: RPNInput.Country;
 };
 
 const CountrySelect = ({
@@ -83,7 +120,34 @@ const CountrySelect = ({
   value: selectedCountry,
   options: countryList,
   onChange,
+  defaultCountry,
 }: CountrySelectProps) => {
+  // If disabled and defaultCountry is provided, use defaultCountry
+  // Otherwise, use the selectedCountry from props
+  const effectiveCountry =
+    disabled && defaultCountry ? defaultCountry : selectedCountry;
+
+  // If country selection is disabled, use a simplified button without dropdown
+  if (disabled) {
+    return (
+      <Button
+        type="button"
+        variant="outline"
+        className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3"
+        disabled={true}
+      >
+        <FlagComponent
+          country={effectiveCountry}
+          countryName={effectiveCountry}
+        />
+
+        <Label className="ml-2">
+          +{RPNInput.getCountryCallingCode(defaultCountry || selectedCountry)}
+        </Label>
+      </Button>
+    );
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>

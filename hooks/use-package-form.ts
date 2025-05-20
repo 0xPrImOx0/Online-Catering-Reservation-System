@@ -17,64 +17,164 @@ import {
   type PackageType,
 } from "@/types/package-types";
 import { toast } from "sonner";
+import { FOOD_CATEGORIES } from "@/types/menu-types";
+import axios from "axios";
+import api from "@/lib/api/axiosInstance";
 
 // Form schema using Zod
 const formSchema = z
   .object({
-    name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+    name: z.string().min(5, { message: "Name must be at least 5 characters" }),
+
     description: z
       .string()
-      .min(20, { message: "Description must be at least 20 characters" }),
+      .min(10, { message: "Description must be at least 10 characters" }),
+
     available: z.boolean().default(true),
+
     pricePerPax: z
       .number()
-      .min(1, { message: "Price per pax must be at least 1" }),
-    pricePerPaxWithServiceCharge: z.number().min(0).optional(), // Changed from totalPriceWithService
+      .min(0, { message: "Price per pax must be a positive number" }),
+
+    pricePerPaxWithServiceCharge: z.number().min(0, {
+      message: "Price per pax with service charge must be a positive number",
+    }), // Changed from totalPriceWithService
+
     minimumPax: z
       .number()
       .min(10, { message: "Minimum pax must be at least 10" }),
+
     recommendedPax: z
       .number()
       .min(10, { message: "Recommended pax must be at least 10" }),
+
     maximumPax: z
       .number()
       .min(10, { message: "Maximum pax must be at least 10" }),
+
     options: z
       .array(
         z.object({
-          category: z.enum(
-            packageCategories as [PackageCategory, ...PackageCategory[]]
-          ),
-          count: z.number().min(1, { message: "Count must be at least 1" }),
+          category: z.string().refine((val) => FOOD_CATEGORIES.includes(val), {
+            message: "Category must be one of: " + FOOD_CATEGORIES.join(", "),
+          }),
+          count: z
+            .number()
+            .min(1, { message: "Count for category must be at least 1" }),
         })
       )
-      .min(1, { message: "Add at least one package option" }),
+      .min(1, { message: "Options must be an array with at least 1 value" }),
+
     inclusions: z
       .array(
         z.object({
-          typeOfCustomer: z.enum(["Both", "Buffet", "Plated"] as const),
+          typeOfCustomer: z
+            .enum(["Both", "Buffet", "Plated"] as const)
+            .refine((val) => ["Both", "Buffet", "Plated"].includes(val), {
+              message: "Type of customer must be one of: Both, Buffet, Plated",
+            }),
           includes: z
             .string()
-            .min(1, { message: "Inclusion must not be empty" }),
+            .min(5, {
+              message: "Service included must be at least 5 characters",
+            })
+            .refine((val) => val.trim().length > 0, {
+              message: "Service included must not be empty",
+            }),
         })
       )
-      .min(1, { message: "Add at least one inclusion" }),
-    serviceHours: z.number().min(0).optional(),
-    serviceCharge: z.number().min(0).optional(),
+      .min(1, { message: "Inclusions must be an array with at least 1 value" }),
+
+    serviceHours: z
+      .number()
+      .min(0, { message: "Service Hours must be a positive number" }),
+
+    serviceCharge: z
+      .number()
+      .min(0, { message: "Service Charge must be a positive number" }),
+
     eventType: z.enum(eventTypes as [EventType, ...EventType[]]).optional(),
-    packageType: z.enum(["BuffetPlated", "Event"] as const),
+
+    packageType: z
+      .enum(["BuffetPlated", "Event"] as const)
+      .refine((val) => typeof val === "string", {
+        message: "Package type must be a String",
+      })
+      .refine((val) => val.trim() !== "", {
+        message: "Please provide the package type",
+      }),
+
     imageUrl: z
       .string()
-      .url({ message: "Please enter a valid URL" })
-      .or(z.literal("")),
+      .url({ message: "Image URL must be a valid URL" })
+      .optional()
+      .refine((val) => val === "" || typeof val === "string", {
+        message: "Image URL must be a String",
+      }),
+
     imageFile: z.instanceof(File).optional(),
+
     totalServiceFee: z.number().min(0).optional(),
+
     imageUploadType: z.enum(["url", "upload"]).default("url"),
   })
   .refine((data) => data.packageType !== "Event" || !!data.eventType, {
     path: ["eventType"],
     message: "Please Select an Event Type",
-  });
+  })
+  .refine((data) => data.pricePerPaxWithServiceCharge > data.pricePerPax, {
+    path: ["pricePerPaxWithServiceCharge"],
+    message:
+      "Price per pax with service charge must be greater than price per pax",
+  })
+  .refine((data) => data.recommendedPax > data.minimumPax, {
+    path: ["recommendedPax"],
+    message: "Recommended pax must be greater than minimum pax",
+  })
+  .refine((data) => data.recommendedPax < data.maximumPax, {
+    path: ["recommendedPax"],
+    message: "Recommended pax must be less than maximum pax",
+  })
+  .refine((data) => data.maximumPax > data.minimumPax, {
+    path: ["maximumPax"],
+    message: "Maximum pax must be greater than minimum pax",
+  })
+  .refine((data) => data.maximumPax > data.recommendedPax, {
+    path: ["maximumPax"],
+    message: "Maximum pax must be greater than recommended pax",
+  })
+  .refine(
+    (data) => {
+      // Check if packageType is "Event" and ensure eventType is provided
+      if (data.packageType === "Event" && !data.eventType) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Please provide the event type for the event package",
+      path: ["eventType"], // Specify the field to apply the error message
+    }
+  )
+  .refine(
+    (data) => {
+      // Check if eventType is one of the valid values if it is provided
+      if (
+        data.eventType &&
+        !["Birthday", "Wedding", "Corporate", "Graduation"].includes(
+          data.eventType
+        )
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message:
+        "Event type must be one of: Birthday, Wedding, Corporate, Graduation",
+      path: ["eventType"], // Specify the field to apply the error message
+    }
+  );
 
 export type PackageFormValues = z.infer<typeof formSchema>;
 
@@ -222,13 +322,22 @@ export function usePackageForm({
     }
   };
 
+  // Modify the removePackageOption function to set the deleted category as the selected one
   // Remove package option function
   const removePackageOption = (index: number) => {
     const currentOptions = form.getValues("options");
     const removedOption = currentOptions[index];
 
     // Add the category back to available categories
-    setAvailableCategories((prev) => [...prev, removedOption.category].sort());
+    setAvailableCategories((prev) =>
+      [...prev, removedOption.category as PackageCategory].sort()
+    );
+
+    // Set the removed category as the selected one in the dropdown
+    setNewOption({
+      category: removedOption.category as PackageCategory,
+      count: newOption.count,
+    });
 
     form.setValue(
       "options",
@@ -272,54 +381,110 @@ export function usePackageForm({
   };
 
   // Submit form function
-  const onSubmit = (data: PackageFormValues) => {
+  const onSubmit = async (
+    data: PackageFormValues,
+    mode: "create" | "update",
+    id?: string
+  ) => {
+    const { imageUrl, ...rest } = data;
+    let isSuccess = false;
+
     // Map packageType from internal value to UI display name
-    const displayPackageType =
-      data.packageType === "BuffetPlated" ? "BuffetPlated" : "Event";
+    // const displayPackageType =
+    //   data.packageType === "BuffetPlated" ? "BuffetPlated" : "Event";
 
     // Calculate pricePerPaxWithServiceCharge if not already set
-    const serviceCharge = data.serviceCharge || 0;
-    const serviceHours = data.serviceHours || 0;
-    const minimumPax = data.minimumPax || 1; // Avoid division by zero
-    const pricePerPax = data.pricePerPax || 0;
+    // const serviceCharge = data.serviceCharge || 0;
+    // const serviceHours = data.serviceHours || 0;
+    // const minimumPax = data.minimumPax || 1; // Avoid division by zero
+    // const pricePerPax = data.pricePerPax || 0;
 
-    const totalServiceFee = serviceCharge * serviceHours;
-    const serviceChargePerPax =
-      minimumPax > 0 ? totalServiceFee / minimumPax : 0;
-    const pricePerPaxWithServiceCharge = pricePerPax + serviceChargePerPax;
+    // const totalServiceFee = serviceCharge * serviceHours;
+    // const serviceChargePerPax =
+    //   minimumPax > 0 ? totalServiceFee / minimumPax : 0;
+    // const pricePerPaxWithServiceCharge = pricePerPax + serviceChargePerPax;
 
     // Create package object
-    const packageData: CateringPackagesProps = {
-      name: data.name,
-      description: data.description,
-      available: data.available,
-      pricePerPax: data.pricePerPax,
-      minimumPax: data.minimumPax,
-      recommendedPax: data.recommendedPax,
-      maximumPax: data.maximumPax,
-      options: data.options,
-      inclusions: data.inclusions,
-      imageUrl: data.imageUrl || "",
-      serviceHours: data.serviceHours || 0,
-      serviceCharge: data.serviceCharge || 0,
-      eventType: data.packageType === "Event" ? data.eventType : undefined,
-      packageType: displayPackageType,
-      pricePerPaxWithServiceCharge: pricePerPaxWithServiceCharge,
+    // const packageData: CateringPackagesProps = {
+    //   name: data.name,
+    //   description: data.description,
+    //   available: data.available,
+    //   pricePerPax: data.pricePerPax,
+    //   minimumPax: data.minimumPax,
+    //   recommendedPax: data.recommendedPax,
+    //   maximumPax: data.maximumPax,
+    //   options: data.options.map((option) => ({
+    //     ...option,
+    //     category: option.category as PackageCategory, // Cast to PackageCategory
+    //   })),
+    //   inclusions: data.inclusions,
+    //   imageUrl: data.imageUrl || "",
+    //   serviceHours: data.serviceHours || 0,
+    //   serviceCharge: data.serviceCharge || 0,
+    //   eventType: data.packageType === "Event" ? data.eventType : undefined,
+    //   packageType: displayPackageType,
+    //   pricePerPaxWithServiceCharge: pricePerPaxWithServiceCharge,
+    // };
+
+    const packageData: Omit<CateringPackagesProps, "_id"> = {
+      ...rest,
+      rating: isEditMode && initialData ? initialData.rating : 0,
+      ratingCount: isEditMode && initialData ? initialData.ratingCount : 0,
+      ...(imageUrl !== "" && { imageUrl }), // Exclude the imageUrl if it's null
+      options: data.options.map((option) => ({
+        ...option,
+        category: option.category as PackageCategory, // Cast category to PackageCategory
+      })),
     };
 
     console.log(
-      `${isEditMode ? "Updating" : "Submitting"} package:`,
+      `${mode === "update" ? "Updating" : "Submitting"} package:`,
       packageData
     );
-    // Here you would typically send this to your API
-    // If there's an image file, you would upload it first and then update the imageUrl
 
-    toast.success(JSON.stringify(data, null, 2));
-    // Show success message
-    setIsSubmitSuccess(true);
+    console.log("Submitted data:", JSON.stringify(packageData, null, 2));
 
-    // Return the package data
-    return packageData;
+    try {
+      let response;
+
+      if (mode === "create") {
+        // Create package API request
+        response = await api.post("/packages", packageData);
+        toast.success(`${packageData.name} is successfully added to packages`);
+        console.log(
+          "Submitted data IN JSON JSON:",
+          JSON.stringify(response, null, 2)
+        );
+      } else if (mode === "update" && id) {
+        // Update package API request
+        console.log("ID OF THE PACKAGE:", id);
+        response = await api.put(`/packages/${id}`, packageData);
+        toast.success(`${packageData.name} is successfully updated`);
+      }
+
+      isSuccess = true;
+      setIsSubmitSuccess(true);
+      console.log("MESSAGE", response?.data.message);
+      console.log("DATAA", response?.data.data);
+    } catch (err: unknown) {
+      isSuccess = false;
+      console.log("ERROR", err);
+
+      if (axios.isAxiosError<{ error: string }>(err)) {
+        const message = err.response?.data.error || "Unexpected Error Occur";
+        if (err.response?.status === 400) {
+          toast.error(`Bad Request: ${message}`);
+        } else if (err.response?.status === 403) {
+          toast.error(`Unauthorized: ${message}`);
+        } else if (err.response?.status === 404) {
+          toast.error(`Not Found: ${message}`);
+        }
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    }
+
+    return isSuccess;
   };
 
   // Helper function to get fields to validate for each step

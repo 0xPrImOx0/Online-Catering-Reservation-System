@@ -1,18 +1,15 @@
+"use client";
+
 import ReservationTable from "@/components/shared/caterer/ReservationTable";
 import MetricCards from "@/components/shared/MetricCards";
 import { Button } from "@/components/ui/button";
-import { reservations } from "@/lib/caterer/reservation-dummy";
-import {
-  Calendar,
-  LucideIcon,
-  MessageSquare,
-  Users,
-} from "lucide-react";
+import { reservations } from "@/lib/caterer/reservation-metadata";
+import { Calendar, LucideIcon, Users } from "lucide-react";
 import Link from "next/link";
-import { concerns, metricCards, registeredCustomers } from "../../../lib/caterer/dashboard-metadata";
-import RecentConcerns from "@/components/shared/caterer/RecentConcerns";
-import RecentCustomers from "@/components/shared/caterer/RecentCustomers";
-import { Metadata } from "next";
+import { metricCards } from "../../../lib/caterer/dashboard-metadata";
+import { CustomersTable } from "@/components/shared/caterer/CustomersTable";
+import { customers } from "../../../lib/caterer/customers-metadata";
+import { useState } from "react";
 
 const RecentHeaders = ({
   title,
@@ -38,12 +35,16 @@ const RecentHeaders = ({
   );
 };
 
-export const metadata: Metadata = {
-  title: "Dashboard",
-};
-
-
 export default function DashboardPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredCustomers = customers.filter((customer) => {
+    return (
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.id.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
   return (
     <main className="flex-1 overflow-auto space-y-8">
       <div className="space-y-6">
@@ -65,24 +66,16 @@ export default function DashboardPage() {
           Icon={Calendar}
         />
         <ReservationTable reservations={reservations} dashboard />
-        {/* Recent Registered Customers and Recent Concerns */}
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          {/* Recent Registered Customers */}
-          <div>
-            <RecentHeaders title="Customers" link="customers" Icon={Users} />
-            <RecentCustomers registeredCustomers={registeredCustomers} />
-          </div>
 
-          {/* Recent Concerns */}
-          <div>
-            <RecentHeaders
-              title="Concerns"
-              link="concerns"
-              Icon={MessageSquare}
-            />
-            <RecentConcerns concerns={concerns} />
-          </div>
-        </div>
+        {/* Recent Registered Customers */}
+        <RecentHeaders title="Customers" link="customers" Icon={Users} />
+        {/* Customers Table Section */}
+        <CustomersTable
+          customers={filteredCustomers}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          hasEditableButtons={false}
+        />
       </div>
     </main>
   );

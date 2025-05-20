@@ -11,35 +11,55 @@ import React, { useState } from "react";
 import PackageDetailsDialog from "./PackageDetailsDialog";
 import { EyeIcon } from "lucide-react";
 import clsx from "clsx";
+import { cn } from "@/lib/utils";
+import { ControllerRenderProps } from "react-hook-form";
+import { ReservationValues } from "@/hooks/use-reservation-form";
 
 export default function MiniCateringPackageCard({
   pkg,
   field,
 }: {
   pkg: CateringPackagesProps;
-  field: any;
+  field: ControllerRenderProps<ReservationValues, "selectedPackage">;
 }) {
   const [open, setOpenChange] = useState(false);
 
   return (
-    <FormControl key={pkg._id} className="">
+    <FormControl key={pkg._id}>
       <div>
         <Card
           onClick={() => field.onChange(pkg._id)}
           className={clsx(
-            "flex-1 p-4 cursor-pointer border transition-all hover:bg-gray-100 hover:border-foreground",
-            { "border-foreground": field.value === pkg._id }
+            "flex flex-col flex-1 p-4 cursor-pointer border transition-all group hover:bg-muted-foreground/10 hover:border-green-500 h-full",
+            {
+              "border-green-500 bg-muted-foreground/10":
+                field.value === pkg._id,
+            }
           )}
         >
-          <CardTitle>{pkg.name}</CardTitle>
-          <CardDescription className="line-clamp-2">
+          <CardTitle className="text-base mb-2">{pkg.name}</CardTitle>
+          <CardDescription className="line-clamp-3 mb-4 text-justify text-muted-foreground">
             {pkg.description}
           </CardDescription>
-          <CardFooter className="p-0 mt-3 flex justify-end">
+          <CardFooter className="relative bottom-0 p-0 mt-auto flex justify-between items-center">
+            <Button variant={"ghost"} size={"custom"}>
+              <span
+                className={cn(
+                  "flex gap-1 items-center border rounded-md px-2 py-1 border-green-500 transition-colors",
+
+                  field.value === pkg._id
+                    ? "bg-green-500 text-background"
+                    : "group-hover:bg-green-500 group-hover:text-background text-foreground"
+                )}
+              >
+                &#8369; {pkg.pricePerPax.toFixed(2)}/pax
+              </span>
+            </Button>
             <Button
-              variant={"link"}
-              size={"custom"}
+              variant={"ghost"}
+              effect={"shineHover"}
               onClick={() => setOpenChange(true)}
+              className="-mr-2"
             >
               <EyeIcon />
               View Details

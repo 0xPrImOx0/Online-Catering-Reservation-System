@@ -1,53 +1,79 @@
 import { useReservationForm } from "@/hooks/use-reservation-form";
-import { PackageCategory, ServiceType } from "./package-types";
+import { ServiceType } from "./package-types";
 
 //Reservation Related Types
-export type reservationType = {
-  id: string;
-  customer: {
-    name: string;
-    email: string;
-    phone: string;
-    isRegistered: boolean;
-  };
-  eventDate: Date | string | number;
-  totalPrice: number;
-  status: string;
-  createdDate: Date | null;
-  guests: number;
-  address: string;
-  specialInstructions: string;
-  items: { name: string; quantity: number; price: number }[];
-  payment: {
-    status: string;
-    date: Date | null;
-    amount: number;
-  };
-  isUrgent: boolean;
-};
+export type PaxArrayType = "4-6 pax" | "8-10 pax" | "13-15 pax" | "18-20 pax";
+
+export const paxArray: PaxArrayType[] = [
+  "4-6 pax",
+  "8-10 pax",
+  "13-15 pax",
+  "18-20 pax",
+];
+
+export type ReservationStatusType =
+  | "All"
+  | "Pending"
+  | "Confirmed"
+  | "Completed"
+  | "Cancelled";
+
+export const reservationStatusArray: ReservationStatusType[] = [
+  "Pending",
+  "Confirmed",
+  "Completed",
+  "Cancelled",
+];
+
+export type HoursArrayTypes =
+  | "4 hours"
+  | "4.5 hours"
+  | "5 hours"
+  | "5.5 hours"
+  | "6 hours"
+  | "6.5 hours"
+  | "8 hours"
+  | "8.5 hours"
+  | "10 hours";
+
+export interface MenuReservationDetails {
+  quantity: number;
+  paxSelected: PaxArrayType;
+  pricePerPax: number;
+}
+
+export type SelectedMenu = Record<string, MenuReservationDetails>;
+
+export type SelectedMenus = Record<string, SelectedMenu>;
 
 export interface ReservationItem {
   fullName: string;
   email: string;
   contactNumber: string;
   eventType: string;
-  eventDate: Date;
-  eventTime: string;
+  reservationDate: Date;
+  reservationTime: string;
   guestCount: number;
   venue: string;
-  serviceMode: "event" | "custom";
   serviceType: ServiceType;
-  serviceHours: string;
+  serviceFee: number;
+  serviceHours?: HoursArrayTypes;
   selectedPackage: string;
-  selectedMenus: Record<PackageCategory, string[]>;
+  selectedMenus: SelectedMenus;
+  totalPrice: number;
   specialRequests?: string;
   deliveryOption: "Pickup" | "Delivery";
+  deliveryFee: number;
   deliveryAddress?: string;
   deliveryInstructions?: string;
+  // paymentReference?: string;
+  // status: ReservationStatusType;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export type ReservationTableProps = {
-  reservations: reservationType[];
+  reservations: ReservationItem[];
   dashboard?: boolean;
 };
 
@@ -55,7 +81,9 @@ export interface BookNowProps {
   formHook: ReturnType<typeof useReservationForm>;
 }
 
-export type SelectServiceModeProps = {
-  showSelectServiceMode: boolean;
-  setShowSelectServiceMode: (open: boolean) => void;
-};
+export interface SelectServingSizeProps {
+  category: string;
+  menu: string;
+  value: SelectedMenus;
+  onChange: (value: SelectedMenus) => void;
+}

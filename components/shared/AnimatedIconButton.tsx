@@ -18,7 +18,7 @@ export function AnimatedIconButton({
 }: AnimatedIconButtonProps) {
   return (
     <Button
-      variant="outline"
+      variant={"none"}
       className={`
         group 
         h-9 
@@ -27,6 +27,7 @@ export function AnimatedIconButton({
         lg:w-9 
         lg:transition-all lg:duration-300 
         lg:hover:w-auto 
+        border border-gray bg-transparent
         ${className || ""}
       `}
       {...props}
@@ -38,8 +39,7 @@ export function AnimatedIconButton({
           ml-2 whitespace-nowrap
           lg:ml-0 lg:w-0 lg:overflow-hidden lg:opacity-0 
           lg:transition-all lg:duration-300 
-          lg:group-hover:w-auto lg:group-hover:opacity-100 lg:group-hover:ml-2
-        "
+          lg:group-hover:w-auto lg:group-hover:opacity-100 lg:group-hover:ml-2"
         >
           {title}
         </span>

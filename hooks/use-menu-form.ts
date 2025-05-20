@@ -7,60 +7,140 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  allergens,
   predefinedPaxRanges,
-  categories,
   CategoryProps,
   AllergenProps,
   PriceInfo,
   MenuItem,
   CalculationParams,
+  FOOD_CATEGORIES,
+  FOOD_ALLERGENS,
 } from "@/types/menu-types";
+import axios from "axios";
+import { toast } from "sonner";
+import api from "@/lib/api/axiosInstance";
 
 // Form schema using Zod
 const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  category: z.enum(categories as [CategoryProps, ...CategoryProps[]]),
+  name: z
+    .string()
+    .min(5, { message: "Menu name must be at least 5 characters long" })
+    .trim(),
+
+  category: z
+    .enum(FOOD_CATEGORIES as [CategoryProps, ...CategoryProps[]])
+    .refine((value) => FOOD_CATEGORIES.includes(value), {
+      message: `Category must be one of: ${FOOD_CATEGORIES.join(", ")}`,
+    }),
+
   available: z.boolean().default(true),
+
   spicy: z.boolean().default(false),
+
   shortDescription: z
     .string()
-    .min(10, { message: "Short description must be at least 10 characters" }),
+    .min(10, { message: "Short description must be at least 10 characters" })
+    .max(200, { message: "Short description must be at most 200 characters" })
+    .trim(),
+
   fullDescription: z
     .string()
-    .min(20, { message: "Full description must be at least 20 characters" }),
+    .min(20, { message: "Full description must be at least 20 characters" })
+    .max(500, { message: "Full description must be at most 500 characters" })
+    .trim(),
+
   ingredients: z
-    .array(z.string())
-    .min(1, { message: "Add at least one ingredient" }),
-  allergens: z.array(z.enum(allergens as [AllergenProps, ...AllergenProps[]])),
-  preparationMethod: z
-    .string()
-    .min(10, { message: "Preparation method must be at least 10 characters" }),
-  regularPricePerPax: z.number().min(1),
-  prices: z
     .array(
-      z.object({
-        minimumPax: z.number().min(1),
-        maximumPax: z.number().min(1),
-        price: z.number().min(0),
-        discount: z.number(),
+      z.string().min(5, {
+        message: "Each ingredient must be at least 5 characters long",
       })
     )
+    .min(1, { message: "Add at least one ingredient" }),
+
+  allergens: z.array(
+    z
+      .enum(FOOD_ALLERGENS as [AllergenProps, ...AllergenProps[]])
+      .refine((value) => FOOD_ALLERGENS.includes(value), {
+        message: `Each allergen must be one of: ${FOOD_ALLERGENS.join(", ")}`,
+      })
+  ),
+
+  preparationMethod: z
+    .string()
+    .min(20, { message: "Preparation method must be at least 20 characters" })
+    .max(500, { message: "Preparation method must be at most 500 characters" })
+    .trim(),
+
+  regularPricePerPax: z
+    .number()
+    .min(0, { message: "Regular price per pax must be atleast 0" })
+    .max(1000, { message: "Regular price per pax must not exceed 1000" }),
+
+  prices: z
+    .array(
+      z
+        .object({
+          minimumPax: z
+            .number()
+            .int()
+            .min(1, { message: "Minimum pax must be a positive integer" }),
+
+          maximumPax: z
+            .number()
+            .int()
+            .min(1, { message: "Maximum pax must be a positive integer" }),
+
+          price: z
+            .number()
+            .min(0, { message: "Price must be a positive number" }),
+
+          discount: z
+            .number()
+            .min(0, { message: "Discount must be at least 0" })
+            .max(100, { message: "Discount must be at most 100" }),
+        })
+        .superRefine((data, ctx) => {
+          if (data.maximumPax < data.minimumPax) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["maximumPax"], // This ensures it pins the error to maximumPax
+              message:
+                "Maximum pax must be greater than or equal to minimum pax",
+            });
+          }
+        })
+    )
     .min(1, { message: "Add at least one price tier" }),
-  imageUrl: z.string().url({ message: "Please enter a valid URL" }),
+
+  imageUrl: z
+    .string()
+    .url({ message: "Image URL must be a valid URL" })
+    .optional(),
+
   imageFile: z.instanceof(File).optional(),
+
   imageUploadType: z.enum(["url", "upload"]).default("url"),
+
   perServing: z.string(),
+
   servingUnit: z.enum(["g", "kg"]).default("g"),
+
   nutritionInfo: z.object({
-    calories: z.string(),
-    protein: z.string(),
-    fat: z.string(),
-    carbs: z.string(),
-    sodium: z.string(),
-    fiber: z.string(),
-    sugar: z.string(),
-    cholesterol: z.string(),
+    calories: z.string().optional(),
+
+    protein: z.string().optional(),
+
+    fat: z.string().optional(),
+
+    carbs: z.string().optional(),
+
+    sodium: z.string().optional(),
+
+    fiber: z.string().optional(),
+
+    sugar: z.string().optional(),
+
+    cholesterol: z.string().optional(),
   }),
 });
 
@@ -147,7 +227,7 @@ export function useMenuForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
-    mode: "onChange",
+    mode: "all",
     reValidateMode: "onSubmit",
   });
 
@@ -188,39 +268,56 @@ export function useMenuForm({
   };
 
   // Add ingredient function
-  const addIngredient = () => {
+  const addIngredient = async () => {
     if (newIngredient.trim() !== "") {
       const currentIngredients = form.getValues("ingredients") || [];
-      form.setValue("ingredients", [
-        ...currentIngredients,
-        newIngredient.trim(),
-      ]);
+      const updatedIngredients = [...currentIngredients, newIngredient.trim()];
+
+      form.setValue("ingredients", updatedIngredients, {
+        shouldValidate: true,
+        shouldTouch: true,
+        shouldDirty: true,
+      });
+
+      console.log(
+        "THIS IS THE INGREDIENTS ADDED",
+        form.getValues("ingredients")
+      );
+
+      console.log(form.getValues("ingredients"));
+      console.log("sdasdasdsad", form.formState.errors.ingredients);
       setNewIngredient("");
     }
   };
 
   // Remove ingredient function
-  const removeIngredient = (index: number) => {
+  const removeIngredient = async (index: number) => {
     const currentIngredients = form.getValues("ingredients");
     form.setValue(
       "ingredients",
       currentIngredients.filter((_, i) => i !== index)
     );
+
+    await form.trigger("ingredients"); // Forces immediate validation display
   };
 
   // Calculate price from discount
   const calculatePriceFromDiscount = (
     discount: number,
-    regularPrice: number
+    recommendedPrice: number
   ) => {
-    const discountAmount = (discount / 100) * regularPrice;
-    return Math.ceil(regularPrice - discountAmount);
+    const discountAmount = (discount / 100) * recommendedPrice;
+    return Math.ceil(recommendedPrice - discountAmount);
   };
 
   // Calculate discount from price
-  const calculateDiscountFromPrice = (price: number, regularPrice: number) => {
-    if (regularPrice === 0) return 0;
-    const discountPercentage = ((regularPrice - price) / regularPrice) * 100;
+  const calculateDiscountFromPrice = (
+    price: number,
+    recommendedPrice: number
+    // maximumPax: number
+  ) => {
+    if (recommendedPrice === 0) return 0;
+    const discountPercentage = (recommendedPrice - price) / recommendedPrice;
     return Math.round(discountPercentage * 100) / 100; // Round to 2 decimal places
   };
 
@@ -243,6 +340,7 @@ export function useMenuForm({
     []
   );
 
+  // calculate the price by regular price per pax * maximum pax
   const calculatePrice = useCallback(
     (regularPricePerPax: number, servingSize: number): number =>
       regularPricePerPax * servingSize,
@@ -328,27 +426,65 @@ export function useMenuForm({
   };
 
   // Submit form function
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (
+    data: FormValues,
+    mode: "create" | "update",
+    id?: string
+  ) => {
     // Create menu item object
-    const menuItem: MenuItem = {
-      ...data,
+    const { imageUrl, ...rest } = data;
+    let isSuccess = false;
+
+    const menuItem: Omit<MenuItem, "_id"> = {
+      ...rest,
       rating: isEditMode && initialData ? initialData.rating : 0,
       ratingCount: isEditMode && initialData ? initialData.ratingCount : 0,
-      _id: ""
+      ...(imageUrl !== "" && { imageUrl }), // Exclude the imageUrl if its null
     };
 
     console.log(
       `${isEditMode ? "Updating" : "Submitting"} menu item:`,
       menuItem
     );
-    // Here you would typically send this to your API
-    // If there's an image file, you would upload it first and then update the imageUrl
 
-    // Show success message
-    setIsSubmitSuccess(true);
+    console.log("Submitted data:", JSON.stringify(menuItem, null, 2));
+
+    try {
+      let response;
+
+      if (mode === "create") {
+        response = await api.post("/menus", menuItem);
+        toast.success(`${menuItem.name} is successfully added to menus`);
+      } else if (mode === "update") {
+        console.log("ID OF THE MENUS", id);
+        response = await api.put(`/menus/${id}`, data);
+        toast.success(`${menuItem.name} is successfully updated`);
+      }
+
+      isSuccess = true;
+      setIsSubmitSuccess(true);
+      console.log("MESSAGE", response?.data.message);
+      console.log("DATAA", response?.data.data);
+      // toast.success(response?.data.message);
+    } catch (err: unknown) {
+      isSuccess = false;
+      console.log("ERRORRRR", err);
+      if (axios.isAxiosError<{ error: string }>(err)) {
+        const message = err.response?.data.error || "Unexpected Error Occur";
+        if (err.response?.status === 400) {
+          toast.error(`Bad Request: ${message}`);
+        } else if (err.response?.status === 403) {
+          toast.error(`Unauthorized: ${message}`);
+        } else if (err.response?.status === 404) {
+          toast.error(`Not Found: ${message}`);
+        }
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    }
 
     // Return the new menu item
-    return menuItem;
+    return isSuccess;
   };
 
   // Helper function to get fields to validate for each step
@@ -384,6 +520,21 @@ export function useMenuForm({
     const fieldsToValidate = getFieldsToValidate(step);
     const isValid = await form.trigger(fieldsToValidate);
 
+    console.log("Current form values:", form.watch());
+
+    // ✅ Log only errors related to this step
+    const errors = form.formState.errors;
+    console.log("All errors:", errors);
+    console.log("THIS IS THE INGREIDIENTS", form.watch("ingredients"));
+
+    console.log("Errors for current step:");
+    fieldsToValidate.forEach((field) => {
+      const error = errors[field];
+      if (error) {
+        console.log(`${field}:`, error.message || error);
+      }
+    });
+
     if (isValid) {
       setIsValidationAttempted(false);
     }
@@ -401,7 +552,7 @@ export function useMenuForm({
         if (newPrice.discount > 0) {
           const calculatedPrice = calculatePriceFromDiscount(
             newPrice.discount,
-            regularPrice
+            regularPrice * newPrice.maximumPax
           );
           setNewPrice((prev) => ({
             ...prev,
@@ -446,7 +597,7 @@ export function useMenuForm({
     });
 
     return () => subscription.unsubscribe();
-  }, [form, newPrice.discount, newPrice.price]);
+  }, [form, newPrice.discount, newPrice.price, newPrice.maximumPax]);
 
   return {
     form,

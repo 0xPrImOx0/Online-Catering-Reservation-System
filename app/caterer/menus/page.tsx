@@ -1,45 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import SearchInput from "@/components/shared/SearchInput";
-import CustomSelect from "@/components/shared/CustomSelect";
-import ViewModeButtons from "@/components/shared/ViewModeButtons";
 import HeaderWithAddButton from "@/components/shared/caterer/HeaderWithAddButton";
-import { menuItems } from "@/lib/menu-lists";
 import { AddMenuDialog } from "@/components/shared/caterer/AddMenuForm";
 import PaginatedMenus from "@/components/shared/customer/PaginatedMenus";
-import { selectorItems } from "@/lib/menu-select";
+import { useState } from "react";
+import { useSidebar } from "@/components/ui/sidebar";
 export default function Page() {
   // State responsible for opening/closing the dialogs for dialog visibility
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
-  // const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  // const [query, setQuery] = useState("");
+  const { open } = useSidebar();
 
   return (
-    <main className="space-y-8 px-6 max-w-[1440px] mx-auto">
+    <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
       <HeaderWithAddButton
-        title="Menu"
+        title="Menus"
         setIsAddInstanceOpen={setIsAddMenuOpen}
       />
 
-      {/* Search and View Controls */}
-      {/* <div className="flex justify-between mb-6">
-        <SearchInput
-          query={query}
-          setQuery={setQuery}
-          placeholderTitle="menus"
-        />
-        <div className="flex gap-4">
-          <CustomSelect
-            defaultValue="default"
-            placeholder="Sort By"
-            items={selectorItems}
-          />
-          <ViewModeButtons viewMode={viewMode} setViewMode={setViewMode} />
-        </div>
-      </div> */}
-
-      <PaginatedMenus />
+      <div className="relative w-full mx-auto py-2">
+        <PaginatedMenus open={open} />
+      </div>
 
       <AddMenuDialog
         isAddMenuOpen={isAddMenuOpen}

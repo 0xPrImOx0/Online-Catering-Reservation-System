@@ -231,14 +231,14 @@ export function InclusionsServicesStep({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="serviceChargePerHour"
+            name="serviceCharge"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Service Charge per Hour</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2">
-                      ₱
+                      &#8369;
                     </span>
                     <Input
                       type="number"
@@ -297,7 +297,7 @@ export function InclusionsServicesStep({
                       <TooltipTrigger asChild>
                         <div className="relative">
                           <span className="absolute left-3 top-1/2 -translate-y-1/2">
-                            ₱
+                            &#8369;
                           </span>
                           <Input
                             type="number"
@@ -336,7 +336,7 @@ export function InclusionsServicesStep({
                       <TooltipTrigger asChild>
                         <div className="relative">
                           <span className="absolute left-3 top-1/2 -translate-y-1/2">
-                            ₱
+                            &#8369;
                           </span>
                           <Input
                             type="number"

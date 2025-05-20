@@ -1,11 +1,13 @@
 import { useMenuForm } from "@/hooks/use-menu-form";
 import { SetStateBoolean } from "./global-types";
-import { CateringPackagesProps, ReviewsProps } from "./package-types";
+import { PackageOption, ReviewsProps } from "./package-types";
+import { CustomSelectItemProps } from "./component-types";
 
 export type ServingSize = 6 | 10 | 15 | 20;
 
 // Define the types
 export type CategoryProps =
+  | "All"
   | "Soup"
   | "Salad"
   | "Beef"
@@ -16,6 +18,19 @@ export type CategoryProps =
   | "Vegetable"
   | "Dessert"
   | "Beverage";
+
+export const FOOD_CATEGORIES = [
+  "Soup",
+  "Salad",
+  "Beef",
+  "Pork",
+  "Noodle",
+  "Chicken",
+  "Seafood",
+  "Vegetable",
+  "Dessert",
+  "Beverage",
+];
 
 export type AllergenProps =
   | "Milk"
@@ -35,17 +50,40 @@ export type AllergenProps =
   | "Sulphites"
   | "Soy"
   | "Nuts"
+  | "None"
   | "";
+
+export const FOOD_ALLERGENS = [
+  "None",
+  "Milk",
+  "Eggs",
+  "Fish",
+  "Shellfish",
+  "Tree nuts",
+  "Peanuts",
+  "Wheat",
+  "Soybeans",
+  "Sesame",
+  "Gluten",
+  "Mustard",
+  "Celery",
+  "Lupin",
+  "Molluscs",
+  "Sulphites",
+  "Soy",
+  "Nuts",
+];
+
 // Update the interfaces to match the new data structure
 export interface NutritionInfo {
-  calories: string; // Now includes "kcal" unit
-  protein: string; // Now includes "g" unit
-  fat: string; // Now includes "g" unit
-  carbs: string; // Now includes "g" unit
-  sodium: string; // Now includes "mg" unit
-  fiber: string; // Now includes "g" unit
-  sugar: string; // Now includes "g" unit
-  cholesterol: string; // Now includes "mg" unit
+  calories?: string; // Now includes "kcal" unit
+  protein?: string; // Now includes "g" unit
+  fat?: string; // Now includes "g" unit
+  carbs?: string; // Now includes "g" unit
+  sodium?: string; // Now includes "mg" unit
+  fiber?: string; // Now includes "g" unit
+  sugar?: string; // Now includes "g" unit
+  cholesterol?: string; // Now includes "mg" unit
 }
 
 export interface PriceInfo {
@@ -56,7 +94,7 @@ export interface PriceInfo {
 }
 
 export interface MenuItem {
-  _id:  string,
+  _id?: string;
   name: string;
   category: CategoryProps;
   available: boolean;
@@ -69,8 +107,8 @@ export interface MenuItem {
   regularPricePerPax: number;
   prices: PriceInfo[]; // Now an array of price tiers
   imageUrl?: string;
-  rating?: number;
-  ratingCount?: number;
+  rating: number;
+  ratingCount: number;
   perServing: string; // New property for serving size
   nutritionInfo: NutritionInfo;
   reviews?: ReviewsProps[];
@@ -94,13 +132,8 @@ export type StarSize = "small" | "medium" | "large";
 
 export interface MenuDetailsDialogProps {
   menu: MenuItem;
-  children: React.ReactNode;
-}
-
-export interface MenuImageDialogProps {
-  item: MenuItem | CateringPackagesProps;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  isMenuDetailsDialogOpen: boolean;
+  setIsMenuDetailsDialogOpen: SetStateBoolean;
 }
 
 export interface CategoryBadgeProps {
@@ -221,3 +254,59 @@ export const addMenuFormSteps = [
 export interface AddMenuFormProps {
   formHook: ReturnType<typeof useMenuForm>;
 }
+
+export const selectorItems: CustomSelectItemProps[] = [
+  { value: "default", title: "Default" },
+  { value: "price-asc", title: "Price: Low to High" },
+  { value: "price-desc", title: "Price: High to Low" },
+  { value: "rating-desc", title: "Highest Rated" },
+  { value: "name-asc", title: "Name: A to Z" },
+  { value: "name-desc", title: "Name: Z to A" },
+];
+
+export const categorySelect: CustomSelectItemProps[] = [
+  { value: "all", title: "All" },
+  { value: "soup", title: "Soup" },
+  { value: "salad", title: "Salad" },
+  { value: "beef", title: "Beef" },
+  { value: "pork", title: "Pork" },
+  { value: "noodle", title: "Noodle" },
+  { value: "chicken", title: "Chicken" },
+  { value: "seafood", title: "Seafood" },
+  { value: "vegetable", title: "Vegetable" },
+  { value: "dessert", title: "Dessert" },
+  { value: "beverage", title: "Beverage" },
+];
+
+export const allergensSelect: CustomSelectItemProps[] = [
+  { value: "Milk", title: "Milk" },
+  { value: "Eggs", title: "Eggs" },
+  { value: "Fish", title: "Fish" },
+  { value: "Shellfish", title: "Shellfish" },
+  { value: "Tree Nuts", title: "Tree nuts" },
+  { value: "Peanuts", title: "Peanuts" },
+  { value: "Wheat", title: "Wheat" },
+  { value: "Soybeans", title: "Soybeans" },
+  { value: "Sesame", title: "Sesame" },
+  { value: "Gluten", title: "Gluten" },
+  { value: "Mustard", title: "Mustard" },
+  { value: "Celery", title: "Celery" },
+  { value: "Lupin", title: "Lupin" },
+  { value: "Molluscs", title: "Molluscs" },
+  { value: "Sulphites", title: "Sulphites" },
+  { value: "Soy", title: "Soy" },
+  { value: "Nuts", title: "Nuts" },
+];
+
+export const defaultCategoryAndCount: PackageOption[] = [
+  { category: "Soup", count: 5 },
+  { category: "Salad", count: 5 },
+  { category: "Beef", count: 5 },
+  { category: "Pork", count: 5 },
+  { category: "Noodle", count: 5 },
+  { category: "Chicken", count: 5 },
+  { category: "Seafood", count: 5 },
+  { category: "Vegetable", count: 5 },
+  { category: "Dessert", count: 5 },
+  { category: "Beverage", count: 5 },
+];

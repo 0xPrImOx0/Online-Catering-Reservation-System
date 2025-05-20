@@ -16,6 +16,7 @@ import { NutritionStep } from "./menu-form-steps/NutritionStep";
 import { ImageStep } from "./menu-form-steps/ImageStep";
 import { ReviewStep } from "./menu-form-steps/ReviewStep";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Import VisuallyHidden
+import { toast } from "sonner";
 
 export default function EditMenuForm({
   isEditMenuOpen,
@@ -29,7 +30,7 @@ export default function EditMenuForm({
     initialData: menu,
     isEditMode: true,
   });
-  const { form, onSubmit, validateStep, resetForm } = menuFormHook;
+  const { form, onSubmit, validateStep } = menuFormHook;
 
   // Convert our form steps to the format expected by MultiStepForm
   const multiFormSteps: FormStepType[] = addMenuFormSteps.map((step) => ({
@@ -53,17 +54,21 @@ export default function EditMenuForm({
   };
 
   // Handle form submission
-  const handleSubmit = () => {
-    form.handleSubmit((data) => {
-      onSubmit(data);
-      setIsSubmitComplete(true);
-    })();
+  const handleSubmit = async () => {
+    const data = form.getValues();
+    const isSuccess = onSubmit(data, "update", menu._id);
+
+    if (!isSuccess) {
+      toast.error("Submission Failed");
+      return;
+    }
+
+    setIsSubmitComplete(true);
   };
 
   // Handle form completion (close dialog and reset)
   const handleComplete = () => {
     setIsEditMenuOpen(false);
-    resetForm();
     setCurrentStep(0);
     setIsSubmitComplete(false);
   };

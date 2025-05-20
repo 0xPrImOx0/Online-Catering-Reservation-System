@@ -8,7 +8,7 @@ export default function HeaderWithAddButton({
 }: HeaderWithAddButtonProps) {
   return (
     <div className="flex justify-between items-start">
-      <h1 className="text-2xl font-bold tracking-tight ">{title}</h1>
+      <h1 className="text-5xl font-bold tracking-tight">{title}</h1>
       <div className="flex items-center gap-2">
         <Button
           variant="outline"

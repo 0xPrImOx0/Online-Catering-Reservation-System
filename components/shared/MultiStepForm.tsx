@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "../ui/progress";
 import clsx from "clsx";
-import PackageChangeWarning from "./PackageChangeWarning";
 import { MultiStepFormProps } from "@/types/component-types";
 
 export type FormStepType = {
@@ -28,6 +27,7 @@ export function MultiStepForm({
   children,
   onSubmit,
   onNextStep,
+  onPrevStep,
   onComplete,
   onCancel,
   initialStep,
@@ -38,44 +38,55 @@ export function MultiStepForm({
   doneButtonText = "Done",
   cancelButtonText = "Cancel",
   isReservationForm = false,
-  setShowSelectServiceMode,
+  setShowPackageSelection,
 }: MultiStepFormProps) {
   const [formStep, setFormStep] = useState<number>(initialStep || 0);
+  // const { trigger } = useFormContext<ReservationValues>();
   const [isNextButtonDisabled, setIsNextButtonDisabled] =
     useState<boolean>(false);
   const reservationRef = useRef<HTMLDivElement>(null);
-
   const checkSizing = isReservationForm ? 24 : 16;
 
   // Function to go to next form step
   const nextStep = async () => {
-    if (formStep < formSteps.length - 1) {
-      setIsNextButtonDisabled(true);
+    // If validation function is provided, use it
+    if (onNextStep) {
+      const isValid = await onNextStep(formStep);
 
-      // If validation function is provided, use it
-      if (onNextStep) {
-        const isValid = await onNextStep(formStep);
-        if (isValid) {
-          setFormStep(formStep + 1);
-        }
-      } else {
-        // Otherwise just go to next step
+      if (nextButtonText === "Choose a Package" && setShowPackageSelection) {
+        setShowPackageSelection(true);
+        setFormStep(formStep);
+        return;
+      }
+      if (isValid) {
         setFormStep(formStep + 1);
       }
-
-      setIsNextButtonDisabled(false);
+    } else {
+      // Otherwise just go to next step
+      setFormStep(formStep + 1);
     }
-    reservationRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (formStep < formSteps.length - 1) {
+      setIsNextButtonDisabled(false);
+    } else {
+      setIsNextButtonDisabled(true);
+    }
   };
 
   // Function to go to previous form step
   const prevStep = () => {
-    reservationRef.current?.scrollIntoView({ behavior: "smooth" });
-    if (formStep > 0) {
-      setFormStep(formStep - 1);
+    if (previousButtonText === "Change Catering Options") {
+      setFormStep(1);
+      setShowPackageSelection?.(false);
+      return;
     }
+    if (onPrevStep && isReservationForm) {
+      const isValid = onPrevStep(formStep);
+      if (isValid) {
+        setFormStep(formStep - 1);
+      }
+    }
+    setFormStep(formStep - 1);
   };
-
   // Function to submit the form
   const submitForm = () => {
     onSubmit();
@@ -90,23 +101,23 @@ export function MultiStepForm({
 
   return (
     <div
-      className={clsx("w-full max-w-4xl mx-auto flex flex-col h-full", {
-        "rounded-xl border bg-card text-card-foreground p-4": isReservationForm,
+      className={clsx("flex flex-col mx-auto w-full max-w-4xl h-full", {
+        "p-4 rounded-xl border bg-card text-card-foreground": isReservationForm,
       })}
     >
       {isReservationForm && (
         <div className="absolute top-0" ref={reservationRef} />
       )}
       <div
-        className={clsx("bg-background md:pt-4 pb-2 px-6", {
+        className={clsx("px-6 pb-2 bg-background md:pt-4", {
           "sticky top-0 z-10": !isReservationForm,
         })}
       >
-        <div className="text-center mb-4">
+        <div className="mb-4 text-center">
           <h2
             className={clsx(
               "font-bold",
-              isReservationForm ? "text-3xl mb-2" : "text-2xl"
+              isReservationForm ? "mb-2 text-3xl" : "text-2xl"
             )}
           >
             {title}
@@ -121,24 +132,24 @@ export function MultiStepForm({
         </div>
 
         {/* Mobile step indicator */}
-        <div className="flex flex-col mb-2 sm:hidden space-y-2">
-          <span className="text-muted-foreground text-sm">
+        <div className="flex flex-col mb-2 space-y-2 sm:hidden">
+          <span className="text-sm text-muted-foreground">
             Step {formStep + 1} of {formSteps.length}
           </span>
-          <div className="flex items-center gap-2 mt-1">
+          <div className="flex gap-2 items-center mt-1">
             <div
               className={`size-8 rounded-full border-2 border-primary flex items-center justify-center ${
                 isSubmitComplete && "bg-primary text-primary-foreground"
               }`}
             >
-              {isSubmitComplete ? <Check className="h-4 w-4" /> : formStep + 1}
+              {isSubmitComplete ? <Check className="w-4 h-4" /> : formStep + 1}
             </div>
             <span className="font-medium">{formSteps[formStep].title}</span>
           </div>
         </div>
 
         {/* Desktop step indicators */}
-        <div className="justify-between items-start hidden sm:flex">
+        <div className="hidden justify-between items-start sm:flex">
           {formSteps.map((step, index) => (
             <div
               key={step.id}
@@ -171,8 +182,8 @@ export function MultiStepForm({
               </div>
               <span
                 className={clsx(
-                  "text-xs font-medium text-center px-1 line-clamp-2 min-h-8",
-                  { "lg:text-sm ": isReservationForm }
+                  "px-1 text-xs font-medium text-center line-clamp-2 min-h-8",
+                  { "lg:text-sm": isReservationForm }
                 )}
               >
                 {step.title}
@@ -183,7 +194,7 @@ export function MultiStepForm({
 
         {/* Progress bar */}
         <div className="relative mt-2 mb-4">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-muted">
+          <div className="absolute top-0 right-0 left-0 h-1 bg-muted">
             <Progress
               value={
                 isSubmitComplete ? 100 : (formStep / formSteps.length) * 100
@@ -193,11 +204,11 @@ export function MultiStepForm({
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+      <div className="flex overflow-hidden flex-col flex-1">
+        <div className="overflow-y-auto flex-1 px-6 py-4">
           <Card className="border-0 shadow-none">
             <CardHeader className="px-0 pt-4">
-              <CardTitle className="text-lg flex">
+              <CardTitle className="flex text-lg">
                 {!isSubmitComplete && formSteps[formStep].title}
               </CardTitle>
               <CardDescription>
@@ -206,16 +217,11 @@ export function MultiStepForm({
             </CardHeader>
             <CardContent className="px-0 pb-16">
               {children[formStep]}
-              {isReservationForm && formStep != 4 && (
-                <PackageChangeWarning
-                  setShowSelectServiceMode={setShowSelectServiceMode}
-                />
-              )}
             </CardContent>
           </Card>
         </div>
 
-        <div className="sticky bottom-0 bg-background pt-2 pb-6 md:py-2 px-6 border-t ">
+        <div className="sticky bottom-0 px-6 pt-2 pb-6 border-t bg-background md:py-2">
           <div className="flex justify-between mt-2">
             {isSubmitComplete ? (
               <Button className="ml-auto" onClick={completeForm}>

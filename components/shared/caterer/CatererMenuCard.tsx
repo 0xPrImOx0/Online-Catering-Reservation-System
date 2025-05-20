@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,14 +26,36 @@ import DeleteMenuDialog from "./DeleteMenuDialog";
 import ImageDialog from "../ImageDialog";
 import { AnimatedIconButton } from "../AnimatedIconButton";
 import EditMenuForm from "./EditMenuForm";
+import { useSearchParams } from "next/navigation";
+import { getQueryParams } from "@/utils/search-params";
 
 export default function CatererMenuCard({ menu }: MenuCardProps) {
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isMenuDetailsDialogOpen, setIsMenuDetailsDialogOpen] =
+    useState<boolean>(false);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const { view, id } = getQueryParams(searchParams, ["view", "id"]);
+
+    if (view === "image" && id === menu._id) {
+      setIsImageDialogOpen(true);
+      return;
+    }
+
+    if (view === "details" && id === menu._id) {
+      setIsMenuDetailsDialogOpen(true);
+      return;
+    }
+
+    setIsImageDialogOpen(false);
+    setIsMenuDetailsDialogOpen(false);
+  }, [searchParams, menu._id]);
 
   return (
-    <Card className="overflow-hidden max-w-md transition-all duration-300 hover:shadow-md flex flex-col h-full">
+    <Card className="min-w-[325px] flex-1 overflow-hidden border shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
       <div className="relative">
         <div className="aspect-video w-full overflow-hidden">
           <Image
@@ -51,7 +73,14 @@ export default function CatererMenuCard({ menu }: MenuCardProps) {
                   size="sm"
                   variant="ghost"
                   className="absolute inset-0 w-full h-full p-0 cursor-pointer bg-transparent hover:bg-black/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  onClick={() => setIsImageDialogOpen(true)}
+                  onClick={() => {
+                    window.history.pushState(
+                      {},
+                      "",
+                      `/caterer/menus?view=image&id=${menu._id}`
+                    );
+                    setIsImageDialogOpen(true);
+                  }}
                 >
                   <span className="sr-only">View {menu.name} image</span>
                 </Button>
@@ -68,8 +97,8 @@ export default function CatererMenuCard({ menu }: MenuCardProps) {
             variant={menu.available ? "default" : "destructive"}
             className={
               menu.available
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : "bg-red-500 text-white"
+                ? "bg-emerald-600 hover:bg-emerald-700 text-background"
+                : "bg-red-500 text-background"
             }
           >
             {menu.available ? "Available" : "Unavailable"}
@@ -80,7 +109,7 @@ export default function CatererMenuCard({ menu }: MenuCardProps) {
           {menu.spicy && (
             <Badge
               variant="outline"
-              className="bg-red-500 text-white border-red-500 flex items-center gap-1 hover:bg-red-600"
+              className="bg-red-500 text-background border-red-500 flex items-center gap-1 hover:bg-red-600"
             >
               <Flame className="h-3 w-3" /> Spicy
             </Badge>
@@ -121,15 +150,21 @@ export default function CatererMenuCard({ menu }: MenuCardProps) {
       </CardHeader>
 
       <CardFooter className="flex justify-between border-t p-4 mt-auto">
-        <MenuDetailsDialog menu={menu}>
-          <Button
-            variant="ghost"
-            className="flex items-center gap-1 px-2 text-primary"
-          >
-            <Eye className="h-4 w-4" />
-            <span>View Details</span>
-          </Button>
-        </MenuDetailsDialog>
+        <Button
+          variant="ghost"
+          className="flex items-center gap-1 px-2 text-primary"
+          onClick={() => {
+            window.history.pushState(
+              {},
+              "",
+              `/caterer/menus?view=details&id=${menu._id}`
+            );
+            setIsMenuDetailsDialogOpen(true);
+          }}
+        >
+          <Eye className="h-4 w-4" />
+          <span>View Details</span>
+        </Button>
 
         <div className="flex gap-2">
           <AnimatedIconButton
@@ -165,6 +200,12 @@ export default function CatererMenuCard({ menu }: MenuCardProps) {
         item={menu}
         isImageDialogOpen={isImageDialogOpen}
         setIsImageDialogOpen={setIsImageDialogOpen}
+      />
+
+      <MenuDetailsDialog
+        menu={menu}
+        isMenuDetailsDialogOpen={isMenuDetailsDialogOpen}
+        setIsMenuDetailsDialogOpen={setIsMenuDetailsDialogOpen}
       />
     </Card>
   );

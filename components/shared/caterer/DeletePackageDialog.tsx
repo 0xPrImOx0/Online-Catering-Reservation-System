@@ -10,12 +10,34 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import axios from "axios";
+import api from "@/lib/api/axiosInstance";
 
 export default function DeletePackageDialog({
   item,
   isDeleteDialogOpen,
   setIsDeleteDialogOpen,
 }: DeletePackageDialogProps) {
+  const handleDeletePackages = async () => {
+    try {
+      const response = await api.delete(`/packages/${item._id}`);
+
+      toast.success(response?.data.message);
+    } catch (err: unknown) {
+      console.log("ERRORRRR IN DELETION", err);
+      if (axios.isAxiosError<{ error: string }>(err)) {
+        const message = err.response?.data.error || "Unexpected Error Occur";
+        if (err.response?.status === 404) {
+          toast.error(`Not Found: ${message}`);
+        }
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setIsDeleteDialogOpen(false);
+    }
+  };
   return (
     <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
       <AlertDialogContent>
@@ -26,28 +48,15 @@ export default function DeletePackageDialog({
           <AlertDialogDescription asChild>
             <div>
               You are about to delete{" "}
-              <span className="font-medium">{item.name}</span>. This
-              action cannot be undone.
-              {/* {item.inPackages > 0 && (
-                <div className="mt-2 text-destructive">
-                  Warning: This dish is used in {item.inPackages} package
-                  {item.inPackages !== 1 ? "s" : ""}.
-                </div>
-              )}
-              {item.timesOrdered > 0 && (
-                <div className="mt-2 text-amber-500">
-                  Note: This dish has been ordered {item.timesOrdered}{" "}
-                  time
-                  {item.timesOrdered !== 1 ? "s" : ""}.
-                </div>
-              )} */}
+              <span className="font-medium text-red-500">{item.name}</span>.
+              This action cannot be undone.
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <Button asChild variant={"destructive"} className="border-none">
-            <AlertDialogAction onClick={() => setIsDeleteDialogOpen(false)}>
+            <AlertDialogAction onClick={handleDeletePackages}>
               Delete
             </AlertDialogAction>
           </Button>

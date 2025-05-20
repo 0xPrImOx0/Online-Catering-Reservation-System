@@ -3,11 +3,8 @@
 import * as React from "react";
 import {
   BarChart3,
-  BookOpen,
-  Bot,
   Calendar,
   Clock,
-  Command,
   CreditCard,
   FileText,
   Frame,
@@ -20,30 +17,25 @@ import {
   PieChart,
   Search,
   Send,
-  Settings2,
   ShoppingBag,
   ShoppingCart,
-  SquareTerminal,
   Star,
   User,
   Utensils,
 } from "lucide-react";
 
 import { NavMain } from "../../layout/nav-main";
-import { NavProjects } from "../../layout/nav-projects";
 import { NavSecondary } from "../../layout/nav-secondary";
-import { NavUser } from "../../layout/nav-user";
+import { NavUser } from "../../layout/caterer-nav-user";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "../../ui/sidebar";
-import Image from "next/image";
 import Logo from "@/components/icons/logo";
 
 const data = {

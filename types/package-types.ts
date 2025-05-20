@@ -1,9 +1,11 @@
 import { SetStateBoolean } from "./global-types";
 import { ObjectId } from "mongodb";
 import { CategoryProps } from "./menu-types";
+import { HoursArrayTypes } from "./reservation-types";
 
 // Define types for our packages
 export type PackageCategory =
+  | "All"
   | "Soup"
   | "Salad"
   | "Beef"
@@ -23,6 +25,7 @@ export type EventType =
   | "Corporate"
   | "Graduation"
   | "All"
+  | "Others"
   | "";
 
 export type PackageType = "BuffetPlated" | "Event";
@@ -44,7 +47,7 @@ export interface ReviewsProps {
 }
 
 export interface CateringPackagesProps {
-  _id: string;
+  _id?: string;
   name: string;
   description: string;
   available: boolean;
@@ -124,12 +127,6 @@ export interface PackageBookFormProps {
   package: CateringPackagesProps;
 }
 
-export interface EventTypeCardProps {
-  eventType: EventType;
-  onSelect: (eventType: EventType) => void;
-  image?: string;
-}
-
 export interface DeletePackageDialogProps {
   item: CateringPackagesProps;
   isDeleteDialogOpen: boolean;
@@ -154,6 +151,27 @@ export const eventTypes: EventType[] = [
   "Wedding",
   "Corporate",
   "Graduation",
+  "Others",
+];
+
+export const reservationEventTypes: EventType[] = [
+  "Birthday",
+  "Wedding",
+  "Corporate",
+  "Graduation",
+  "Others",
+];
+
+export const hoursArray: HoursArrayTypes[] = [
+  "4 hours",
+  "4.5 hours",
+  "5 hours",
+  "5.5 hours",
+  "6 hours",
+  "6.5 hours",
+  "8 hours",
+  "8.5 hours",
+  "10 hours",
 ];
 
 export const serviceTypes: ServiceType[] = ["Buffet", "Plated"];

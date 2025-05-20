@@ -1,110 +1,104 @@
 "use client";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import Logo from "../icons/logo";
-import { useState } from "react";
 import { Button } from "../ui/button";
-import { Calendar, Menu, User } from "lucide-react";
 import { usePathname } from "next/navigation";
-import clsx from "clsx";
+import { Calendar, User } from "lucide-react";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { useAuthContext } from "@/contexts/AuthContext";
 import CustomerNavUser from "../shared/customer/CustomerNavUser";
-import { links } from "@/lib/customer/customer-links";
-import { useIsMobile } from "@/hooks/use-mobile";
+import MobileRoutePage from "../shared/customer/MobileRoutePage";
+import { useTheme } from "next-themes";
+import { links } from "@/lib/customer/customer-nav-links";
 
 export default function CustomerSiteHeader() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { customer } = useAuthContext(); // Temporary Basis if there is a user currently signed in
   const pathname = usePathname();
-  const isMobile = useIsMobile(!isLoggedIn ? 1024 : 900);
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const user = {
-    name: "Rey Daug",
-    email: "m@example.com",
-    avatar: "/daug-avatar.jpg",
-  };
+  const isMediumScreen = useMediaQuery("(max-width: 1024px)");
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === "dark";
+
   const PageLink = ({ href, title }: { href: string; title: string }) => {
     return (
-      <Link
-        href={href}
-        onClick={() => setMobileMenu(false)}
-        className={clsx(
-          "text-sm font-medium relative pb-1 hover:text-foreground underline-offset-4 group",
-          { "!text-base": isMobile }
-        )}
+      <Button
+        variant={`${
+          isMediumScreen ? (pathname === href ? "default" : "link") : "link"
+        }`}
+        effect={`${
+          isMediumScreen
+            ? "none"
+            : pathname === href
+            ? "underline"
+            : "hoverUnderline"
+        }`}
+        className="after:bottom-0 after:border-b-2 after:border-foreground"
+        asChild
       >
-        {title}
-        {!isMobile && (
-          <span
-            className={clsx(
-              "absolute left-0 bottom-0 h-[2px] bg-foreground transition-all duration-300 ease-in-out",
-              pathname === href ? "w-full" : "w-0 group-hover:w-full"
-            )}
-          />
-        )}
-      </Link>
+        <Link
+          href={href}
+          className={cn("text-base relative", {
+            "!text-base": isMediumScreen,
+          })}
+        >
+          {title}
+        </Link>
+      </Button>
     );
   };
 
   return (
-    <header className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex mx-[5%] items-center justify-between">
-        <div
-          className={clsx("relative flex flex-1 items-center gap-4 ", {
-            "py-4": isMobile,
-          })}
-        >
-          {isMobile && (
-            <Button
-              className=""
-              onClick={() => setMobileMenu((prev) => !prev)}
-              variant={"link"}
-              size={"custom"}
-            >
-              <Menu className="min-w-6 min-h-6" />
-            </Button>
-          )}
-          {!isMobile && <Logo imageSize={40} />}
-          <nav
-            className={clsx(
-              "flex gap-10 flex-1 justify-center",
-              isLoggedIn ? "max-nav-md:hidden" : "max-lg:hidden"
-            )}
-          >
+    <header className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/65">
+      <div className="flex mx-[2%] items-center justify-between">
+        <div className="relative flex flex-1 items-center">
+          <div className="self-start">
+            <Logo imageSize={50} withTitle={true} />
+          </div>
+          <nav className="flex gap-5 flex-1 justify-center max-lg:hidden">
             {links.map((link) => (
               <PageLink key={link.title} title={link.title} href={link.href} />
             ))}
           </nav>
         </div>
         <div className="flex gap-4">
-          {isLoggedIn ? (
-            <CustomerNavUser user={user} />
+          <MobileRoutePage />
+          {customer ? (
+            <CustomerNavUser customer={customer} />
           ) : (
             <div className="space-x-4">
-              <Link className="max-sm:hidden" href={"/sign-in"}>
-                <Button variant={"ghost"}>
-                  <User /> Sign In
-                </Button>
-              </Link>
-              <Button asChild>
+              <Button
+                variant={`${
+                  isDarkMode && isMediumScreen ? "none" : "secondary"
+                }`}
+                className="max-lg:bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground max-md:rounded-full max-md:size-10 dark:hover:bg-sidebar-accent"
+                asChild
+              >
+                <Link href={"/sign-in"}>
+                  <User className="max-lg:text-white text-foreground" />
+                  <p className="max-md:hidden max-lg:text-white text-foreground">
+                    Sign In
+                  </p>
+                </Link>
+              </Button>
+
+              <Button
+                variant={`${
+                  isDarkMode && isMediumScreen ? "secondary" : "default"
+                }`}
+                className="max-md:bg-[rgb(39,39,42)] hover:bg-sidebar-accent-foreground max-md:rounded-full max-md:size-10 dark:hover:bg-sidebar-accent"
+                asChild
+              >
                 <Link href="/book-now">
-                  <Calendar /> Book Now
+                  <Calendar className="max-lg:text-white text-background" />
+                  <p className="max-md:hidden max-lg:text-white text-background">
+                    Book Now
+                  </p>
                 </Link>
               </Button>
             </div>
           )}
         </div>
       </div>
-      {mobileMenu && (
-        <div className="flex flex-col absolute left-0 right-0 border-grid z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="flex flex-col gap-2 p-[5%] pt-0">
-            <Logo withLabel />
-            {links.map((link) => (
-              <PageLink key={link.title} title={link.title} href={link.href} />
-            ))}
-            <Link className="font-medium" href={"/sign-in"}>
-              Sign In
-            </Link>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

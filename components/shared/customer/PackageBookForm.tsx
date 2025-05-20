@@ -25,12 +25,12 @@ import {
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Check, Clock, Info, Users } from "lucide-react";
-import { bookingSteps } from "@/lib/customer/packages-metadata";
 import type {
   BookingFormData,
   PackageBookFormProps,
   // PlatedPackage,
 } from "@/types/package-types";
+import { bookingSteps } from "@/lib/shared/packages-metadata";
 
 export default function PackageBookForm({
   package: pkg,
@@ -315,7 +315,7 @@ export default function PackageBookForm({
                         </div>
                         <div>
                           <div className="text-xl font-bold text-primary">
-                            ₱{pkg.pricePerPax.toLocaleString()} per pax
+                            &#8369;{pkg.pricePerPax.toLocaleString()} per pax
                           </div>
                           <div className="mt-2">
                             <h4 className="font-medium mb-1">Menu Options:</h4>
@@ -428,7 +428,7 @@ export default function PackageBookForm({
                         <div className="flex justify-between items-center">
                           <span className="font-medium">{pkg.name}</span>
                           <span className="font-bold">
-                            ₱{pkg.pricePerPax.toLocaleString()} per pax
+                            &#8369;{pkg.pricePerPax.toLocaleString()} per pax
                           </span>
                         </div>
                         <p className="text-sm text-muted-foreground mt-1">
@@ -457,7 +457,7 @@ export default function PackageBookForm({
                           <p className="text-sm mt-1">
                             Total estimated cost:{" "}
                             <span className="font-bold">
-                              ₱
+                              &#8369;
                               {(Number.parseInt(bookingData.guestCount) || 0) *
                                 pkg.pricePerPax}
                             </span>{" "}

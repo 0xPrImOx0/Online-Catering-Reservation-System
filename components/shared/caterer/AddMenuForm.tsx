@@ -16,14 +16,17 @@ import { ReviewStep } from "./menu-form-steps/ReviewStep";
 import { FormStepType, MultiStepForm } from "../MultiStepForm";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Import VisuallyHidden
 import { useState } from "react";
+import { toast } from "sonner";
+// import api from "@/lib/axiosInstance";
+// import axios from "axios";
 
 export function AddMenuDialog({
   isAddMenuOpen,
   setIsAddMenuOpen,
 }: AddMenuDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const { form, onSubmit, validateStep, resetForm } = useMenuForm();
   const menuFormHook = useMenuForm();
-  const { form, onSubmit, validateStep, resetForm } = menuFormHook;
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitComplete, setIsSubmitComplete] = useState(false);
 
@@ -37,9 +40,11 @@ export function AddMenuDialog({
   // Handle next step validation
   const handleNextStep = async (currentStep: number) => {
     const isValid = await validateStep(currentStep);
+    console.log("CURRENT STEP: ", currentStep);
     if (isValid) {
       setCurrentStep(currentStep + 1);
     }
+    console.log(!isValid && "NOT VALID IN HANDLE NEXTS");
     return isValid;
   };
 
@@ -49,11 +54,16 @@ export function AddMenuDialog({
   };
 
   // Handle form submission
-  const handleSubmit = () => {
-    form.handleSubmit((data) => {
-      onSubmit(data);
-      setIsSubmitComplete(true);
-    })();
+  const handleSubmitForm = async () => {
+    const data = form.getValues();
+    const isSuccess = await onSubmit(data, "create");
+
+    if (!isSuccess) {
+      toast.error("Submission Failed");
+      return;
+    }
+
+    setIsSubmitComplete(true);
   };
 
   // Handle form completion (close dialog and reset)
@@ -66,8 +76,8 @@ export function AddMenuDialog({
 
   // Create the form steps components
   const formStepComponents = [
-    <BasicInfoStep key="basic-info" formHook={menuFormHook} />,
-    <IngredientsStep key="ingredients" formHook={menuFormHook} />,
+    <BasicInfoStep key="basic-info" />,
+    <IngredientsStep key="ingredients" />,
     <PreparationStep key="preparation" formHook={menuFormHook} />,
     <PricingStep key="pricing" formHook={menuFormHook} />,
     <NutritionStep key="nutrition" formHook={menuFormHook} />,
@@ -82,7 +92,7 @@ export function AddMenuDialog({
         title={"Add Menu Item"}
         description={"Complete the form to add a new menu item"}
         formSteps={multiFormSteps}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmitForm}
         onNextStep={handleNextStep}
         onComplete={handleComplete}
         onCancel={handleCancel}

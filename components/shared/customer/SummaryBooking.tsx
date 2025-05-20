@@ -1,157 +1,417 @@
 "use client";
-import { Separator } from "@/components/ui/separator";
-import { ReservationValues } from "@/hooks/use-reservation-form";
-import { menuItems } from "@/lib/menu-lists";
-import { Check } from "lucide-react";
-import { useFormContext } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import Link from "next/link";
-import { useState } from "react";
+  useReservationForm,
+  type ReservationValues,
+} from "@/hooks/use-reservation-form";
+import {
+  Calendar,
+  Check,
+  Clock,
+  MapPin,
+  MessageSquare,
+  Phone,
+  User,
+  Mail,
+  Users,
+  Utensils,
+  Building,
+  LucideIcon,
+} from "lucide-react";
+import { useFormContext } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { SelectedMenu } from "@/types/reservation-types";
+import { format } from "date-fns";
+
+interface MenuItem {
+  id: string;
+  name: string;
+}
 
 export default function SummaryBooking() {
   const { watch } = useFormContext<ReservationValues>();
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const { getMenuItem, getPackageItem } = useReservationForm();
 
   // Use watch to get reactive form values
   const formValues = watch();
 
-  const formattedDate = formValues.eventDate
-    ? formValues.eventDate.toLocaleDateString("en-US", {
+  const [menuItems, setMenuItems] = useState<Record<string, MenuItem>>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch menu item names when the component mounts or when selectedMenus changes
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      if (!formValues.selectedMenus) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Get all unique menu IDs from selectedMenus
+      const menuIds = new Set<string>();
+      Object.values(formValues.selectedMenus).forEach((menuGroup) => {
+        Object.keys(menuGroup).forEach((id) => menuIds.add(id));
+      });
+
+      // Only fetch if there are menu items to process
+      if (menuIds.size === 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Fetch menu items in parallel
+        const menuPromises = Array.from(menuIds).map(async (id) => {
+          try {
+            const menu = await getMenuItem(id);
+            return menu ? { id, name: menu.name } : null;
+          } catch (error) {
+            console.error(`Error fetching menu item ${id}:`, error);
+            return null;
+          }
+        });
+
+        const menuItemsArray = await Promise.all(menuPromises);
+
+        // Convert array to map for easier lookups
+        const menuItemsMap = menuItemsArray.reduce<
+          Record<string, { id: string; name: string }>
+        >((acc, item) => {
+          if (item) {
+            acc[item.id] = item;
+          }
+          return acc;
+        }, {});
+
+        setMenuItems(menuItemsMap);
+      } catch (error) {
+        console.error("Error fetching menu items:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    setIsLoading(true);
+    fetchMenuItems();
+  }, [formValues.selectedMenus]);
+
+  const formattedDate = formValues.reservationDate
+    ? new Date(formValues.reservationDate).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
       })
     : "No date selected";
 
+  const formattedTime = formValues.reservationTime
+    ? `${formValues.reservationTime}`
+    : "No time selected";
+
+  const currency = (amount: number) =>
+    amount ? `₱${Number(amount).toLocaleString()}` : "₱0";
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const DetailRow = ({
+    icon: Icon,
+    label,
+    value,
+  }: {
+    icon: LucideIcon;
+    label: string;
+    value: string | number;
+  }) => {
+    return (
+      <li className="flex items-start">
+        <span className="flex flex-1 items-center text-gray-500 shrink-0">
+          <Icon className="mr-2 w-4 h-4" />
+          {label}
+        </span>
+        <span className="ml-2 font-medium text-gray-800">
+          {value || "Not provided"}
+        </span>
+      </li>
+    );
+  };
+
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <h3 className="font-medium mb-2">Customer Information</h3>
-          <ul className="text-sm space-y-1">
-            <li className="flex justify-between">
-              <span className="text-muted-foreground">Name:</span>
-              <span>{formValues.fullName || "Not provided"}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="text-muted-foreground">Email:</span>
-              <span>{formValues.email || "Not provided"}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="text-muted-foreground">Phone:</span>
-              <span>{formValues.contactNumber || "Not provided"}</span>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="font-medium mb-2">Event Details</h3>
-          <ul className="text-sm space-y-1">
-            <li className="flex justify-between">
-              <span className="text-muted-foreground">Event Type:</span>
-              <span>{formValues.eventType || "Not provided"}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="text-muted-foreground">Date:</span>
-              <span>{formattedDate}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="text-muted-foreground">Guests:</span>
-              <span>{formValues.guestCount || "Not provided"}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="text-muted-foreground">Venue:</span>
-              <span>{formValues.venue || "Not provided"}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="text-muted-foreground">Service Type:</span>
-              <span>{formValues.serviceType || "Not provided"}</span>
-            </li>
-            <li className="flex justify-between">
-              <span className="text-muted-foreground">Service Hours:</span>
-              <span>
-                {formValues.serviceHours
-                  ? `${formValues.serviceHours}`
-                  : "Not provided"}
-              </span>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <Separator />
-      <div>
-        <h3 className="font-medium mb-2">Selected Menu</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {Object.entries(formValues.selectedMenus).map(
-            ([category, menuIds]) => {
-              if (menuIds.length === 0) return null;
-              return (
-                <div key={category}>
-                  <h4 className="text-sm font-medium">{category}</h4>
-                  <ul className="text-sm space-y-1 mt-1">
-                    {menuIds.map((id) => {
-                      const menu = menuItems.find((d) => d._id === id);
-                      return menu ? (
-                        <li key={id} className="flex items-center gap-2">
-                          <Check className="h-3 w-3 text-primary" />
-                          {menu.name}
-                        </li>
-                      ) : null;
-                    })}
-                  </ul>
-                </div>
-              );
-            }
-          )}
-        </div>
-      </div>
-      {formValues.specialRequests && (
-        <>
-          <Separator />
-          <div>
-            <h3 className="font-medium mb-2">Special Requests</h3>
-            <p className="text-sm">{formValues.specialRequests}</p>
-          </div>
-        </>
-      )}
-      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reservation Request Sent!</DialogTitle>
-            <DialogDescription>
-              Thank you for your reservation request. Our caterer will call you
-              within 1 hour to discuss the details and provide you with a quote.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center justify-center py-4">
-            <div className="rounded-full p-3 bg-green-500">
-              <Check className="size-10 text-white" />
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={{
+        visible: {
+          transition: {
+            staggerChildren: 0.1,
+          },
+        },
+      }}
+      className="space-y-8"
+    >
+      {/* Customer Information & Reservation Details */}
+      <motion.div variants={fadeIn} className="grid grid-cols-1 gap-6">
+        <Card className="overflow-hidden border-none shadow-md">
+          <CardContent className="p-6">
+            <div className="flex items-center mb-4">
+              <User className="mr-2 w-5 h-5 text-gray-500" />
+              <h3 className="text-lg font-semibold text-gray-800">
+                Customer Information
+              </h3>
             </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant={"ghost"}
-              onClick={() => setShowConfirmation(false)}
-            >
-              Close
-            </Button>
-            <Button
-              variant={"default"}
-              onClick={() => setShowConfirmation(false)}
-              asChild
-            >
-              <Link href={"/"}>Go to home</Link>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+            <ul className="space-y-4">
+              <DetailRow icon={User} label="Name" value={formValues.fullName} />
+              <DetailRow icon={Mail} label="Email" value={formValues.email} />
+              <DetailRow
+                icon={Phone}
+                label="Phone"
+                value={formValues.contactNumber}
+              />
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card className="overflow-hidden border-none shadow-md">
+          <CardContent className="p-6">
+            <div className="flex items-center mb-4">
+              <Calendar className="mr-2 w-5 h-5 text-gray-500" />
+              <h3 className="text-lg font-semibold text-gray-800">
+                Reservation Details
+              </h3>
+            </div>
+            <ul className="space-y-4">
+              <DetailRow
+                icon={Utensils}
+                label="Reservation Type"
+                value={formValues.eventType}
+              />
+              {formValues.eventType != "Others" && (
+                <DetailRow
+                  icon={Utensils}
+                  label="Event Type"
+                  value={formValues.eventType || "Not provided"}
+                />
+              )}
+              <DetailRow icon={Calendar} label="Date" value={formattedDate} />
+              <DetailRow icon={Clock} label="Time" value={formattedTime} />
+              <DetailRow
+                icon={Users}
+                label="Guests"
+                value={formValues.guestCount || "Not provided"}
+              />
+              <DetailRow
+                icon={Utensils}
+                label="Service Type"
+                value={formValues.serviceType || "Not provided"}
+              />
+              {formValues.serviceType === "Plated" && (
+                <>
+                  <DetailRow
+                    icon={Building}
+                    label="Venue"
+                    value={formValues.venue || "Not provided"}
+                  />
+                  <DetailRow
+                    icon={Clock}
+                    label="Service Hours"
+                    value={formValues.serviceHours as string}
+                  />
+                </>
+              )}
+            </ul>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Selected Package */}
+      {formValues.selectedPackage && (
+        <motion.div variants={fadeIn}>
+          <Card className="overflow-hidden border-none shadow-md">
+            <CardContent className="p-6">
+              <div className="flex items-center mb-6">
+                <Check className="mr-2 w-5 h-5 text-gray-500" />
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Selected Package
+                </h3>
+              </div>
+              <span className="font-medium text-gray-800 text-md">
+                {getPackageItem(formValues.selectedPackage)?.name}
+              </span>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Selected Menus */}
+
+      {formValues.selectedMenus &&
+        Object.keys(formValues.selectedMenus).length > 0 && (
+          <motion.div variants={fadeIn}>
+            <Card className="overflow-hidden border-none shadow-md">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-6">
+                  <Utensils className="mr-2 w-5 h-5 text-gray-500" />
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Selected Menus
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                  {Object.entries(formValues.selectedMenus).map(
+                    ([category, menuIds]: [string, SelectedMenu]) => {
+                      const menuIdArray = Object.keys(menuIds);
+                      if (menuIdArray.length === 0) return null;
+                      return (
+                        <div key={category} className="space-y-4">
+                          <h4 className="pb-2 font-medium text-gray-700 border-b border-gray-100 text-md">
+                            {category}
+                          </h4>
+                          <ul className="space-y-3">
+                            {menuIdArray.map((id) => {
+                              const menu = menuItems[id];
+                              if (!menu) return null;
+
+                              return (
+                                <li
+                                  key={id}
+                                  className="flex gap-2 items-center text-gray-700"
+                                >
+                                  {menuIds[id].quantity > 1 ? (
+                                    <span className="text-green-600">
+                                      {menuIds[id].quantity} X
+                                    </span>
+                                  ) : (
+                                    <div className="flex justify-center items-center w-6 h-6 bg-green-50 rounded-full">
+                                      <Check className="h-3.5 w-3.5 text-green-600" />
+                                    </div>
+                                  )}
+                                  <span>{menu.name}</span>
+                                </li>
+                              );
+                            })}
+                            {isLoading && menuIdArray.length === 0 && (
+                              <div className="text-sm text-gray-500">
+                                Loading menu items...
+                              </div>
+                            )}
+                          </ul>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+      {/* Payment & Status */}
+      <motion.div variants={fadeIn}>
+        <Card className="overflow-hidden border-none shadow-md">
+          <CardContent className="p-6">
+            <div className="flex items-center mb-6">
+              <Check className="mr-2 w-5 h-5 text-gray-500" />
+              <h3 className="text-lg font-semibold text-gray-800">
+                Payment & Status
+              </h3>
+            </div>
+            <ul className="space-y-4">
+              <DetailRow
+                icon={Check}
+                label="Total Price"
+                value={currency(formValues.totalPrice)}
+              />
+              {formValues.serviceFee > 0 && (
+                <DetailRow
+                  icon={Check}
+                  label="Service Fee"
+                  value={currency(formValues.serviceFee)}
+                />
+              )}
+              {formValues.deliveryFee > 0 && (
+                <DetailRow
+                  icon={Check}
+                  label="Delivery Fee"
+                  value={currency(formValues.deliveryFee)}
+                />
+              )}
+              {/* <DetailRow
+                icon={Check}
+                label="Payment Reference"
+                value={formValues.paymentReference as string}
+              />
+              <DetailRow
+                icon={Check}
+                label="Status"
+                value={formValues.status}
+              /> */}
+            </ul>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Delivery Details */}
+      {formValues.deliveryOption === "Delivery" &&
+        (formValues.deliveryAddress || formValues.deliveryInstructions) && (
+          <motion.div variants={fadeIn}>
+            <Card className="overflow-hidden border-none shadow-md">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-6">
+                  <MapPin className="mr-2 w-5 h-5 text-gray-500" />
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Delivery Details
+                  </h3>
+                </div>
+                <ul className="space-y-4">
+                  <DetailRow
+                    icon={MapPin}
+                    label="Delivery Option"
+                    value={formValues.deliveryOption}
+                  />
+                  {formValues.deliveryAddress && (
+                    <DetailRow
+                      icon={MapPin}
+                      label="Address"
+                      value={formValues.deliveryAddress}
+                    />
+                  )}
+                  {formValues.deliveryInstructions && (
+                    <DetailRow
+                      icon={MessageSquare}
+                      label="Instructions"
+                      value={formValues.deliveryInstructions}
+                    />
+                  )}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+      {/* Additional Information */}
+
+      {formValues.specialRequests && (
+        <motion.div variants={fadeIn}>
+          <Card className="overflow-hidden border-none shadow-md">
+            <CardContent className="p-6">
+              <div className="flex items-center mb-6">
+                <MessageSquare className="mr-2 w-5 h-5 text-gray-500" />
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Additional Information
+                </h3>
+              </div>
+              <ul className="space-y-4">
+                {formValues.specialRequests && (
+                  <DetailRow
+                    icon={MessageSquare}
+                    label="Special Requests"
+                    value={formValues.specialRequests}
+                  />
+                )}
+              </ul>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+    </motion.div>
   );
 }

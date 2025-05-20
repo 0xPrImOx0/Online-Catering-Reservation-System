@@ -5,6 +5,8 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
@@ -14,9 +16,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Image from "next/image";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Import VisuallyHidden
 import { X } from "lucide-react";
 import { ImageDialogProps } from "@/types/component-types";
+import { usePathname } from "next/navigation";
 
 export default function ImageDialog({
   item,
@@ -24,13 +26,36 @@ export default function ImageDialog({
   setIsImageDialogOpen,
 }: ImageDialogProps) {
   const imageRef = useRef<HTMLImageElement | null>(null);
+  const pathname = usePathname();
+  const isCaterer = pathname.includes("/caterer");
 
   return (
-    <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+    <Dialog
+      open={isImageDialogOpen}
+      onOpenChange={(open) => {
+        setIsImageDialogOpen(open);
+
+        if (!open) {
+          // If the route is for caterer it goes back to /caterer/menus
+          if (isCaterer) {
+            window.history.pushState({}, "", `/caterer/menus`);
+            return;
+          }
+
+          // If the route is not for caterer it goes back to /menus
+          window.history.pushState({}, "", `/menus`);
+        }
+      }}
+    >
       <DialogContent className="p-0 overflow-hidden bg-transparent border-0 shadow-none">
-        <VisuallyHidden>
+        <DialogHeader className="sr-only">
           <DialogTitle>{item.name}</DialogTitle>
-        </VisuallyHidden>
+          {"shortDescription" in item ? (
+            <DialogDescription>{item.shortDescription}</DialogDescription>
+          ) : (
+            <DialogDescription>{item.description}</DialogDescription>
+          )}
+        </DialogHeader>
         <div className="relative w-auto h-auto">
           <TooltipProvider>
             <Tooltip>
@@ -43,7 +68,7 @@ export default function ImageDialog({
                       height={725}
                       alt={item.name}
                     />
-                    <DialogClose className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/70 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black transition-colors">
+                    <DialogClose className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/70 backdrop-blur-sm text-foreground flex items-center justify-center hover:bg-black transition-colors">
                       <X className="h-5 w-5" />
                     </DialogClose>
                   </div>

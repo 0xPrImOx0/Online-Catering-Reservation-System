@@ -8,7 +8,7 @@ import Image from "next/image";
 import { NutritionInfo } from "@/types/menu-types";
 
 export function ReviewStep({ formHook }: AddMenuFormProps) {
-  const { form, previewImage, isSubmitSuccess } = formHook;
+  const { form, previewImage, isSubmitSuccess, calculateSavings } = formHook;
 
   return (
     <div className="space-y-6">
@@ -168,7 +168,7 @@ export function ReviewStep({ formHook }: AddMenuFormProps) {
                     Regular Price Per Pax
                   </h5>
                   <p className="text-base font-medium">
-                    ${form.watch("regularPricePerPax").toFixed(2)}
+                    &#8369; {form.watch("regularPricePerPax").toFixed(2)}
                   </p>
                 </div>
 
@@ -188,19 +188,21 @@ export function ReviewStep({ formHook }: AddMenuFormProps) {
                           </span>
                           <div className="text-sm text-muted-foreground">
                             {price.discount > 0 &&
-                              `${price.discount}% discount`}
+                              `${price.discount.toFixed(2)}% discount`}
                           </div>
                         </div>
                         <div className="text-right">
                           <div className="font-medium">
-                            ${price.price.toFixed(2)}
+                            &#8369; {price.price.toFixed(2)}
                           </div>
                           <div className="text-sm text-green-600">
-                            Save $
-                            {(
-                              form.getValues("regularPricePerPax") - price.price
-                            ).toFixed(2)}
-                            /pax
+                            Saved &#8369;{" "}
+                            {calculateSavings({
+                              regularPricePerPax:
+                                form.watch("regularPricePerPax"),
+                              price: price.price,
+                              servingSize: price.maximumPax,
+                            }).toFixed(2)}
                           </div>
                         </div>
                       </div>
@@ -239,14 +241,15 @@ export function ReviewStep({ formHook }: AddMenuFormProps) {
                   <CardTitle className="text-lg">Image</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4">
-                  <div className="overflow-hidden h-40 flex items-center justify-center bg-muted rounded-md">
+                  <div className="relative overflow-hidden h-96 flex items-center justify-center bg-muted rounded-md">
                     <Image
                       src={
                         form.watch("imageUploadType") === "url"
-                          ? form.watch("imageUrl")
-                          : previewImage || ""
+                          ? form.watch("imageUrl") || "/placeholder.svg"
+                          : previewImage ?? "/placeholder.svg"
                       }
                       alt="Menu item preview"
+                      fill
                       className="max-h-full max-w-full object-contain"
                     />
                   </div>

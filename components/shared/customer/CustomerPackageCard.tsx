@@ -10,7 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Check, CheckCircle2Icon, Clock, Users } from "lucide-react";
+import { CheckCircle2Icon, Clock, Users } from "lucide-react";
 import Image from "next/image";
 import { PackageCardProps } from "@/types/package-types";
 import PackageDetailsDialog from "./PackageDetailsDialog";
@@ -22,24 +22,26 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ImageDialog from "../ImageDialog";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 export default function CustomerPackageCard({
   item,
   isPlated,
 }: PackageCardProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
-  const platedInclusions = item.inclusions.filter((plated) =>
-    isPlated
-      ? plated.typeOfCustomer
-      : plated.typeOfCustomer === "Both"
-  );
+
+  const packageInclusions = [
+    ...item.inclusions.filter((inc) => inc.typeOfCustomer === "Both"),
+    ...item.inclusions.filter(
+      (inc) => inc.typeOfCustomer === (isPlated ? "Plated" : "Buffet")
+    ),
+  ];
 
   return (
     <Card className="w-full flex flex-col h-full">
       <CardHeader className="p-0 relative overflow-hidden rounded-t-lg z-0">
-        <div
+        <Button
           className="relative h-52 w-full cursor-pointer"
           onClick={() => setIsImageDialogOpen((prev) => !prev)}
         >
@@ -50,6 +52,7 @@ export default function CustomerPackageCard({
                   src={item.imageUrl || "/placeholder.svg"}
                   alt={item.name}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="w-full object-cover overflow-hidden transition-transform duration-500 hover:scale-105"
                 />
               </TooltipTrigger>
@@ -70,14 +73,15 @@ export default function CustomerPackageCard({
               {item.available ? "Available" : "Unavailable"}
             </Badge>
             <Badge
-              className={clsx(
-                "bg-background text-foreground border-foreground",
-                {
-                  hidden: !isPlated,
-                }
+              className={cn(
+                "bg-background text-foreground border-foreground hover:bg-muted-background",
+                isPlated
+                  ? "bg-indigo-200 text-indigo-800 border-indigo-400"
+                  : "bg-red-200 text-red-800 border-red-400"
               )}
+              variant={"default"}
             >
-              Plated
+              {isPlated ? "Plated" : "Buffet"}
             </Badge>
           </div>
 
@@ -86,7 +90,7 @@ export default function CustomerPackageCard({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="bg-black/70 backdrop-blur-sm rounded-full px-2.5 py-1.5">
+                  <div className="bg-black/70 backdrop-blur-sm rounded-md px-2.5 py-1.5">
                     {item.rating && RenderStarRatings(item.rating, "medium")}
                   </div>
                 </TooltipTrigger>
@@ -99,11 +103,11 @@ export default function CustomerPackageCard({
             </TooltipProvider>
           </div>
           <div className="absolute bottom-3 right-3">
-            <div className="bg-black/70 backdrop-blur-sm text-white rounded px-2 py-1 font-bold">
+            <div className="bg-black/70 backdrop-blur-sm text-white rounded px-2 py-1.5 font-bold text-base">
               &#8369; {item.pricePerPax.toFixed(2)} / pax
             </div>
           </div>
-        </div>
+        </Button>
       </CardHeader>
       <CardContent className="p-6 flex-grow">
         <div className="space-y-4">
@@ -157,24 +161,24 @@ export default function CustomerPackageCard({
               {item.packageType !== "Event" && (
                 <li className="flex items-center gap-2">
                   <CheckCircle2Icon className="h-4 w-4 text-green-500" />
-                  {Math.ceil(item.minimumPax / 2)} trays of steamed rice (good
-                  for {item.minimumPax * 2} pax)
+                  {Math.ceil(item.minimumPax / 4)} trays of steamed rice (good
+                  for {item.minimumPax * 1.5} pax)
                 </li>
               )}
-              {platedInclusions.slice(0, 4).map((inclusion, index) => (
+              {packageInclusions.slice(0, 4).map((inclusion, index) => (
                 <li key={index} className="flex items-center gap-2">
                   <CheckCircle2Icon className="h-4 w-4 text-green-500" />
                   {inclusion.includes}
                 </li>
               ))}
-              {platedInclusions.slice(4).length >= 1 && (
+              {packageInclusions.slice(4).length >= 1 && (
                 <Button
                   variant="link"
                   size="sm"
                   className="p-0 h-auto"
-                  onClick={() => setDialogOpen(true)}
+                  onClick={() => setIsDialogOpen(true)}
                 >
-                  +{platedInclusions.slice(4).length} more inclusions
+                  +{packageInclusions.slice(4).length} more inclusions
                 </Button>
               )}
             </ul>
@@ -182,17 +186,17 @@ export default function CustomerPackageCard({
         </div>
       </CardContent>
       <CardFooter className="mt-auto">
-        <Button className="w-full" onClick={() => setDialogOpen(true)}>
-          Select Package
+        <Button className="w-full" onClick={() => setIsDialogOpen(true)}>
+          View Details
         </Button>
       </CardFooter>
 
       <PackageDetailsDialog
         pkg={item}
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
         isPlated={isPlated}
-        platedInclusions={platedInclusions}
+        platedInclusions={packageInclusions}
       />
 
       <ImageDialog

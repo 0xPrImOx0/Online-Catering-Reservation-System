@@ -33,7 +33,7 @@ export function CatererPackageCard({ item, isPlated }: PackageCardProps) {
   const [showPackageDetails, setShowPackageDetails] = useState(false);
 
   return (
-    <Card className="overflow-hidden max-w-md transition-all duration-300 hover:shadow-md flex flex-col h-full">
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-md flex flex-col h-full">
       <div className="relative">
         <div className="aspect-video w-full overflow-hidden">
           <Image
@@ -81,7 +81,7 @@ export function CatererPackageCard({ item, isPlated }: PackageCardProps) {
         </div>
 
         <div className="absolute bottom-3 right-3">
-          <div className="bg-black/70 backdrop-blur-sm text-white rounded-md px-2.5 py-1.5 font-bold">
+          <div className="bg-black/70 backdrop-blur-sm text-background dark:text-foreground rounded-md px-2.5 py-1.5 font-bold">
             &#8369;{" "}
             {isPlated
               ? item.pricePerPaxWithServiceCharge.toFixed(2)

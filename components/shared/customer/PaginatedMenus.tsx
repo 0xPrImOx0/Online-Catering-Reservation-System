@@ -1,55 +1,168 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { CustomerMenuCard } from "./CustomerMenuCard";
-import CustomPagination from "../CustomPagination";
-import { AllergenProps, MenuItem } from "@/types/menu-types";
+import { MenuItem, type AllergenProps } from "@/types/menu-types";
 import { usePathname } from "next/navigation";
+import FilterSection from "../MenuFilter/FilterSection";
 import CatererMenuCard from "../caterer/CatererMenuCard";
-import FilterSection from "../FilterSection";
+import CustomPagination from "../CustomPagination";
 import axios from "axios";
-import { menuItems } from "@/lib/menu-lists";
+import useSocketMenus from "@/hooks/use-socket-menus";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import api from "@/lib/api/axiosInstance";
 
-// async function fetchMenus(page: number, limit: number) {
-//   const response = await axios.get("http://localhost:5500/api/menus", {
-//     params: { page, limit },
-//   });
-//   return response.data.data;
-// }
-
-export default function PaginatedMenus() {
+export default function PaginatedMenus({ open }: { open?: boolean }) {
   const [query, setQuery] = useState("");
   const menuListRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const isMediumScreen = useMediaQuery("(max-width: 1279px)"); //do not set to 1280px, results will still have 3 menus in each rows
+  const menusPerPage = isMediumScreen ? 10 : 9;
+  const [menus, setMenus] = useState<MenuItem[] | null>(null);
   const [filters, setFilters] = useState({
     category: "",
     allergens: "" as AllergenProps,
     sortBy: "",
+    excludedAllergens: [] as AllergenProps[],
+    minPrice: 0,
+    maxPrice: 1000,
+    available: false,
+    spicy: false,
   });
-  // const [menus, setMenus] = useState<MenuItem[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const menusPerPage = 9;
-  
 
-  // useEffect(() => {
-  //   const getMenus = async () => {
-  //     try {
-  //       const menus = await fetchMenus(currentPage, menusPerPage);
-  //       setMenus(menus || []);
-  //     } catch (error) {
-  //       console.error("Failed to fetch menus:", error); // Log any errors
-  //       setMenus([]); // Set empty array if fetch fails
-  //     }
-  //   };
-  //   getMenus();
-  // }, [currentPage]);
+  // Callback to handle menu updates
+  const handleMenuUpdated = (updatedMenu: MenuItem) => {
+    console.log("🔄 Received updated menu from socket:", updatedMenu);
+    setMenus((prevMenus) => {
+      if (prevMenus === null) return [updatedMenu]; // If prevMenus is null, start a new array with the updated menu
+      return prevMenus.map((menu) =>
+        menu._id === updatedMenu._id ? updatedMenu : menu
+      );
+    });
+  };
 
-  const filterSelectMenus = menuItems.filter((menu) => {
-    const matchesQuery = menu.name.toLowerCase().includes(query.toLowerCase());
-    const matchesCategory =
-      !filters.category || menu.category.toLowerCase() === filters.category;
-    const matchesAllergens =
-      !filters.allergens || menu.allergens.includes(filters.allergens);
-    return matchesQuery && matchesCategory && matchesAllergens;
+  const handleMenuCreated = (createdMenu: MenuItem) => {
+    console.log("🆕 New menu created from socket:", createdMenu);
+    setMenus((prevMenus) => {
+      if (prevMenus === null) return [createdMenu];
+      return [...prevMenus, createdMenu];
+    });
+  };
+
+  const handleMenuDeleted = (deletedMenu: MenuItem) => {
+    console.log("❌ Menu deleted from socket:", deletedMenu);
+    setMenus(
+      (prevMenus) =>
+        prevMenus?.filter((menu) => menu._id !== deletedMenu._id) || null
+    );
+  };
+
+  // Use the socket hook to listen for updates
+  useSocketMenus({
+    onMenuUpdated: handleMenuUpdated,
+    onMenuCreated: handleMenuCreated,
+    onMenuDeleted: handleMenuDeleted,
   });
+
+  useEffect(() => {
+    const getMenus = async () => {
+      try {
+        const response = await api.get("/menus");
+        setMenus(response.data.data);
+        console.log(response.data.data);
+      } catch (err: unknown) {
+        console.log("ERRRORRR", err);
+
+        if (axios.isAxiosError<{ error: string }>(err)) {
+          const message = err.response?.data.error || "Unexpected Error Occur";
+
+          console.error("ERROR FETCHING MENUS", message);
+        } else {
+          console.error("Something went wrong. Please try again.");
+        }
+      }
+    };
+
+    getMenus();
+  }, []);
+
+  // Add this function before the return statement in PaginatedMenus component
+  const sortMenus = (menus: MenuItem[]): MenuItem[] => {
+    if (!filters.sortBy) return menus;
+
+    return [...menus].sort((a, b) => {
+      switch (filters.sortBy) {
+        case "price-asc":
+          return a.regularPricePerPax - b.regularPricePerPax;
+        case "price-desc":
+          return b.regularPricePerPax - a.regularPricePerPax;
+        case "rating-desc":
+          return (b.rating || 0) - (a.rating || 0);
+        case "name-asc":
+          return a.name.localeCompare(b.name);
+        case "name-desc":
+          return b.name.localeCompare(a.name);
+        default:
+          return 0;
+      }
+    });
+  };
+
+  // Update the filterSelectMenus variable to apply sorting
+  const filterSelectMenus = menus
+    ? sortMenus(
+        menus.filter((menu) => {
+          // Match search query
+          const matchesQuery = menu.name
+            .toLowerCase()
+            .includes(query.toLowerCase());
+
+          // Match category - case insensitive comparison
+          const matchesCategory =
+            !filters.category ||
+            menu.category.toLowerCase() === filters.category.toLowerCase();
+
+          // Match allergens
+          const matchesAllergens =
+            !filters.allergens || menu.allergens.includes(filters.allergens);
+
+          // Exclude selected allergens
+          const noExcludedAllergens =
+            filters.excludedAllergens.length === 0 ||
+            !menu.allergens.some((allergen) =>
+              filters.excludedAllergens.includes(allergen as AllergenProps)
+            );
+
+          // Match price range
+          const matchesPrice =
+            menu.regularPricePerPax >= filters.minPrice &&
+            menu.regularPricePerPax <= filters.maxPrice;
+
+          // Match availability
+          const matchesAvailability = !filters.available || menu.available;
+
+          // Match spicy
+          const matchesSpicy = !filters.spicy || menu.spicy;
+
+          // console.log(`Menu: ${menu.name}, Query match: ${matchesQuery}`);
+          // console.log(`Menu: ${menu.name}, Category match: ${matchesCategory}`);
+          // console.log(`Menu: ${menu.name}, Price match: ${matchesPrice}`);
+          // console.log(`Menu: ${menu.name}, Spicy match: ${matchesSpicy}`);
+          // console.log(
+          //   `Menu: ${menu.name}, Available match: ${matchesAvailability}`
+          // );
+
+          return (
+            matchesQuery &&
+            matchesCategory &&
+            matchesAllergens &&
+            noExcludedAllergens &&
+            matchesPrice &&
+            matchesAvailability &&
+            matchesSpicy
+          );
+        })
+      )
+    : [];
 
   const totalMenus = filterSelectMenus.length;
 
@@ -57,6 +170,11 @@ export default function PaginatedMenus() {
   const startIndex = (currentPage - 1) * menusPerPage;
   const endIndex = startIndex + menusPerPage;
   const paginatedMenu = filterSelectMenus.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, query]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= Math.ceil(totalMenus / menusPerPage)) {
@@ -71,15 +189,22 @@ export default function PaginatedMenus() {
   return (
     <div>
       <div className="absolute top-0" ref={menuListRef} />
-      <FilterSection
-        query={query}
-        setQuery={setQuery}
-        filters={filters}
-        setFilters={setFilters}
-      />
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-10">
+      <div>
+        <FilterSection
+          query={query}
+          setQuery={setQuery}
+          filters={filters}
+          setFilters={setFilters}
+        />
+      </div>
+      <div
+        className={`grid ${
+          open
+            ? "md:grid-cols-1 md:px-32 xl:grid-cols-2 xl:px-0 2xl:grid-cols-3"
+            : "md:grid-cols-2 xl:grid-cols-3"
+        } gap-10`}
+      >
         {/* MenuLists */}
-
         {paginatedMenu.length > 0 ? (
           isCaterer ? (
             paginatedMenu.map((menu) => (

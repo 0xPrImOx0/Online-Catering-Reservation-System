@@ -16,8 +16,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  ColumnDef,
+} from "@tanstack/react-table";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
 import StatusBadge from "../StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Eye, MoreHorizontal } from "lucide-react";
@@ -25,33 +30,186 @@ import ReservationDialog from "./ReservationDialog";
 import { useState } from "react";
 import {
   ReservationTableProps,
-  reservationType,
+  ReservationItem,
 } from "@/types/reservation-types";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 
 export default function ReservationTable({
   reservations,
   dashboard = false,
 }: ReservationTableProps) {
   const [selectedReservation, setSelectedReservation] =
-    useState<reservationType | null>(null);
+    useState<ReservationItem | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-  const openReservationDetails = (reservation: reservationType) => {
+  const openReservationDetails = (reservation: ReservationItem) => {
     setSelectedReservation(reservation);
     setIsDetailsOpen(true);
   };
-  const tableHeads = [
-    "Reservation ID",
-    "Customer",
-    "Event Date/Time",
-    "Total Price",
-    "Status",
-    "Payment",
-    "Actions",
-  ];
-  const currentDate = new Date(); // March 9, 2025
+  // Define columns for TanStack Table
+  const columns: ColumnDef<ReservationItem>[] = [
+    {
+      header: "Customer",
+      accessorKey: "fullName",
+      cell: (info) => (
+        <div className="flex items-center gap-2">
+          <Avatar className="h-6 w-6">
+            <AvatarFallback>
+              {info.row.original.fullName.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="font-medium">{info.row.original.fullName}</div>
+            <div className="text-xs text-muted-foreground">
+              {info.row.original.email}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Date/Time",
+      accessorKey: "reservationDate",
+      cell: (info) => (
+        <div>
+          <div>
+            {format(new Date(info.row.original.reservationDate), "MMM d, yyyy")}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {info.row.original.reservationTime}
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Guests",
+      accessorKey: "guestCount",
+      cell: (info) => <span>{info.row.original.guestCount}</span>,
+    },
+    {
+      header: "Venue",
+      accessorKey: "venue",
+      cell: (info) => <span>{info.row.original.venue}</span>,
+    },
+    {
+      header: "Total Price",
+      accessorKey: "totalPrice",
+      cell: (info) => (
+        <span>₱{info.row.original.totalPrice.toLocaleString()}</span>
+      ),
+    },
+    {
+      header: "Delivery",
+      accessorKey: "deliveryOption",
+      cell: (info) => <span>{info.row.original.deliveryOption}</span>,
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: (info) => {
+        const [showDialog, setShowDialog] = useState(false);
+        const router = useRouter();
+        const [currentRow, setCurrentRow] = useState<ReservationItem | null>(
+          null
+        );
 
-  const isUrgent = (eventDate: any) => {
+        return (
+          <>
+            {/* <StatusBadge
+              status={info.row.original.status}
+              onClick={() => {
+                if (!dashboard) {
+                  setCurrentRow(info.row.original);
+                  setShowDialog(true);
+                } else {
+                  router.push(`/caterer/reservations`);
+                }
+              }}
+            /> */}
+
+            <Dialog open={showDialog} onOpenChange={setShowDialog}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Confirm Payment Status</DialogTitle>
+                  <DialogDescription>
+                    Has the payment for this reservation been received?
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="border border-gray-200 rounded-lg p-4 mx-auto mb-4">
+                  <Skeleton className="w-60 h-60" />
+                  <Label className="">
+                    GCash Reference Number{" "}
+                    <span className="text-destructive">*</span>{" "}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    09890-0879-9897
+                  </p>
+                </div>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowDialog(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      // Handle payment confirmation logic here
+                      // Update the status to "paid" or "confirmed"
+                      setShowDialog(false);
+                    }}
+                  >
+                    Confirm Payment
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </>
+        );
+      },
+    },
+    {
+      header: "Actions",
+      cell: (info) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => openReservationDetails(info.row.original)}
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              View Details
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+  ];
+
+  const table = useReactTable({
+    data: reservations,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+  const currentDate = new Date();
+
+  const isUrgent = (eventDate: Date) => {
     const diffTime = Math.abs(eventDate.getTime() - currentDate.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays <= 1;
@@ -60,103 +218,50 @@ export default function ReservationTable({
     <div className="rounded-md border">
       <Table>
         <TableHeader>
-          <TableRow>
-            {tableHeads.map((head) =>
-              dashboard && head === "Actions" ? null : (
-                <TableHead key={head}>{head}</TableHead>
-              )
-            )}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {reservations.map((reservation: reservationType) => (
-            <TableRow
-              key={reservation.id}
-              className={isUrgent(reservation.eventDate) ? "bg-yellow-50" : ""}
-            >
-              <TableCell className="font-medium">{reservation.id}</TableCell>
-
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback>
-                      {reservation.customer.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="font-medium">
-                      {reservation.customer.name}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {reservation.customer.isRegistered
-                        ? "Registered"
-                        : "Guest"}
-                    </div>
-                  </div>
-                </div>
-              </TableCell>
-
-              <TableCell>
-                <div>{format(reservation.eventDate, "MMM d, yyyy")}</div>
-                <div className="text-xs text-muted-foreground">
-                  {format(reservation.eventDate, "h:mm a")}
-                </div>
-                {isUrgent(reservation.eventDate) && (
-                  <Badge
-                    variant="outline"
-                    className="mt-1 bg-yellow-100 text-yellow-800"
-                  >
-                    Due Soon
-                  </Badge>
-                )}
-              </TableCell>
-
-              <TableCell>${reservation.totalPrice.toLocaleString()}</TableCell>
-
-              <TableCell>
-                <StatusBadge status={reservation.status} />
-              </TableCell>
-
-              <TableCell>
-                <StatusBadge status={reservation.payment.status} />
-              </TableCell>
-
-              {!dashboard && (
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => openReservationDetails(reservation)}
-                    >
-                      <Eye className="h-4 w-4" />
-                      <span className="sr-only">View details</span>
-                    </Button>
-                    {/* Componentize */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">More options</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Edit Reservation</DropdownMenuItem>
-                        <DropdownMenuItem>Change Status</DropdownMenuItem>
-                        <DropdownMenuItem>Send Reminder</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
-                          Cancel Reservation
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </TableCell>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) =>
+                dashboard &&
+                header.column.columnDef.header === "Actions" ? null : (
+                  <TableHead key={header.id}>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                  </TableHead>
+                )
               )}
             </TableRow>
           ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows.length ? (
+            table
+              .getRowModel()
+              .rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row
+                    .getVisibleCells()
+                    .map((cell) =>
+                      dashboard &&
+                      cell.column.columnDef.header === "Actions" ? null : (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      )
+                    )}
+                </TableRow>
+              ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="text-center">
+                No reservations found.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
       {selectedReservation && (

@@ -16,19 +16,18 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export default function ContactForm() {
   return (
-    <div className="flex flex-col items-center mx-[5%]">
+    <div className="flex flex-col items-center">
       <div className="w-full max-w-[700px]">
         <Card>
           <CardHeader>
             <CardTitle>Send us a message</CardTitle>
             <CardDescription>
-              Fill out the form below and we'll get back to you as soon as
+              Fill out the form below and we&#39;ll get back to you as soon as
               possible.
             </CardDescription>
           </CardHeader>

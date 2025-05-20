@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { CheckCircle2Icon, X } from "lucide-react";
 import Image from "next/image";
-import { menuItems } from "@/lib/menu-lists";
 import type { PackageDetailsDialogProps } from "@/types/package-types";
 import Link from "next/link";
+import { menuItems } from "@/lib/shared/menus-metadata";
 
 export default function PackageDetailsDialog({
   pkg,
@@ -16,7 +16,7 @@ export default function PackageDetailsDialog({
   onOpenChange,
   isPlated = false,
   platedInclusions = [],
-  isReservationForm = false
+  isReservationForm = false,
 }: PackageDetailsDialogProps) {
   // If no platedInclusions are provided, use the package's own inclusions
   const displayInclusions =
@@ -52,7 +52,7 @@ export default function PackageDetailsDialog({
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full"
+              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-foreground rounded-full"
               onClick={() => onOpenChange(false)}
             >
               <X className="h-4 w-4" />
@@ -62,23 +62,30 @@ export default function PackageDetailsDialog({
           <div className="p-6 bg-background border-b border-border">
             <DialogTitle className="text-2xl font-bold">{pkg.name}</DialogTitle>
             <p className="text-muted-foreground mt-2">{pkg.description}</p>
-            {!isReservationForm && <div className="flex justify-between items-center mt-4 bg-primary text-primary-foreground px-3 py-2 rounded-md">
-              <div>
-                <span className="text-lg font-bold">
-                  {isPlated
-                    ? `₱ ${pkg.pricePerPaxWithServiceCharge.toFixed(2)} per pax`
-                    : `₱ ${pkg.pricePerPax.toFixed(2)} per pax`}
-                </span>
-                {isPlated && (
-                  <span className="text-xs block text-primary-foreground/80">
-                    Includes {pkg?.serviceHours} hours service
+            {!isReservationForm && (
+              <div className="flex justify-between items-center mt-4 bg-primary text-primary-foreground px-3 py-2 rounded-md">
+                <div>
+                  <span className="text-lg font-bold">
+                    {isPlated ? (
+                      <>
+                        &#8369; {pkg.pricePerPaxWithServiceCharge.toFixed(2)}{" "}
+                        per pax
+                      </>
+                    ) : (
+                      <>&#8369; {pkg.pricePerPax.toFixed(2)} per pax</>
+                    )}
                   </span>
-                )}
+                  {isPlated && (
+                    <span className="text-xs block text-primary-foreground/80">
+                      Includes {pkg?.serviceHours} hours service
+                    </span>
+                  )}
+                </div>
+                <Button asChild variant={"secondary"}>
+                  <Link href={`/book-now/${pkg._id}`}>Book Now</Link>
+                </Button>
               </div>
-              <Button asChild variant={"secondary"}>
-                <Link href={`/book-now/${pkg._id}`}>Book Now</Link>
-              </Button>
-            </div>}
+            )}
           </div>
         </div>
         {/* Scrollable Content Section */}

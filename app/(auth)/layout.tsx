@@ -14,6 +14,7 @@ export default function AuthLayout({
 }>) {
   const pathname = usePathname(); // Get the current route
   const isMobile = useIsMobile(); // Get the mobile state
+
   return (
     <>
       <div

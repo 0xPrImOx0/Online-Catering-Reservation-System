@@ -1,6 +1,4 @@
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Facebook,
   Instagram,
@@ -9,50 +7,65 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import Image from "next/image";
 import React from "react";
+import MapComponent from "../MapComponent";
+import {
+  businessMetadata,
+  ownerMetadata,
+} from "@/lib/caterer/business-metadata";
+import Link from "next/link";
 
 export default function ContactInfo() {
+  const { address, businessHours, businessDays } = businessMetadata;
+  const { email, phone } = ownerMetadata;
   const contactInfos = [
     {
       title: "Email Us",
       icon: Mail,
-      content: "hello@gourmetcater.com",
+      content: email,
       subcontent: "We'll respond within 24 hours",
     },
     {
       title: "Call Us",
       icon: Phone,
-      content: "(555) 123-4567",
-      subcontent: "Mon-Fri: 9:00am - 5:30pm EST",
+      content: phone,
+      subcontent: `${businessDays} ${businessHours} `,
     },
     {
       title: "Visit Us",
       icon: MapPin,
-      content: "456 Elm Street, Suite 101",
+      content: address,
       subcontent: "By appointment only",
     },
   ];
   return (
-    <section className="flex flex-col max-w-[950px] mx-auto gap-8 mt-10 px-[5%]">
+    <section className="flex flex-col max-w-[950px] mx-auto gap-8 mt-10">
       {/* Get In Touch */}
       <div className="space-y-6">
         <h2 className="text-xl font-semibold">Get in Touch</h2>
-        <div className="flex gap-4 max-sm:flex-col">
+        <div className="flex flex-wrap gap-6 sm:flex-nowrap max-sm:flex-col">
           {contactInfos.map((info) => (
-            <Card className="flex py-4 px-6 gap-4 flex-1" key={info.title}>
-              <info.icon className="h-5 w-5 text-gray-500 mt-0.5" />
-              <div>
+            <Card
+              key={info.title}
+              className="flex flex-1 items-start gap-4 p-6 transition-shadow hover:shadow-md"
+            >
+              <info.icon className="mt-1 size-6 text-gray-500 shrink-0" />
+              <div className="space-y-1">
                 <h3 className="font-medium">{info.title}</h3>
-                <h4 className="text-primary hover:underline">{info.content}</h4>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {info.subcontent}
-                </p>
+                <h4 className="text-primary line-clamp-2 hover:underline cursor-pointer text-base">
+                  {info.content}
+                </h4>
+                {info.subcontent && (
+                  <p className="text-sm text-muted-foreground">
+                    {info.subcontent}
+                  </p>
+                )}
               </div>
             </Card>
           ))}
         </div>
       </div>
+
       {/* Connect With Us */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Connect With Us</h2>
@@ -62,31 +75,31 @@ export default function ContactInfo() {
         </p>
 
         <div className="flex space-x-4">
-          <a
+          <Link
             href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+            className="flex justify-center items-center w-12 h-12 text-white bg-blue-600 rounded-full transition-colors hover:bg-blue-700"
           >
-            <Facebook className="h-6 w-6" />
+            <Facebook className="w-6 h-6" />
             <span className="sr-only">Facebook</span>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="https://instagram.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-yellow-400 via-red-500 to-purple-600 text-white hover:opacity-90 transition-opacity"
+            className="flex justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-yellow-400 via-red-500 to-purple-600 rounded-full transition-opacity hover:opacity-90"
           >
-            <Instagram className="h-6 w-6" />
+            <Instagram className="w-6 h-6" />
             <span className="sr-only">Instagram</span>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="https://tiktok.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-black text-white hover:bg-gray-800 transition-colors"
+            className="flex justify-center items-center w-12 h-12 text-white bg-black rounded-full transition-colors hover:bg-gray-800"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +111,7 @@ export default function ContactInfo() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-6 w-6"
+              className="w-6 h-6"
             >
               <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
               <path d="M15 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
@@ -106,17 +119,17 @@ export default function ContactInfo() {
               <line x1="9" y1="16" x2="9" y2="20" />
             </svg>
             <span className="sr-only">TikTok</span>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="https://wa.me/15551234567"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-green-500 text-white hover:bg-green-600 transition-colors"
+            className="flex justify-center items-center w-12 h-12 text-white bg-green-500 rounded-full transition-colors hover:bg-green-600"
           >
-            <MessageCircle className="h-6 w-6" />
+            <MessageCircle className="w-6 h-6" />
             <span className="sr-only">WhatsApp</span>
-          </a>
+          </Link>
         </div>
 
         <div className="mt-6">
@@ -126,13 +139,7 @@ export default function ContactInfo() {
           </p>
         </div>
       </div>
-
-      <div className="flex items-center flex-col gap-6">
-        <Skeleton className="w-full h-[500px]" />
-        <Button variant="outline" className="bg-white hover:bg-gray-100">
-          View on Google Maps
-        </Button>
-      </div>
+      <MapComponent />
     </section>
   );
 }

@@ -1,7 +1,5 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import {
   CardContent,
@@ -10,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../ui/card";
-import { Google } from "../Google";
+// import { Google } from "../Google";
 import { SignUpFormProps } from "@/types/auth-types";
 import {
   Form,
@@ -22,7 +20,7 @@ import {
 } from "@/components/ui/form";
 import { PasswordInput } from "@/components/ui/password-input";
 
-export const SignUpForm = ({ form, onSubmit }: SignUpFormProps) => {
+export const SignUpForm = ({ form, onSubmit, error }: SignUpFormProps) => {
   return (
     <>
       <CardHeader className="flex flex-col items-center space-y-1 pb-1 text-center">
@@ -47,11 +45,7 @@ export const SignUpForm = ({ form, onSubmit }: SignUpFormProps) => {
                 <FormItem className="grid gap-2">
                   <FormLabel htmlFor="fullName">Full Name</FormLabel>
                   <FormControl>
-                    <Input
-                      id="fullName"
-                      placeholder="Cipher Sentinels"
-                      {...field}
-                    />
+                    <Input id="fullName" placeholder="Full Name" {...field} />
                   </FormControl>
                   <FormMessage className="-top-2" />
                 </FormItem>
@@ -76,31 +70,6 @@ export const SignUpForm = ({ form, onSubmit }: SignUpFormProps) => {
                 </FormItem>
               )}
             />
-            {/* Phone Field */}
-            {/* <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem className="grid gap-2">
-                        <FormLabel htmlFor="phone">Phone Number</FormLabel>
-                        <FormControl>
-                          <PhoneInput
-                            {...field}
-                            defaultCountry="PH"
-                            placeholder="+63 912 345 6789"
-                          />
-                          <Input  //comment this out if you want to use this component
-                            id="phone"
-                            placeholder="555-123-4567"
-                            type="tel"
-                            autoComplete="tel"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
             {/* Password Field */}
             <FormField
               control={form.control}
@@ -111,7 +80,7 @@ export const SignUpForm = ({ form, onSubmit }: SignUpFormProps) => {
                   <FormControl>
                     <PasswordInput
                       id="password"
-                      placeholder="******"
+                      placeholder="Password"
                       autoComplete="new-password"
                       {...field}
                     />
@@ -133,7 +102,7 @@ export const SignUpForm = ({ form, onSubmit }: SignUpFormProps) => {
                   <FormControl>
                     <PasswordInput
                       id="confirmPassword"
-                      placeholder="******"
+                      placeholder="Confirm Password"
                       autoComplete="new-password"
                       {...field}
                     />
@@ -147,15 +116,7 @@ export const SignUpForm = ({ form, onSubmit }: SignUpFormProps) => {
             </Button>
           </form>
         </Form>
-        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-          <span className="relative z-10 bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-        <Button variant="outline" className="w-full">
-          <Google />
-          Sign Up with Google
-        </Button>
+        <p>{error}</p>
       </CardContent>
       <CardFooter className="text-sm flex justify-center space-x-2">
         <p>Already Have an Account?</p>

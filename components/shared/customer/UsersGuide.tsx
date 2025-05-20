@@ -1,10 +1,7 @@
 "use client";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { TabsList } from "@radix-ui/react-tabs";
-import { CalendarDays, ChefHat, Clock } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
 
 const TabsTriggerStyle = ({
   value,
@@ -59,7 +56,6 @@ const HowItWorksContent = ({
 };
 
 export const UsersGuide = () => {
-  const [activeTab, setActiveTab] = useState("one");
   return (
     <section className="my-16 md:my-24 lg:my-32 mx-[5%] ">
       <div className="container">
@@ -72,11 +68,7 @@ export const UsersGuide = () => {
           </p>
         </div>
 
-        <Tabs
-          className="w-full"
-          defaultValue="one"
-          onValueChange={setActiveTab}
-        >
+        <Tabs className="w-full" defaultValue="one">
           <TabsList className="text-foreground overflow-y-auto flex overflow-x-auto scrollbar-thin w-full justify-between h-auto gap-2 rounded-none border-b bg-transparent px-0 py-1">
             <TabsTriggerStyle value="one" title="Step 01" />
             <TabsTriggerStyle value="two" title="Step 02" />

@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  productionBrowserSourceMaps: false, // Disables source maps in production
   images: {
     domains: [
       "www.kawalingpinoy.com",
@@ -35,6 +36,9 @@ const nextConfig: NextConfig = {
       "ual-media-res.cloudinary.com",
       "miro.medium.com",
       "www.travelwisconsin.com",
+      "www.flyacecorp.com",
+      //dummy
+      "www.allrecipes.com",
     ],
   },
 };

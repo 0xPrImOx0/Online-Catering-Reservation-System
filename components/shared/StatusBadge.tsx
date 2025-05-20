@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { Badge } from "../ui/badge";
 
-export default function StatusBadge({ status }: { status: string }) {
+export default function StatusBadge({ status, onClick }: { status: string, onClick?: () => void }) {
   return (
     <Badge
       className={clsx("capitalize cursor-default", {
@@ -13,6 +13,7 @@ export default function StatusBadge({ status }: { status: string }) {
           status === "completed",
         "bg-red-100 text-red-800 hover:border-red-800": status === "cancelled",
       })}
+      onClick={onClick}
     >
       {status}
     </Badge>

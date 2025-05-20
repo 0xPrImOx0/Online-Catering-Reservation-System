@@ -47,21 +47,21 @@ const AboutCards = ({
 
 export default function About() {
   return (
-    <section className="min-h-[70vh] mt-24 gap-16 flex flex-col justify-center px-[5%]">
+    <section className="min-h-[70vh] mt-24 gap-16 flex flex-col justify-center">
       <div className="flex flex-col gap-4 md:flex-row">
         <div>
-          <span className="text-muted-foreground text-sm">Food Sentinel</span>
+          <span className="text-muted-foreground text-sm"> Food Sentinel </span>
           <h2 className="text-4xl min-w-max font-semibold sm:text-5xl">
             Get to know us
           </h2>
         </div>
         <p className="text-muted-foreground text-justify text-lg max-w-3xl mx-auto">
           At Food Sentinel, we make catering reservations simple, fast, and
-          hassle-free. Whether you're planning an intimate gathering or a grand
-          celebration, our platform connects you with expertly crafted menus and
-          seamless booking options. With a commitment to quality, convenience,
-          and customer satisfaction, we ensure every event is a memorable dining
-          experience.
+          hassle-free. Whether you&#39;re planning an intimate gathering or a
+          grand celebration, our platform connects you with expertly crafted
+          menus and seamless booking options. With a commitment to quality,
+          convenience, and customer satisfaction, we ensure every event is a
+          memorable dining experience.
         </p>
       </div>
 

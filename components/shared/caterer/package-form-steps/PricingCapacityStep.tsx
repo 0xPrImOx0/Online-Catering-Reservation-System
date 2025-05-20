@@ -79,7 +79,7 @@ export function PricingCapacityStep({ formHook }: PricingCapacityStepProps) {
             <FormControl>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2">
-                  ₱
+                  &#8369;
                 </span>
                 <Input
                   type="number"

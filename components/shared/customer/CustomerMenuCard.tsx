@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,14 +25,37 @@ import { MenuDetailsDialog } from "./MenuDetailsDialog";
 import { CategoryBadge } from "./MenuCategoryBadge";
 import ImageDialog from "../ImageDialog";
 import { useMenuForm } from "@/hooks/use-menu-form";
+import { useSearchParams } from "next/navigation";
+import { getQueryParams } from "@/utils/search-params";
 
 export function CustomerMenuCard({ menu }: MenuCardProps) {
   const [selectedServing, setSelectedServing] = useState<ServingSize>(6);
-  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState<boolean>(false);
+  const [isMenuDetailsDialogOpen, setIsMenuDetailsDialogOpen] =
+    useState<boolean>(false);
   const [menuPricePax, setMenuPricePax] = useState(menu.prices[0].price);
   const [discount, setDiscount] = useState(menu.prices[0].discount);
 
-  const { calculateSavings, calculateSavingsPercentage } = useMenuForm();
+  const { calculateSavings } = useMenuForm();
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const { view, id } = getQueryParams(searchParams, ["view", "id"]);
+
+    if (view === "image" && id === menu._id) {
+      setIsImageDialogOpen(true);
+      return;
+    }
+
+    if (view === "details" && id === menu._id) {
+      setIsMenuDetailsDialogOpen(true);
+      return;
+    }
+
+    setIsImageDialogOpen(false);
+    setIsMenuDetailsDialogOpen(false);
+  }, [searchParams, menu._id]);
 
   return (
     <Card className="min-w-[325px] flex-1 overflow-hidden border shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
@@ -44,7 +67,14 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
                 size="custom"
                 variant="ghost"
                 className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                onClick={() => setIsImageDialogOpen(true)}
+                onClick={() => {
+                  window.history.pushState(
+                    {},
+                    "",
+                    `/menus?view=image&id=${menu._id}`
+                  );
+                  setIsImageDialogOpen(true);
+                }}
               >
                 <Image
                   src={menu.imageUrl || "/placeholder.svg"}
@@ -66,8 +96,8 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
             variant={menu.available ? "default" : "destructive"}
             className={
               menu.available
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : "bg-red-500 text-white"
+                ? "bg-emerald-600 hover:bg-emerald-700 text-foreground"
+                : "bg-red-500 text-foreground"
             }
           >
             {menu.available ? "Available" : "Unavailable"}
@@ -78,7 +108,7 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
           {menu.spicy && (
             <Badge
               variant="outline"
-              className="bg-red-500 text-white border-red-500 flex items-center gap-1 hover:bg-red-600"
+              className="bg-red-500 text-foreground border-red-500 flex items-center gap-1 hover:bg-red-600"
             >
               <Flame className="h-3 w-3" /> Spicy
             </Badge>
@@ -90,7 +120,7 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="bg-black/70 backdrop-blur-sm rounded px-2.5 py-1.5">
-                  {RenderStarRatings(menu.rating || 0, "medium")}
+                  {RenderStarRatings(menu.rating, "medium")}
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -121,7 +151,7 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
             </CardDescription>
           </div>
           <Badge className="bg-emerald-600 text-white border-emerald-600 whitespace-nowrap text-base py-1.5 h-auto hover:bg-emerald-700">
-            {Math.floor(discount * 100)}% OFF
+            {Math.floor(discount)}% OFF
           </Badge>
         </div>
       </CardHeader>
@@ -201,11 +231,21 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
       </CardContent>
 
       <CardFooter className="flex justify-between">
-        <MenuDetailsDialog menu={menu}>
-          <Button className={"w-full"} variant={"default"} size={"default"}>
-            View Details
-          </Button>
-        </MenuDetailsDialog>
+        <Button
+          className={"w-full"}
+          variant={"default"}
+          size={"default"}
+          onClick={() => {
+            window.history.pushState(
+              {},
+              "",
+              `/menus?view=details&id=${menu._id}`
+            );
+            setIsMenuDetailsDialogOpen(true);
+          }}
+        >
+          View Details
+        </Button>
       </CardFooter>
 
       {/* Image Dialog */}
@@ -213,6 +253,12 @@ export function CustomerMenuCard({ menu }: MenuCardProps) {
         item={menu}
         isImageDialogOpen={isImageDialogOpen}
         setIsImageDialogOpen={setIsImageDialogOpen}
+      />
+
+      <MenuDetailsDialog
+        menu={menu}
+        isMenuDetailsDialogOpen={isMenuDetailsDialogOpen}
+        setIsMenuDetailsDialogOpen={setIsMenuDetailsDialogOpen}
       />
     </Card>
   );

@@ -1,14 +1,22 @@
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import { AllergenProps, MenuItem } from "./menu-types";
 import { SetStateBoolean } from "./global-types";
-import { CateringPackagesProps, EventType, ServiceType } from "./package-types";
+import { CateringPackagesProps } from "./package-types";
 import { FormStepType } from "@/components/shared/MultiStepForm";
+import { FieldErrors } from "react-hook-form";
+import { ReservationValues } from "@/hooks/use-reservation-form";
 
 //Search Bar Types
 export type SearchInputProps = {
   query: string;
   setQuery: (query: string) => void;
   placeholderTitle: string;
+  iconStyle?: string;
+  inputStyle?: string;
+  hasFilter?: boolean;
+  activeFilterCount?: number;
+  openFilter?: boolean;
+  setOpenFilter?: Dispatch<SetStateAction<boolean>>;
 };
 
 //Custom Select Types
@@ -43,8 +51,6 @@ export type CustomPaginationProps = {
   title?: string;
 };
 
-//ArrayInputProps
-
 export type Tag = {
   id: string;
   text: string;
@@ -67,38 +73,47 @@ export interface TagInputProps {
   restrictTagsToAutocompleteOptions?: boolean;
 }
 
-export type ArrayInputProps = {
-  tags: Tag[];
-  title: string;
-  autocomplete?: boolean;
-  suggestions?: Tag[];
-};
-
 export interface ImageDialogProps {
   item: MenuItem | CateringPackagesProps;
   isImageDialogOpen: boolean;
   setIsImageDialogOpen: SetStateBoolean;
 }
 
-export type FilterSectionProps = {
-  query: string;
+export type FiltersProps = {
+  category: string;
+  allergens: AllergenProps;
+  sortBy: string;
+  excludedAllergens: AllergenProps[];
+  minPrice: number;
+  maxPrice: number;
+  available: boolean;
+  spicy: boolean;
+  [key: string]: string | number | boolean | AllergenProps[];
+};
+
+export interface FilterSectionProps {
+  query?: string;
   setQuery: (query: string) => void;
-  filters: {
-    category: string;
-    allergens: AllergenProps;
-    sortBy: string;
-  };
-  setFilters: Dispatch<
-    SetStateAction<{
+  filters: FiltersProps;
+  setFilters: React.Dispatch<
+    React.SetStateAction<{
       category: string;
       allergens: AllergenProps;
       sortBy: string;
+      excludedAllergens: AllergenProps[];
+      minPrice: number;
+      maxPrice: number;
+      available: boolean;
+      spicy: boolean;
+      [key: string]: string | number | boolean | AllergenProps[];
     }>
   >;
-};
+}
 
-export type SelectedEventContainerProps = {
+export type EventPackageContainerProps = {
   cateringPackages: CateringPackagesProps[];
+  isCaterer: boolean;
+  open?: boolean;
 };
 
 export type MultiStepFormProps = {
@@ -108,6 +123,7 @@ export type MultiStepFormProps = {
   children: ReactNode[];
   onSubmit: () => void;
   onNextStep?: (currentStep: number) => Promise<boolean>;
+  onPrevStep?: (currentStep: number) => boolean;
   onComplete?: () => void;
   onCancel?: () => void;
   initialStep?: number;
@@ -118,5 +134,38 @@ export type MultiStepFormProps = {
   doneButtonText?: string;
   cancelButtonText?: string;
   isReservationForm?: boolean;
-  setShowSelectServiceMode?: (show: boolean) => void;
+  setShowPackageSelection?: Dispatch<SetStateAction<boolean>>;
+  isCategoryError?: boolean;
 };
+
+export interface CustomerType {
+  name: string;
+  email: string;
+  phone: string;
+  isRegistered: boolean;
+}
+
+export interface OrderItemType {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+export interface ReservationType {
+  eventDate: Date;
+  address: string;
+  items: OrderItemType[];
+}
+
+export interface PaymentType {
+  id: string;
+  reservationId: string;
+  customer: CustomerType;
+  amount: number;
+  status: string;
+  paymentDate: Date | null;
+  paymentMethod: string | null;
+  createdDate: Date;
+  reservation: ReservationType;
+  isUrgent: boolean;
+}
