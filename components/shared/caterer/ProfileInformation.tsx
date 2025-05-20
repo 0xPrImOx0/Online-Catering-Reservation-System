@@ -1,5 +1,8 @@
-import React from "react";
-import { User, Mail, Phone } from "lucide-react";
+"use client";
+
+import type React from "react";
+import { useState, useCallback, useRef } from "react";
+import { User, Mail, Phone, X, PenSquare } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -17,13 +20,117 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { PhoneInput } from "@/components/ui/phone-input";
-import { AccountSettingsValues } from "@/hooks/use-settings-form";
+import type { AccountSettingsValues } from "@/hooks/use-settings-form";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import ImageDropzone from "./ImageDropzone";
 
 export function ProfileInformation() {
   const {
     control,
     formState: { errors },
+    setValue,
+    watch,
   } = useFormContext<AccountSettingsValues>();
+
+  const [dragActive, setDragActive] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [isEditingPhoto, setIsEditingPhoto] = useState(false);
+
+  // Watch the profilePicture field to get the current value
+  const watchedPic = watch("ownerProfilePic");
+
+  // Store the initial profile picture only once using useRef
+  const initialProfilePicRef = useRef<string>(
+    typeof watchedPic === "string"
+      ? watchedPic
+      : "/placeholder.svg?height=256&width=256"
+  );
+
+  // Derive current preview image
+  const displayImage = previewImage
+    ? previewImage
+    : initialProfilePicRef.current;
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  }, []);
+
+  const validateFile = (file: File): boolean => {
+    // Check if file is an image
+    if (!file.type.startsWith("image/")) {
+      setFileError("Only image files are allowed");
+      return false;
+    }
+
+    // Check file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      setFileError("File size must be less than 10MB");
+      return false;
+    }
+
+    setFileError(null);
+    return true;
+  };
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const file = e.dataTransfer.files[0];
+
+        if (validateFile(file)) {
+          // Create a preview URL
+          const objectUrl = URL.createObjectURL(file);
+          setPreviewImage(objectUrl);
+
+          // Set the file in the form
+          setValue("ownerProfilePic", file);
+
+          // Hide the edit mode after successful upload
+          setIsEditingPhoto(false);
+        }
+      }
+    },
+    [setValue]
+  );
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      if (validateFile(file)) {
+        // Create a preview URL
+        const objectUrl = URL.createObjectURL(file);
+        setPreviewImage(objectUrl);
+
+        // Set the file in the form
+        setValue("ownerProfilePic", file);
+
+        // Hide the edit mode after successful upload
+        setIsEditingPhoto(false);
+      }
+    }
+  };
+
+  const cancelImageEdit = () => {
+    setPreviewImage(null);
+    setIsEditingPhoto(false);
+  };
+
+  const startImageEdit = () => {
+    setIsEditingPhoto(true);
+  };
 
   return (
     <Card>
@@ -33,9 +140,55 @@ export function ProfileInformation() {
           Update your personal information and profile picture
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex flex-col gap-6 items-start md:flex-row">
-          <div className="space-y-4 w-full md:w-2/3">
+      <CardContent>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Profile Picture Section */}
+          <div className="flex flex-col items-center space-y-4">
+            {/* Large Profile Picture Display */}
+            <div className="relative">
+              <div className="relative size-64 rounded-full overflow-hidden border-4 border-muted shadow-md">
+                <Image
+                  src={displayImage}
+                  alt="Profile"
+                  fill
+                  className="w-full h-full object-cover object-center"
+                  onError={(e) => {
+                    e.currentTarget.src =
+                      "/placeholder.svg?height=256&width=256";
+                  }}
+                />
+              </div>
+
+              {/* Edit/Close Button */}
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                className="absolute top-0 right-0 rounded-full shadow-md"
+                onClick={isEditingPhoto ? cancelImageEdit : startImageEdit}
+              >
+                {isEditingPhoto ? (
+                  <X className="w-4 h-4" />
+                ) : (
+                  <PenSquare className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+
+            {/* Drag & Drop Area - Only shown when editing */}
+            <ImageDropzone
+              dragActive={dragActive}
+              fileError={fileError}
+              isVisible={isEditingPhoto}
+              className="lg:hidden"
+              handleDrag={handleDrag}
+              handleDrop={handleDrop}
+              handleFileChange={handleFileChange}
+            />
+          </div>
+
+          {/* Personal Information Section */}
+          <div className="space-y-6 md:col-span-2">
             {/* Full Name */}
             <FormField
               control={control}
@@ -46,8 +199,8 @@ export function ProfileInformation() {
                     htmlFor="full-name"
                     className="flex gap-2 items-center"
                   >
-                    <User className="w-4 h-4 text-muted-foreground" />
-                    Full Name <span className="text-red-500">*</span>
+                    <User className="w-4 h-4 text-muted-foreground" /> Full Name{" "}
+                    <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -72,8 +225,8 @@ export function ProfileInformation() {
                     htmlFor="email"
                     className="flex gap-2 items-center"
                   >
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    Email Address <span className="text-red-500">*</span>
+                    <Mail className="w-4 h-4 text-muted-foreground" /> Email
+                    Address <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -106,8 +259,8 @@ export function ProfileInformation() {
                     htmlFor="phone"
                     className="flex gap-2 items-center"
                   >
-                    <Phone className="w-4 h-4 text-muted-foreground" />
-                    Phone Number <span className="text-destructive">*</span>
+                    <Phone className="w-4 h-4 text-muted-foreground" /> Phone
+                    Number <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <PhoneInput
@@ -122,49 +275,17 @@ export function ProfileInformation() {
               )}
             />
           </div>
-
-          {/* <div className="w-full md:w-1/3">
-            <div className="space-y-2">
-              <Label>Profile Picture</Label>
-              <div className="flex flex-col items-center">
-                <div className="relative group">
-                  <img
-                    src={accountData.profilePicture || "/placeholder.svg"}
-                    alt="Profile"
-                    className="object-cover w-32 h-32 rounded-full border-2 border-muted"
-                  />
-                  <div
-                    className="flex absolute inset-0 justify-center items-center bg-black bg-opacity-50 rounded-full opacity-0 transition-opacity cursor-pointer group-hover:opacity-100"
-                    onClick={triggerFileInput}
-                  >
-                    <Upload className="w-6 h-6 text-background" />
-                  </div>
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="mt-2"
-                  onClick={triggerFileInput}
-                >
-                  Change Picture
-                </Button>
-                <Input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleProfilePictureUpload}
-                />
-                <p className="mt-2 text-xs text-center text-muted-foreground">
-                  JPG, PNG or GIF
-                  <br />
-                  Max 2MB
-                </p>
-              </div>
-            </div>
-          </div> */}
         </div>
+        {/* Drag & Drop Area - Only shown when editing */}
+        <ImageDropzone
+          dragActive={dragActive}
+          fileError={fileError}
+          isVisible={isEditingPhoto}
+          className="max-lg:hidden"
+          handleDrag={handleDrag}
+          handleDrop={handleDrop}
+          handleFileChange={handleFileChange}
+        />
       </CardContent>
     </Card>
   );

@@ -71,27 +71,31 @@ const accountSettingsSchema = z
         message: "Phone number must start with 9 and have 10 digits total",
       }),
 
-    ownerProfilePic: z.string().min(1, "Owner Profile Picture is required"),
+    ownerProfilePic: z.any().optional().nullable(),
 
     currentPassword: z
       .string()
-      .nonempty({ message: "Password field is required" })
-      .min(6, { message: "Password must be at least 6 characters long" })
-      .max(15, "Password must be at most 15 characters")
+      .nonempty({ message: "Current Password field is required" })
+      .min(6, {
+        message: "Current Password must be at least 6 characters long",
+      })
+      .max(15, "Current Password must be at most 15 characters")
       .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
 
     newPassword: z
       .string()
-      .nonempty({ message: "Confirm Password field is required" })
-      .min(6, { message: "Password must be at least 6 characters long" })
-      .max(15, "Password must be at most 15 characters")
+      .nonempty({ message: "New Password field is required" })
+      .min(6, { message: "New Password must be at least 6 characters long" })
+      .max(15, "New Password must be at most 15 characters")
       .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
 
     confirmNewPassword: z
       .string()
-      .nonempty({ message: "Confirm Password field is required" })
-      .min(6, { message: "Password must be at least 6 characters long" })
-      .max(15, "Password must be at most 15 characters")
+      .nonempty({ message: "Confirm New Password field is required" })
+      .min(6, {
+        message: "Confirm New Password must be at least 6 characters long",
+      })
+      .max(15, "Confirm New Password must be at most 15 characters")
       .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
@@ -102,10 +106,15 @@ const accountSettingsSchema = z
     path: ["newPassword"],
     message: "New password must not be the same as Current Password",
   })
-  .refine((data) => data.currentPassword !== data.confirmNewPassword, {
-    path: ["confirmNewPassword"],
-    message: "New password must not be the same as Current Password",
-  });
+  .refine(
+    (data) =>
+      !data.confirmNewPassword ||
+      data.currentPassword !== data.confirmNewPassword,
+    {
+      path: ["confirmNewPassword"],
+      message: "New password must not be the same as Current Password",
+    }
+  );
 
 export type AccountSettingsValues = z.infer<typeof accountSettingsSchema>;
 
