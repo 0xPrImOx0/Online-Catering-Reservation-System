@@ -1,5 +1,5 @@
 import React from "react";
-import { User, Mail } from "lucide-react";
+import { User, Mail, Phone } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -102,7 +102,11 @@ export function ProfileInformation() {
               name="ownerPhone"
               render={({ field }) => (
                 <FormItem className="grid gap-2">
-                  <FormLabel htmlFor="phone">
+                  <FormLabel
+                    htmlFor="phone"
+                    className="flex gap-2 items-center"
+                  >
+                    <Phone className="w-4 h-4 text-muted-foreground" />
                     Phone Number <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
