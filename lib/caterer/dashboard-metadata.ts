@@ -3,26 +3,26 @@ import { Calendar, CreditCard, DollarSign } from "lucide-react";
 const metricCards = [
   {
     title: "Revenue",
-    firstContent: 5430,
-    secondContent: "Last 30 days",
+    value: "5430",
+    description: "Last 30 days",
     Icon: DollarSign,
   },
   {
     title: "Pending Payments",
-    firstContent: 1250,
-    secondContent: "Unpaid reservations",
+    value: "1250",
+    description: "Unpaid reservations",
     Icon: CreditCard,
   },
   {
     title: "Upcoming Reservations",
-    firstContent: 12,
-    secondContent: "Next 7 Days",
+    value: "12",
+    description: "Next 7 Days",
     Icon: Calendar,
   },
   {
     title: "New Customers",
-    firstContent: 8,
-    secondContent: "Last 30 Days",
+    value: "8",
+    description: "Last 30 Days",
     Icon: Calendar,
   },
 ];

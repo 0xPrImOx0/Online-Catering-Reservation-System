@@ -53,7 +53,7 @@ export default function DashboardPage() {
         {/* Metrics cards */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {metricCards.map((metric) => (
-            <MetricCards key={metric.title} metric={metric} />
+            <MetricCards metric={metric} key={metric.title} />
           ))}
         </div>
       </div>

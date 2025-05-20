@@ -712,26 +712,26 @@ import {
 const metricCards = [
   {
     title: "Total Reservations",
-    firstContent: "10",
-    secondContent: "All active bookings",
+    value: "10",
+    description: "All active bookings",
     Icon: ClipboardList,
   },
   {
     title: "Confirmed",
-    firstContent: "6",
-    secondContent: "Ready to serve",
+    value: "6",
+    description: "Ready to serve",
     Icon: ClipboardCheck,
   },
   {
     title: "Pending",
-    firstContent: "4",
-    secondContent: "Awaiting confirmation",
+    value: "4",
+    description: "Awaiting confirmation",
     Icon: ClipboardPen,
   },
   {
     title: "Total Revenue",
-    firstContent: "$14,380",
-    secondContent: "From confirmed reservations",
+    value: "$14,380",
+    description: "From confirmed reservations",
     Icon: CreditCard,
   },
 ];

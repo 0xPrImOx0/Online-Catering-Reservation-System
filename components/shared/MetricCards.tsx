@@ -1,18 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency } from "@/utils/format-currency";
 import { LucideIcon } from "lucide-react";
 
 type MetricCardProps = {
   metric: {
     title: string;
-    firstContent: string;
-    secondContent: string;
+    value: string;
+    description: string;
     Icon: LucideIcon;
   };
 };
 
 export default function MetricCards({ metric }: MetricCardProps) {
-  const { title, firstContent, secondContent, Icon } = metric;
+  const { title, value, description, Icon } = metric;
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -22,12 +21,8 @@ export default function MetricCards({ metric }: MetricCardProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">
-          {title !== "Upcoming Reservations" && title !== "New Customers"
-            ? formatCurrency(Number(firstContent))
-            : firstContent}
-        </div>
-        <p className="text-xs text-muted-foreground">{secondContent}</p>
+        <div className="text-2xl font-bold">&#8369; {value}</div>
+        <p className="text-xs text-muted-foreground">{description}</p>
       </CardContent>
     </Card>
   );
