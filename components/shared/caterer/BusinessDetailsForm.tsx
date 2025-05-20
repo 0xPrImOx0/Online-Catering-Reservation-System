@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Building2, Link, Map, MapPin, Tag } from "lucide-react";
 import {
@@ -9,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
-import { SettingsValues } from "@/hooks/use-settings-form";
+import { BusinessSettingsValues } from "@/hooks/use-settings-form";
 import {
   FormControl,
   FormDescription,
@@ -22,7 +24,7 @@ import MapComponent from "../MapComponent";
 import { Label } from "@/components/ui/label";
 
 export function BusinessDetailsForm() {
-  const form = useFormContext<SettingsValues>();
+  const form = useFormContext<BusinessSettingsValues>();
 
   const embeddedLink = form.watch("map.embeddedLink");
   const hasError = !!form.formState.errors?.map?.embeddedLink;

@@ -1,5 +1,6 @@
 import {
   Boxes,
+  BriefcaseBusiness,
   ChefHat,
   ClipboardList,
   LayoutDashboard,
@@ -58,8 +59,13 @@ export const data = {
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "/caterer/settings",
+      title: "Business Settings",
+      url: "/caterer/business-settings",
+      icon: BriefcaseBusiness,
+    },
+    {
+      title: "Account Settings",
+      url: "/caterer/account-settings",
       icon: Settings,
     },
   ],

@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
-import { SettingsValues } from "@/hooks/use-settings-form";
 import {
   FormControl,
   FormField,
@@ -18,12 +17,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { PhoneInput } from "@/components/ui/phone-input";
+import { AccountSettingsValues } from "@/hooks/use-settings-form";
 
 export function ProfileInformation() {
   const {
     control,
     formState: { errors },
-  } = useFormContext<SettingsValues>();
+  } = useFormContext<AccountSettingsValues>();
 
   return (
     <Card>

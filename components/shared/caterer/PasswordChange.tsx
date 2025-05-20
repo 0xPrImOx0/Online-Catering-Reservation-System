@@ -17,10 +17,10 @@ import {
 } from "@/components/ui/form";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useFormContext } from "react-hook-form";
-import { SettingsValues } from "@/hooks/use-settings-form";
+import { AccountSettingsValues } from "@/hooks/use-settings-form";
 
 export function PasswordChange() {
-  const { control, trigger } = useFormContext<SettingsValues>();
+  const { control, trigger } = useFormContext<AccountSettingsValues>();
 
   return (
     <Card>

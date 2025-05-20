@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Plus, Trash2 } from "lucide-react";
 import {
@@ -9,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SettingsValues } from "@/hooks/use-settings-form";
+import { BusinessSettingsValues } from "@/hooks/use-settings-form";
 import { useFormContext } from "react-hook-form";
 import {
   FormControl,
@@ -20,7 +22,8 @@ import {
 
 // Function to add a new social link
 export function SocialMediaLinks() {
-  const { control, getValues, setValue } = useFormContext<SettingsValues>();
+  const { control, getValues, setValue } =
+    useFormContext<BusinessSettingsValues>();
   const socialLinks = getValues("socialMediaLinks");
 
   const addSocialLink = () => {

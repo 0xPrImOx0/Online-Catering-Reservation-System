@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Building2 } from "lucide-react";
 import {
@@ -10,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useFormContext } from "react-hook-form";
-import { SettingsValues } from "@/hooks/use-settings-form";
+import { BusinessSettingsValues } from "@/hooks/use-settings-form";
 import {
   FormControl,
   FormField,
@@ -20,7 +22,7 @@ import {
 import Image from "next/image";
 
 export function BusinessLogoUpload() {
-  const { control, watch } = useFormContext<SettingsValues>();
+  const { control, watch } = useFormContext<BusinessSettingsValues>();
   const businessLogo = watch("businessLogo");
   return (
     <Card>

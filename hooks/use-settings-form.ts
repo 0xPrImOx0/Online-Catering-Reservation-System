@@ -1,3 +1,5 @@
+"use client";
+
 import {
   businessMetadata,
   ownerMetadata,
@@ -7,50 +9,52 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-const settingsSchema = z
+const businessSettingsSchema = z.object({
+  businessName: z.string().min(1, "Name is required"),
+
+  map: z.object({
+    link: z
+      .string()
+      .url({ message: "Link URL must be a valid URL" })
+      .refine(
+        (url) =>
+          url.includes("google.com/maps") || url.includes("maps.app.goo.gl"),
+        {
+          message: "Link must be a valid Google Maps URL",
+        }
+      ),
+
+    embeddedLink: z
+      .string()
+      .url({ message: "Embedded link must be a valid URL" })
+      .refine((url) => url.includes("google.com/maps/embed"), {
+        message: "Embedded link must be a valid embedded Google Maps URL",
+      }),
+
+    address: z.string().min(1, "Address is required"),
+  }),
+
+  systemName: z.string().min(1, "Sys is required"),
+
+  tagline: z.string().min(1, "Tagline is required"),
+
+  businessLogo: z.string().min(1, "Logo is required"),
+
+  businessHours: z.string().min(1, "Business Hours is required"),
+
+  businessDays: z.string().min(1, "Business Days is required"),
+
+  socialMediaLinks: z.array(
+    z.object({
+      platform: z.string().min(1, "Platform is required"),
+
+      url: z.string().url("Invalid URL"),
+    })
+  ),
+});
+
+const accountSettingsSchema = z
   .object({
-    businessName: z.string().min(1, "Name is required"),
-
-    map: z.object({
-      link: z
-        .string()
-        .url({ message: "Link URL must be a valid URL" })
-        .refine(
-          (url) =>
-            url.includes("google.com/maps") || url.includes("maps.app.goo.gl"),
-          {
-            message: "Link must be a valid Google Maps URL",
-          }
-        ),
-
-      embeddedLink: z
-        .string()
-        .url({ message: "Embedded link must be a valid URL" })
-        .refine((url) => url.includes("google.com/maps/embed"), {
-          message: "Embedded link must be a valid embedded Google Maps URL",
-        }),
-
-      address: z.string().min(1, "Address is required"),
-    }),
-
-    systemName: z.string().min(1, "Sys is required"),
-
-    tagline: z.string().min(1, "Tagline is required"),
-
-    businessLogo: z.string().min(1, "Logo is required"),
-
-    businessHours: z.string().min(1, "Business Hours is required"),
-
-    businessDays: z.string().min(1, "Business Days is required"),
-
-    socialMediaLinks: z.array(
-      z.object({
-        platform: z.string().min(1, "Platform is required"),
-
-        url: z.string().url("Invalid URL"),
-      })
-    ),
-
     ownerName: z
       .string()
       .min(2, "Full Name must be at least 2 characters")
@@ -103,7 +107,9 @@ const settingsSchema = z
     message: "New password must not be the same as Current Password",
   });
 
-export type SettingsValues = z.infer<typeof settingsSchema>;
+export type AccountSettingsValues = z.infer<typeof accountSettingsSchema>;
+
+export type BusinessSettingsValues = z.infer<typeof businessSettingsSchema>;
 
 const {
   businessName,
@@ -124,7 +130,7 @@ const {
   profilePic,
 } = ownerMetadata;
 
-const defaultValues: SettingsValues = {
+const defaultBusinessValues: BusinessSettingsValues = {
   businessName: businessName,
   map: {
     link: map.link,
@@ -137,6 +143,9 @@ const defaultValues: SettingsValues = {
   businessHours: businessHours,
   businessDays: businessDays,
   socialMediaLinks: socialMediaLinks,
+};
+
+const defaultAccountValues: AccountSettingsValues = {
   ownerName: ownerName,
   ownerDescription: ownerDescription,
   ownerEmail: email,
@@ -148,24 +157,52 @@ const defaultValues: SettingsValues = {
 };
 
 export function useSettingsForm() {
-  const settingsForm = useForm<SettingsValues>({
-    resolver: zodResolver(settingsSchema),
-    defaultValues: defaultValues,
+  const accountSettingsForm = useForm<AccountSettingsValues>({
+    resolver: zodResolver(accountSettingsSchema),
+    defaultValues: defaultAccountValues,
+    mode: "onChange",
+    reValidateMode: "onSubmit",
+  });
+
+  const businessSettingsForm = useForm<BusinessSettingsValues>({
+    resolver: zodResolver(businessSettingsSchema),
+    defaultValues: defaultBusinessValues,
     mode: "onChange",
     reValidateMode: "onSubmit",
   });
 
   const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
 
-  const validateStep = async (): Promise<boolean> => {
-    const isValid = await settingsForm.trigger();
+  const validateAccountStep = async (): Promise<boolean> => {
+    const isValid = await accountSettingsForm.trigger();
     return isValid;
   };
 
-  // Submit form function
-  const onSubmit = (data: SettingsValues) => {
+  const validateBusinessStep = async (): Promise<boolean> => {
+    const isValid = await businessSettingsForm.trigger();
+    return isValid;
+  };
+
+  // Submit form function for Account Settings
+  const onSubmitAccountSettings = (data: AccountSettingsValues) => {
     // Create menu item object
-    const settings: SettingsValues = {
+    const settings: AccountSettingsValues = {
+      ...data,
+    };
+    // Here you would typically send this to your API
+    // If there's an image file, you would upload it first and then update the imageUrl
+
+    // Show success message
+    setIsSubmitSuccess(true);
+
+    // Return the new menu item
+    return settings;
+  };
+
+  // Submit form function for Business Settings
+  const onSubmitBusinessSettings = (data: BusinessSettingsValues) => {
+    // Create menu item object
+    const settings: BusinessSettingsValues = {
       ...data,
     };
     // Here you would typically send this to your API
@@ -179,9 +216,12 @@ export function useSettingsForm() {
   };
 
   return {
-    settingsForm,
-    onSubmit,
-    validateStep,
+    accountSettingsForm,
+    businessSettingsForm,
+    onSubmitAccountSettings,
+    onSubmitBusinessSettings,
+    validateAccountStep,
+    validateBusinessStep,
     setIsSubmitSuccess,
     isSubmitSuccess,
   };

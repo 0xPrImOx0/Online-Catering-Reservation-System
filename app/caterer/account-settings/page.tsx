@@ -4,10 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { StatusMessage } from "@/components/shared/caterer/StatusMessage";
-import { BusinessDetailsForm } from "@/components/shared/caterer/BusinessDetailsForm";
-import { BusinessLogoUpload } from "@/components/shared/caterer/BusinessLogoUpload";
-import { SocialMediaLinks } from "@/components/shared/caterer/SocialMediaLinks";
 import { ProfileInformation } from "@/components/shared/caterer/ProfileInformation";
 import { PasswordChange } from "@/components/shared/caterer/PasswordChange";
 import { useSettingsForm } from "@/hooks/use-settings-form";
@@ -17,25 +13,22 @@ import { SuccessDialog } from "@/components/shared/caterer/SuccessDialog";
 export default function Page() {
   const router = useRouter();
   const {
-    settingsForm,
-    onSubmit,
+    accountSettingsForm,
     isSubmitSuccess,
     setIsSubmitSuccess,
-    validateStep,
+    validateAccountStep,
+    onSubmitAccountSettings,
   } = useSettingsForm();
-  const [statusMessage, setStatusMessage] = useState<{
-    type: "success" | "error" | null;
-    message: string;
-  }>({ type: null, message: "" });
 
+  const [dots, setDots] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   // Handle form submission
   const handleSubmit = async () => {
-    const isValid = await validateStep();
+    const isValid = await validateAccountStep();
     if (isValid) {
-      settingsForm.handleSubmit(async (data) => {
-        onSubmit(data);
+      accountSettingsForm.handleSubmit(async (data) => {
+        onSubmitAccountSettings(data);
         setIsSubmitSuccess(true);
         // Wait 1 second, then show dialog
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -48,7 +41,20 @@ export default function Page() {
     if (!showSuccessDialog) {
       setIsSubmitSuccess(false);
     }
-  }, [showSuccessDialog]);
+  }, [showSuccessDialog, setIsSubmitSuccess]);
+
+  useEffect(() => {
+    if (!isSubmitSuccess) {
+      setDots("");
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
+    }, 500); // change speed if needed
+
+    return () => clearInterval(interval);
+  }, [isSubmitSuccess]);
 
   return (
     <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
@@ -56,39 +62,19 @@ export default function Page() {
         open={showSuccessDialog}
         onOpenChange={setShowSuccessDialog}
         title="Changes Saved!"
-        description="Your business and account settings have been updated successfully."
+        description="Your account settings have been updated successfully."
         buttonText="Close"
       />
-      <div className="">
-        <h1 className="text-2xl font-bold">Business Settings</h1>
+
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Account Settings</h1>
         <p className="text-muted-foreground">
-          Manage your catering business information and appearance
+          Manage your personal account information and security
         </p>
       </div>
 
-      {statusMessage.type && (
-        <StatusMessage
-          type={statusMessage.type}
-          message={statusMessage.message}
-        />
-      )}
-
-      <Form {...settingsForm}>
-        <div className="mt-6 space-y-6">
-          <BusinessDetailsForm />
-
-          <BusinessLogoUpload />
-
-          <SocialMediaLinks />
-        </div>
+      <Form {...accountSettingsForm}>
         <div className="mt-8">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold">Account Settings</h1>
-            <p className="text-muted-foreground">
-              Manage your personal account information and security
-            </p>
-          </div>
-
           <div className="space-y-6">
             <ProfileInformation />
 
@@ -108,7 +94,7 @@ export default function Page() {
                 disabled={isSubmitSuccess}
                 className="bg-sidebar-accent-foreground text-background"
               >
-                {isSubmitSuccess ? "Saving..." : "Save Changes"}
+                {isSubmitSuccess ? `Saving${dots}` : "Save Changes"}
                 {!isSubmitSuccess && <Save className="ml-2 w-4 h-4" />}
               </Button>
             </div>
