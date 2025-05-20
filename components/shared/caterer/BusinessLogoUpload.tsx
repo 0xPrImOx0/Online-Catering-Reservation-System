@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { Building2 } from "lucide-react";
+import React, { useCallback, useRef, useState } from "react";
+import { PenSquare, X } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -9,21 +9,115 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useFormContext } from "react-hook-form";
 import { BusinessSettingsValues } from "@/hooks/use-settings-form";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
 import Image from "next/image";
+import ImageDropzone from "./ImageDropzone";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function BusinessLogoUpload() {
-  const { control, watch } = useFormContext<BusinessSettingsValues>();
-  const businessLogo = watch("businessLogo");
+  const { watch, setValue } = useFormContext<BusinessSettingsValues>();
+
+  const [dragActive, setDragActive] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [isEditingPhoto, setIsEditingPhoto] = useState(false);
+
+  // Watch the profilePicture field to get the current value
+  const watchedPic = watch("businessLogo");
+
+  // Store the initial profile picture only once using useRef
+  const initialProfilePicRef = useRef<string>(
+    typeof watchedPic === "string"
+      ? watchedPic
+      : "/placeholder.svg?height=256&width=256"
+  );
+
+  // Derive current preview image
+  const displayImage = previewImage
+    ? previewImage
+    : initialProfilePicRef.current;
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  }, []);
+
+  const validateFile = (file: File): boolean => {
+    // Check if file is an image
+    if (!file.type.startsWith("image/")) {
+      setFileError("Only image files are allowed");
+      return false;
+    }
+
+    // Check file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
+      setFileError("File size must be less than 10MB");
+      return false;
+    }
+
+    setFileError(null);
+    return true;
+  };
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const file = e.dataTransfer.files[0];
+
+        if (validateFile(file)) {
+          // Create a preview URL
+          const objectUrl = URL.createObjectURL(file);
+          setPreviewImage(objectUrl);
+
+          // Set the file in the form
+          setValue("businessLogo", file);
+
+          // Hide the edit mode after successful upload
+          setIsEditingPhoto(false);
+        }
+      }
+    },
+    [setValue]
+  );
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      if (validateFile(file)) {
+        // Create a preview URL
+        const objectUrl = URL.createObjectURL(file);
+        setPreviewImage(objectUrl);
+
+        // Set the file in the form
+        setValue("businessLogo", file);
+
+        // Hide the edit mode after successful upload
+        setIsEditingPhoto(false);
+      }
+    }
+  };
+
+  const cancelImageEdit = () => {
+    setPreviewImage(null);
+    setIsEditingPhoto(false);
+  };
+
+  const startImageEdit = () => {
+    setIsEditingPhoto(true);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -33,57 +127,59 @@ export function BusinessLogoUpload() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-6 items-start md:flex-row">
-          <div className="space-y-4 w-full md:w-1/2">
-            <FormField
-              control={control}
-              name="businessLogo"
-              render={({ field }) => (
-                <FormItem className="grid w-full max-w-sm items-center gap-1.5">
-                  <FormLabel htmlFor="logo-upload" className="">
-                    Logo Link
-                  </FormLabel>
+        <div
+          className={cn(
+            "flex flex-col gap-6 items-start md:flex-row",
+            !isEditingPhoto && "justify-center md:justify-center"
+          )}
+        >
+          <div
+            className={cn("w-full", isEditingPhoto ? "md:w-1/2" : "md:w-auto")}
+          >
+            <div className="relative">
+              <div className="relative size-80 rounded-full overflow-hidden border-4 border-muted shadow-md mx-auto my-10">
+                <Image
+                  src={displayImage}
+                  alt="Profile"
+                  fill
+                  className="w-full h-full object-cover object-center"
+                  onError={(e) => {
+                    e.currentTarget.src =
+                      "/placeholder.svg?height=256&width=256";
+                  }}
+                />
+              </div>
 
-                  {/* <div className="flex flex-col justify-center items-center pt-5 pb-6">
-                    <Upload className="mb-2 w-8 h-8 text-muted-foreground" />
-                    <p className="mb-2 text-sm text-muted-foreground">
-                      <span className="font-semibold">Click to upload</span> or
-                      drag and drop
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      PNG, JPG or SVG (MAX. 2MB)
-                    </p>
-                  </div> */}
-                  <FormControl>
-                    <Input
-                      id="logo-upload"
-                      type="text"
-                      // accept="image/*"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                className="absolute top-0 right-0 rounded-full shadow-md"
+                onClick={isEditingPhoto ? cancelImageEdit : startImageEdit}
+              >
+                {isEditingPhoto ? (
+                  <X className="w-4 h-4" />
+                ) : (
+                  <PenSquare className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
           </div>
 
-          <div className="w-full md:w-1/2">
-            <Label>Logo Preview</Label>
-            <div className="relative flex justify-center items-center mt-2 w-full h-56 rounded-md border bg-muted/20">
-              {businessLogo ? (
-                <Image
-                  src={businessLogo || "/placeholder.svg"}
-                  alt="Business Logo"
-                  fill
-                  className="max-h-full max-w-full object-contain"
-                />
-              ) : (
-                <div className="text-center text-muted-foreground">
-                  <Building2 className="mx-auto mb-2 w-10 h-10" />
-                  <p>No logo uploaded</p>
-                </div>
-              )}
-            </div>
+          <div
+            className={cn(
+              "space-y-4 w-full md:w-1/2 m-auto",
+              !isEditingPhoto && "hidden"
+            )}
+          >
+            <ImageDropzone
+              dragActive={dragActive}
+              fileError={fileError}
+              isVisible={isEditingPhoto}
+              handleDrag={handleDrag}
+              handleDrop={handleDrop}
+              handleFileChange={handleFileChange}
+            />
           </div>
         </div>
       </CardContent>

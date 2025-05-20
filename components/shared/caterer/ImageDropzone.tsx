@@ -8,7 +8,7 @@ interface ImageDropzoneProps {
   dragActive: boolean;
   fileError: string | null;
   isVisible: boolean;
-  className: string;
+  className?: string;
   handleDrag: (e: React.DragEvent) => void;
   handleDrop: (e: React.DragEvent) => void;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -24,7 +24,7 @@ const ImageDropzone: React.FC<ImageDropzoneProps> = ({
   handleFileChange,
 }) => {
   return (
-    <div className={cn(!isVisible && "hidden", `${className} w-full`)}>
+    <div className={cn(!isVisible && "hidden", `${className} w-full h-full`)}>
       <div
         className={cn(
           "relative flex flex-col items-center justify-center w-full h-40 p-4 mt-4 border-4 border-dashed rounded-lg transition-all",

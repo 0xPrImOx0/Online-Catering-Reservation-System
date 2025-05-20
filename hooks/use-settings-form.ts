@@ -38,7 +38,7 @@ const businessSettingsSchema = z.object({
 
   tagline: z.string().min(1, "Tagline is required"),
 
-  businessLogo: z.string().min(1, "Logo is required"),
+  businessLogo: z.any().optional().nullable(),
 
   businessHours: z.string().min(1, "Business Hours is required"),
 
@@ -73,48 +73,96 @@ const accountSettingsSchema = z
 
     ownerProfilePic: z.any().optional().nullable(),
 
-    currentPassword: z
-      .string()
-      .nonempty({ message: "Current Password field is required" })
-      .min(6, {
-        message: "Current Password must be at least 6 characters long",
-      })
-      .max(15, "Current Password must be at most 15 characters")
-      .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
+    currentPassword: z.string().optional(),
 
-    newPassword: z
-      .string()
-      .nonempty({ message: "New Password field is required" })
-      .min(6, { message: "New Password must be at least 6 characters long" })
-      .max(15, "New Password must be at most 15 characters")
-      .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
+    newPassword: z.string().optional(),
 
-    confirmNewPassword: z
-      .string()
-      .nonempty({ message: "Confirm New Password field is required" })
-      .min(6, {
-        message: "Confirm New Password must be at least 6 characters long",
-      })
-      .max(15, "Confirm New Password must be at most 15 characters")
-      .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
+    confirmNewPassword: z.string().optional(),
   })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    path: ["confirmNewPassword"],
-    message: "Passwords do not match",
-  })
-  .refine((data) => data.currentPassword !== data.newPassword, {
-    path: ["newPassword"],
-    message: "New password must not be the same as Current Password",
-  })
-  .refine(
-    (data) =>
-      !data.confirmNewPassword ||
-      data.currentPassword !== data.confirmNewPassword,
-    {
-      path: ["confirmNewPassword"],
-      message: "New password must not be the same as Current Password",
+  .superRefine((data, ctx) => {
+    const { currentPassword, newPassword, confirmNewPassword } = data;
+
+    const hasAnyValue =
+      !!currentPassword || !!newPassword || !!confirmNewPassword;
+
+    const isEmpty = (val: unknown) => !val || val === "";
+
+    if (hasAnyValue) {
+      if (isEmpty(currentPassword)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["currentPassword"],
+          message: "Current Password field is required",
+        });
+      }
+
+      if (isEmpty(newPassword)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["newPassword"],
+          message: "New Password field is required",
+        });
+      }
+
+      if (isEmpty(confirmNewPassword)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["confirmNewPassword"],
+          message: "Confirm New Password field is required",
+        });
+      }
+
+      if (
+        isEmpty(currentPassword) ||
+        isEmpty(newPassword) ||
+        isEmpty(confirmNewPassword)
+      )
+        return;
+
+      if (currentPassword === newPassword) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["newPassword"],
+          message: "New password must not be the same as Current Password",
+        });
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["confirmNewPassword"],
+          message: "Passwords do not match",
+        });
+      }
+
+      const passwordRegex = /^[a-zA-Z0-9]+$/;
+
+      const validatePassword = (
+        field: "currentPassword" | "newPassword" | "confirmNewPassword",
+        value: string
+      ) => {
+        if (value.length < 6 || value.length > 15) {
+          ctx.addIssue({
+            code: "custom",
+            path: [field],
+            message: `${field} must be between 6 and 15 characters`,
+          });
+        }
+
+        if (!passwordRegex.test(value)) {
+          ctx.addIssue({
+            code: "custom",
+            path: [field],
+            message: `${field} must be alphanumeric`,
+          });
+        }
+      };
+
+      validatePassword("currentPassword", currentPassword!);
+      validatePassword("newPassword", newPassword!);
+      validatePassword("confirmNewPassword", confirmNewPassword!);
     }
-  );
+  });
 
 export type AccountSettingsValues = z.infer<typeof accountSettingsSchema>;
 
@@ -169,7 +217,7 @@ export function useSettingsForm() {
   const accountSettingsForm = useForm<AccountSettingsValues>({
     resolver: zodResolver(accountSettingsSchema),
     defaultValues: defaultAccountValues,
-    mode: "onChange",
+    mode: "all",
     reValidateMode: "onSubmit",
   });
 
