@@ -77,8 +77,6 @@ export interface ReservationItem {
   venue?: string;
   serviceFee: number;
   serviceHours?: HoursArrayTypes;
-  // paymentReference?: string;
-  // status: ReservationStatusType;
   createdAt?: Date;
   updatedAt?: Date;
 }

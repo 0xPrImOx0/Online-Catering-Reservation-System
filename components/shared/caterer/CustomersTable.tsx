@@ -25,6 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CustomerType } from "@/types/customer-types";
+import { avatarFallBack } from "@/utils/avatar-fallback";
 import { formatCurrency } from "@/utils/format-currency";
 import { format } from "date-fns";
 import { Edit, Eye, MoreHorizontal, Search, Trash2, Users } from "lucide-react";
@@ -87,7 +88,6 @@ export function CustomersTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
@@ -102,11 +102,12 @@ export function CustomersTable({
           <TableBody>
             {customers.map((customer) => (
               <TableRow key={customer.id} className="gap-2">
-                <TableCell className="font-medium">{customer.id}</TableCell>
                 <TableCell className="py-4">
                   <div className="flex gap-2 items-center">
-                    <Avatar className="w-6 h-6">
-                      <AvatarFallback>{customer.name.charAt(0)}</AvatarFallback>
+                    <Avatar className="size-10">
+                      <AvatarFallback>
+                        {avatarFallBack(customer.name)}
+                      </AvatarFallback>
                     </Avatar>
                     <span>{customer.name}</span>
                   </div>

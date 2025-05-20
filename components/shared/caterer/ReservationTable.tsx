@@ -42,6 +42,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { avatarFallBack } from "@/utils/avatar-fallback";
 
 export default function ReservationTable({
   reservations,
@@ -64,7 +65,7 @@ export default function ReservationTable({
         <div className="flex items-center gap-2">
           <Avatar className="h-6 w-6">
             <AvatarFallback>
-              {info.row.original.fullName.charAt(0)}
+              {avatarFallBack(info.row.original.fullName)}
             </AvatarFallback>
           </Avatar>
           <div>
