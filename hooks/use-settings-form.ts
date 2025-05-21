@@ -259,6 +259,8 @@ export function useSettingsForm() {
   // Submit form function for Business Settings
   const onSubmitBusinessSettings = (data: BusinessSettingsValues) => {
     // Create menu item object
+
+    console.log("SUBMITTED BUSINESS SETTINGS", data);
     const settings: BusinessSettingsValues = {
       ...data,
     };

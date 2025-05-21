@@ -56,7 +56,7 @@ export const reservationEventTypes = [
 export type ReservationEventTypes = (typeof reservationEventTypes)[number];
 
 export interface ReservationItem {
-  id?: string;
+  _id?: string;
   fullName: string;
   email: string;
   contactNumber: string;
@@ -83,7 +83,7 @@ export interface ReservationItem {
 }
 
 export type ReservationTableProps = {
-  reservations: ReservationItem[];
+  reservations?: ReservationItem[];
   dashboard?: boolean;
 };
 

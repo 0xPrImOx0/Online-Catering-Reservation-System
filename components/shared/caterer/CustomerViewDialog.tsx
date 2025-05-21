@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CustomerType } from "@/types/customer-types";
+import { avatarFallBack } from "@/utils/avatar-fallback";
 import { format } from "date-fns";
 import Link from "next/link";
 
@@ -42,15 +43,14 @@ export function CustomerViewDialog({
         <DialogHeader>
           <DialogTitle>Customer Details</DialogTitle>
           <DialogDescription>
-            {customer.id} - Registered on{" "}
-            {format(customer.registrationDate, "MMM d, yyyy")}
+            Registered on {format(customer.registrationDate, "MMM d, yyyy")}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-6">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
               <AvatarFallback className="text-lg">
-                {customer.name.charAt(0)}
+                {avatarFallBack(customer.name)}
               </AvatarFallback>
             </Avatar>
             <div>
@@ -126,7 +126,9 @@ export function CustomerViewDialog({
                   </TableRow>
                   {customer.totalReservations > 1 && (
                     <TableRow>
-                      <TableCell className="font-medium">#RES238920359</TableCell>
+                      <TableCell className="font-medium">
+                        #RES238920359
+                      </TableCell>
                       <TableCell>
                         {format(
                           new Date(

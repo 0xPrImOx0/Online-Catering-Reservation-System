@@ -5,7 +5,7 @@ import { ReservationItem } from "@/types/reservation-types";
 // Update the dummyReservations array with the correct menu categories and paxArray usage
 export const dummyReservations: ReservationItem[] = [
   {
-    id: "res-1",
+    _id: "res-1",
     fullName: "Juan Dela Cruz",
     email: "juandelacruz123@gmail.com",
     contactNumber: "09151234567",
@@ -72,7 +72,7 @@ export const dummyReservations: ReservationItem[] = [
     status: "Confirmed",
   },
   {
-    id: "res-2",
+    _id: "res-2",
     fullName: "Maria Santos",
     email: "mariasantos456@yahoo.com",
     contactNumber: "09289876543",
@@ -139,7 +139,7 @@ export const dummyReservations: ReservationItem[] = [
     status: "Pending",
   },
   {
-    id: "res-3",
+    _id: "res-3",
     fullName: "Pedro Reyes",
     email: "pedroreyes789@outlook.com",
     contactNumber: "09361234567",
@@ -205,7 +205,7 @@ export const dummyReservations: ReservationItem[] = [
     status: "Completed",
   },
   {
-    id: "res-4",
+    _id: "res-4",
     fullName: "Ana Gonzales",
     email: "anagonzales234@hotmail.com",
     contactNumber: "09429876543",
@@ -269,7 +269,7 @@ export const dummyReservations: ReservationItem[] = [
     status: "Cancelled",
   },
   {
-    id: "res-5",
+    _id: "res-5",
     fullName: "Jose Garcia",
     email: "josegarcia567@gmail.com",
     contactNumber: "09531234567",
@@ -336,7 +336,7 @@ export const dummyReservations: ReservationItem[] = [
     status: "Pending",
   },
   {
-    id: "res-6",
+    _id: "res-6",
     fullName: "Luisa Tan",
     email: "luisatan890@yahoo.com",
     contactNumber: "09649876543",
@@ -420,7 +420,7 @@ export const dummyReservations: ReservationItem[] = [
     status: "Confirmed",
   },
   {
-    id: "res-7",
+    _id: "res-7",
     fullName: "Roberto Lim",
     email: "robertolim123@icloud.com",
     contactNumber: "09751234567",
@@ -486,7 +486,7 @@ export const dummyReservations: ReservationItem[] = [
     status: "Pending",
   },
   {
-    id: "res-8",
+    _id: "res-8",
     fullName: "Sofia Mendoza",
     email: "sofiamendoza456@gmail.com",
     contactNumber: "09869876543",
@@ -551,7 +551,7 @@ export const dummyReservations: ReservationItem[] = [
     status: "Completed",
   },
   {
-    id: "res-9",
+    _id: "res-9",
     fullName: "Miguel Lopez",
     email: "miguellopez789@outlook.com",
     contactNumber: "09971234567",
@@ -617,7 +617,7 @@ export const dummyReservations: ReservationItem[] = [
     status: "Cancelled",
   },
   {
-    id: "res-10",
+    _id: "res-10",
     fullName: "Elena Reyes",
     email: "elenareyes234@hotmail.com",
     contactNumber: "09089876543",
