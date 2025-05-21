@@ -15,9 +15,11 @@ import Image from "next/image";
 import ImageDropzone from "./ImageDropzone";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useSidebar } from "@/components/ui/sidebar";
 
 export function BusinessLogoUpload() {
   const { watch, setValue } = useFormContext<BusinessSettingsValues>();
+  const { open } = useSidebar();
 
   const [dragActive, setDragActive] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -129,12 +131,13 @@ export function BusinessLogoUpload() {
       <CardContent>
         <div
           className={cn(
-            "flex flex-col gap-6 items-start md:flex-row",
-            !isEditingPhoto && "justify-center md:justify-center"
+            "flex flex-col gap-6 items-start",
+            !isEditingPhoto && "justify-center md:justify-center",
+            open ? "md:flex-col lg:flex-row" : "lg:flex-row"
           )}
         >
           <div
-            className={cn("w-full", isEditingPhoto ? "md:w-1/2" : "md:w-auto")}
+            className={cn("w-full", isEditingPhoto ? "lg:w-1/2" : "lg:w-auto")}
           >
             <div className="relative">
               <div className="relative size-80 rounded-full overflow-hidden border-4 border-muted shadow-md mx-auto my-10">
@@ -168,7 +171,7 @@ export function BusinessLogoUpload() {
 
           <div
             className={cn(
-              "space-y-4 w-full md:w-1/2 m-auto",
+              "space-y-4 w-full lg:w-1/2 m-auto",
               !isEditingPhoto && "hidden"
             )}
           >
