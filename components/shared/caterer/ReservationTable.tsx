@@ -79,7 +79,7 @@ export default function ReservationTable({
         if (axios.isAxiosError<{ error: string }>(err)) {
           const message = err.response?.data.error || "Unexpected Error Occur";
 
-          console.error("ERROR FETCHING MENUS", message);
+          console.error("ERROR FETCHING RESERVATIONS", message);
         } else {
           console.error("Something went wrong. Please try again.");
         }

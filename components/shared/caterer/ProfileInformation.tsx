@@ -39,7 +39,7 @@ export function ProfileInformation() {
   const [isEditingPhoto, setIsEditingPhoto] = useState(false);
 
   // Watch the profilePicture field to get the current value
-  const watchedPic = watch("ownerProfilePic");
+  const watchedPic = watch("profileImage");
 
   // Store the initial profile picture only once using useRef
   const initialProfilePicRef = useRef<string>(
@@ -95,7 +95,7 @@ export function ProfileInformation() {
           setPreviewImage(objectUrl);
 
           // Set the file in the form
-          setValue("ownerProfilePic", file);
+          setValue("profileImage", file);
 
           // Hide the edit mode after successful upload
           setIsEditingPhoto(false);
@@ -115,7 +115,7 @@ export function ProfileInformation() {
         setPreviewImage(objectUrl);
 
         // Set the file in the form
-        setValue("ownerProfilePic", file);
+        setValue("profileImage", file);
 
         // Hide the edit mode after successful upload
         setIsEditingPhoto(false);
@@ -192,7 +192,7 @@ export function ProfileInformation() {
             {/* Full Name */}
             <FormField
               control={control}
-              name="ownerName"
+              name="fullName"
               render={({ field }) => (
                 <FormItem className="space-y-2">
                   <FormLabel
@@ -218,7 +218,7 @@ export function ProfileInformation() {
             {/* Email */}
             <FormField
               control={control}
-              name="ownerEmail"
+              name="email"
               render={({ field }) => (
                 <FormItem className="space-y-2">
                   <FormLabel
@@ -237,7 +237,7 @@ export function ProfileInformation() {
                       required
                     />
                   </FormControl>
-                  {errors.ownerEmail ? (
+                  {errors.email ? (
                     <FormMessage />
                   ) : (
                     <p className="text-sm text-muted-foreground">
@@ -252,11 +252,11 @@ export function ProfileInformation() {
             {/* Phone Field */}
             <FormField
               control={control}
-              name="ownerPhone"
+              name="contactNumber"
               render={({ field }) => (
                 <FormItem className="grid gap-2">
                   <FormLabel
-                    htmlFor="phone"
+                    htmlFor="contactNumber"
                     className="flex gap-2 items-center"
                   >
                     <Phone className="w-4 h-4 text-muted-foreground" /> Phone

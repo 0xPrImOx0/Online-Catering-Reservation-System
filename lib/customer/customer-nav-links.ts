@@ -1,6 +1,7 @@
 import {
   Boxes,
   ClipboardCheck,
+  History,
   Home,
   LucideIcon,
   Phone,

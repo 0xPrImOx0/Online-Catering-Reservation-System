@@ -1,11 +1,12 @@
 "use client";
 
-import {
-  businessMetadata,
-  ownerMetadata,
-} from "@/lib/caterer/business-metadata";
+import { useAuthContext } from "@/contexts/AuthContext";
+import api from "@/lib/api/axiosInstance";
+import { businessMetadata } from "@/lib/caterer/business-metadata";
+import { CustomerProps } from "@/types/customer-types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -55,23 +56,21 @@ const businessSettingsSchema = z.object({
 
 const accountSettingsSchema = z
   .object({
-    ownerName: z
+    fullName: z
       .string()
       .min(2, "Full Name must be at least 2 characters")
       .max(50, "Full Name must not exceed 50 characters"),
 
-    ownerDescription: z.string().min(1, "Owner Description is required"),
+    email: z.string().email("Please enter a valid email address"),
 
-    ownerEmail: z.string().email("Please enter a valid email address"),
-
-    ownerPhone: z
+    contactNumber: z
       .string()
       .min(1, "Phone Number is required")
       .refine((val) => /^\+639\d{9}$/.test(val), {
         message: "Phone number must start with 9 and have 10 digits total",
       }),
 
-    ownerProfilePic: z.any().optional().nullable(),
+    profileImage: z.any().optional().nullable(),
 
     currentPassword: z.string().optional(),
 
@@ -179,14 +178,6 @@ const {
   socialMediaLinks,
 } = businessMetadata;
 
-const {
-  name: ownerName,
-  description: ownerDescription,
-  email,
-  phone,
-  profilePic,
-} = ownerMetadata;
-
 const defaultBusinessValues: BusinessSettingsValues = {
   businessName: businessName,
   map: {
@@ -203,17 +194,61 @@ const defaultBusinessValues: BusinessSettingsValues = {
 };
 
 const defaultAccountValues: AccountSettingsValues = {
-  ownerName: ownerName,
-  ownerDescription: ownerDescription,
-  ownerEmail: email,
-  ownerPhone: phone,
-  ownerProfilePic: profilePic,
+  fullName: "",
+  email: "",
+  contactNumber: "",
+  profileImage: "/placeholder.svg",
   currentPassword: "",
   newPassword: "",
   confirmNewPassword: "",
 };
 
 export function useSettingsForm() {
+  const [customerData, setCustomerData] = useState<CustomerProps>();
+  const { customer } = useAuthContext();
+
+  useEffect(() => {
+    if (!customer) return;
+
+    const getCustomer = async () => {
+      try {
+        const response = await api.get(`/customers/${customer._id}`);
+        setCustomerData(response.data.data);
+
+        // Save only if window is defined
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            "customerData",
+            JSON.stringify(response.data.data)
+          );
+        }
+
+        console.log(response.data.data);
+      } catch (err: unknown) {
+        console.log("ERRRORRR", err);
+
+        if (axios.isAxiosError<{ error: string }>(err)) {
+          const message = err.response?.data.error || "Unexpected Error Occur";
+
+          console.error("ERROR FETCHING CUSTOMER DATA", message);
+        } else {
+          console.error("Something went wrong. Please try again.");
+        }
+      }
+    };
+
+    getCustomer();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return; // Prevent SSR issues
+
+    const saved = localStorage.getItem("customerData");
+    if (saved) {
+      setCustomerData(JSON.parse(saved));
+    }
+  }, []);
+
   const accountSettingsForm = useForm<AccountSettingsValues>({
     resolver: zodResolver(accountSettingsSchema),
     defaultValues: defaultAccountValues,
@@ -227,6 +262,20 @@ export function useSettingsForm() {
     mode: "onChange",
     reValidateMode: "onSubmit",
   });
+
+  useEffect(() => {
+    if (!customerData) return;
+
+    accountSettingsForm.reset({
+      fullName: customerData.fullName,
+      email: customerData.email,
+      contactNumber: customerData.contactNumber || "",
+      profileImage: customerData.profileImage,
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    });
+  }, [customerData, accountSettingsForm]);
 
   const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
 

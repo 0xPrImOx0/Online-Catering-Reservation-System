@@ -1,14 +1,14 @@
 //Customer Related Types
-export type CustomerType = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  registrationDate: Date;
-  totalReservations: number;
-  totalSpent: number;
-  lastReservation: Date;
-};
+// export type CustomerType = {
+//   id: string;
+//   name: string;
+//   email: string;
+//   phone: string;
+//   registrationDate: Date;
+//   totalReservations: number;
+//   totalSpent: number;
+//   lastReservation: Date;
+// };
 
 export type ConcernType = {
   id: string;
@@ -27,6 +27,7 @@ export type CustomerProps = {
   role: "customer" | "caterer";
   contactNumber?: string;
   profileImage?: string;
+  password?: string;
   createdAt: string;
   updatedAt: string;
   __v?: number;
