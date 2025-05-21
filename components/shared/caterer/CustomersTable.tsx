@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,14 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -24,66 +18,53 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CustomerType } from "@/types/customer-types";
+import api from "@/lib/api/axiosInstance";
+import { CustomerProps } from "@/types/customer-types";
 import { avatarFallBack } from "@/utils/avatar-fallback";
-import { formatCurrency } from "@/utils/format-currency";
+import axios from "axios";
 import { format } from "date-fns";
-import { Edit, Eye, MoreHorizontal, Search, Trash2, Users } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface CustomersTableProps {
-  customers: CustomerType[];
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
-  hasEditableButtons?: boolean;
-  onViewCustomer?: (customer: CustomerType) => void;
-  onEditCustomer?: (customer: CustomerType) => void;
-  onDeleteCustomer?: (customer: CustomerType) => void;
+  dashboard?: boolean;
+  onViewCustomer?: (customer: CustomerProps) => void;
+  onEditCustomer?: (customer: CustomerProps) => void;
+  onDeleteCustomer?: (customer: CustomerProps) => void;
 }
 
 export function CustomersTable({
-  customers,
-  searchQuery,
-  hasEditableButtons = true,
-  onSearchChange,
+  dashboard = false,
   onViewCustomer,
   onEditCustomer,
   onDeleteCustomer,
 }: CustomersTableProps) {
+  const [customers, setCustomers] = useState<CustomerProps[]>([]);
+
+  useEffect(() => {
+    const getCustomers = async () => {
+      try {
+        const response = await api.get("/customers");
+        setCustomers(response.data.data);
+        console.log(response.data.data);
+      } catch (err: unknown) {
+        console.log("ERRRORRR", err);
+
+        if (axios.isAxiosError<{ error: string }>(err)) {
+          const message = err.response?.data.error || "Unexpected Error Occur";
+
+          console.error("ERROR FETCHING MENUS", message);
+        } else {
+          console.error("Something went wrong. Please try again.");
+        }
+      }
+    };
+
+    getCustomers();
+  }, []);
   return (
     <div className="mt-8">
-      {hasEditableButtons && (
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <Users className="mr-2 w-5 h-5 text-muted-foreground" />
-            <h2 className="text-xl font-semibold">Registered Customers</h2>
-          </div>
-          <div className="flex overflow-y-auto gap-2 items-center">
-            <div className="relative w-64">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search customers..."
-                className="pl-8"
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-              />
-            </div>
-            <Select defaultValue="registration">
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="registration">Registration Date</SelectItem>
-                <SelectItem value="name">Name (A-Z)</SelectItem>
-                <SelectItem value="reservations">Total Reservations</SelectItem>
-                <SelectItem value="spent">Total Spent</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      )}
-
       <div className="mt-4 rounded-md border">
         <Table>
           <TableHeader>
@@ -92,34 +73,36 @@ export function CustomersTable({
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Registration Date</TableHead>
-              <TableHead>Total Reservations</TableHead>
-              <TableHead>Total Spent</TableHead>
-              {hasEditableButtons && (
+              {/* <TableHead>Total Reservations</TableHead> */}
+              {/* <TableHead>Total Spent</TableHead> */}
+              {!dashboard && (
                 <TableHead className="text-right">Actions</TableHead>
               )}
             </TableRow>
           </TableHeader>
           <TableBody>
             {customers.map((customer) => (
-              <TableRow key={customer.id} className="gap-2">
+              <TableRow key={customer._id} className="gap-2">
                 <TableCell className="py-4">
                   <div className="flex gap-2 items-center">
                     <Avatar className="size-10">
                       <AvatarFallback>
-                        {avatarFallBack(customer.name)}
+                        {avatarFallBack(customer.fullName)}
                       </AvatarFallback>
                     </Avatar>
-                    <span>{customer.name}</span>
+                    <span>{customer.fullName}</span>
                   </div>
                 </TableCell>
                 <TableCell>{customer.email}</TableCell>
-                <TableCell>{customer.phone}</TableCell>
                 <TableCell>
-                  {format(customer.registrationDate, "MMM d, yyyy")}
+                  {customer.contactNumber || "Not provided"}
                 </TableCell>
-                <TableCell>{customer.totalReservations}</TableCell>
-                <TableCell>{formatCurrency(customer.totalSpent)}</TableCell>
-                {hasEditableButtons && (
+                <TableCell>
+                  {format(customer.createdAt, "MMM d, yyyy")}
+                </TableCell>
+                {/* <TableCell>{customer.totalReservations || 0}</TableCell> */}
+                {/* <TableCell>{formatCurrency(customer.totalSpent)}</TableCell> */}
+                {!dashboard && (
                   <TableCell className="text-right">
                     <div className="flex gap-2 justify-end">
                       <Button
@@ -158,7 +141,7 @@ export function CustomersTable({
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>
                             <Link
-                              href={`/reservations?customer=${customer.id}`}
+                              href={`/reservations?customer=${customer._id}`}
                               className="flex w-full"
                             >
                               View Reservations

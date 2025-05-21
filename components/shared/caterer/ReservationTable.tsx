@@ -68,7 +68,7 @@ export default function ReservationTable({
   }, []);
 
   useEffect(() => {
-    const getMenus = async () => {
+    const getReservations = async () => {
       try {
         const response = await api.get("/reservations");
         setReservations(response.data.data);
@@ -86,7 +86,7 @@ export default function ReservationTable({
       }
     };
 
-    getMenus();
+    getReservations();
   }, []);
 
   return (

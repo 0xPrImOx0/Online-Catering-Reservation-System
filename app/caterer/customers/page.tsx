@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
 import { customers } from "../../../lib/caterer/customers-metadata";
-import { CustomerType } from "@/types/customer-types";
 
 // Import our custom components
 import { CustomerMetricsCards } from "@/components/shared/caterer/CustomerMetricsCards";
@@ -12,18 +9,16 @@ import { CustomersTable } from "@/components/shared/caterer/CustomersTable";
 import { CustomerViewDialog } from "@/components/shared/caterer/CustomerViewDialog";
 import { CustomerEditDialog } from "@/components/shared/caterer/CustomerEditDialog";
 import { CustomerDeleteDialog } from "@/components/shared/caterer/CustomerDeleteDialog";
+import { CustomerProps } from "@/types/customer-types";
 
 export default function CustomersPage() {
-  const [selectedCustomer, setSelectedCustomer] = useState<CustomerType | null>(
-    null
-  );
+  const [selectedCustomer, setSelectedCustomer] =
+    useState<CustomerProps | null>(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [deleteCustomer, setDeleteCustomer] = useState<CustomerType | null>(
+  const [deleteCustomer, setDeleteCustomer] = useState<CustomerProps | null>(
     null
   );
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   // Calculate metrics
   const totalCustomers = customers.length;
@@ -34,45 +29,26 @@ export default function CustomersPage() {
   }).length;
   const retentionRate = 85; // Hardcoded for UI demo
 
-  const viewCustomerDetails = (customer: CustomerType) => {
+  const viewCustomerDetails = (customer: CustomerProps) => {
     setSelectedCustomer(customer);
     setIsViewOpen(true);
   };
 
-  const editCustomer = (customer: CustomerType) => {
+  const editCustomer = (customer: CustomerProps) => {
     setSelectedCustomer(customer);
-    setIsEditOpen(true);
+    // setIsEditOpen(true);
   };
 
-  const deleteCustomerPrompt = (customer: CustomerType) => {
+  const deleteCustomerPrompt = (customer: CustomerProps) => {
     setDeleteCustomer(customer);
     setIsDeleteOpen(true);
   };
 
-  // Filter customers based on search query
-  const filteredCustomers = customers.filter((customer) => {
-    return (
-      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.id.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
-
   return (
     <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
+      {/* Main Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">
-          Customer Management
-        </h1>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Filter className="mr-2 h-4 w-4" />
-            Filter
-          </Button>
-          <Button variant="outline" size="sm">
-            Export
-          </Button>
-        </div>
+        <h1 className="text-2xl font-bold tracking-tight">Reservations</h1>
       </div>
 
       {/* Metrics cards */}
@@ -84,9 +60,6 @@ export default function CustomersPage() {
 
       {/* Customers Table Section */}
       <CustomersTable
-        customers={filteredCustomers}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
         onViewCustomer={viewCustomerDetails}
         onEditCustomer={editCustomer}
         onDeleteCustomer={deleteCustomerPrompt}
@@ -101,11 +74,11 @@ export default function CustomersPage() {
       />
 
       {/* Edit Customer Dialog */}
-      <CustomerEditDialog
+      {/* <CustomerEditDialog
         customer={selectedCustomer}
         isOpen={isEditOpen}
         onOpenChange={setIsEditOpen}
-      />
+      /> */}
 
       {/* Delete Confirmation Dialog */}
       <CustomerDeleteDialog

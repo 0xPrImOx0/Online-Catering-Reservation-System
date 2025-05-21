@@ -8,8 +8,6 @@ import { Calendar, LucideIcon, Users } from "lucide-react";
 import Link from "next/link";
 import { metricCards } from "../../../lib/caterer/dashboard-metadata";
 import { CustomersTable } from "@/components/shared/caterer/CustomersTable";
-import { customers } from "../../../lib/caterer/customers-metadata";
-import { useState } from "react";
 
 const RecentHeaders = ({
   title,
@@ -36,15 +34,6 @@ const RecentHeaders = ({
 };
 
 export default function DashboardPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredCustomers = customers.filter((customer) => {
-    return (
-      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.id.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
   return (
     <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto">
       <div className="space-y-6">
@@ -70,12 +59,7 @@ export default function DashboardPage() {
         {/* Recent Registered Customers */}
         <RecentHeaders title="Customers" link="customers" Icon={Users} />
         {/* Customers Table Section */}
-        <CustomersTable
-          customers={filteredCustomers}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          hasEditableButtons={false}
-        />
+        <CustomersTable dashboard />
       </div>
     </main>
   );

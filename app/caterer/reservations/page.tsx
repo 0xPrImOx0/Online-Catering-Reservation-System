@@ -12,12 +12,6 @@ export default function ReservationsPage() {
       {/* Main Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Reservations</h1>
-        {/* <div className="flex items-center">
-          <Button variant="outline" size="sm">
-            <Plus className="h-4 w-4" />
-            Add New Reservation
-          </Button>
-        </div> */}
       </div>
 
       {/* Metrics cards */}
