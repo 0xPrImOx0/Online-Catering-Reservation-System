@@ -30,6 +30,7 @@ import CustomDatePicker from "@/components/ui/custom-date-picker";
 import SearchInput from "../SearchInput";
 import api from "@/lib/api/axiosInstance";
 import axios from "axios";
+import { SkeletonReservationTable } from "../SkeletonReservationTable";
 
 export default function ReservationTable({
   dashboard = false,
@@ -38,6 +39,7 @@ export default function ReservationTable({
     useState<ReservationItem | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [reservations, setReservations] = useState<ReservationItem[]>([]);
+  const [isFetching, setIsFetching] = useState(true);
 
   const openReservationDetails = (reservation: ReservationItem) => {
     setSelectedReservation(reservation);
@@ -68,6 +70,7 @@ export default function ReservationTable({
   }, []);
 
   useEffect(() => {
+    setIsFetching(true);
     const getReservations = async () => {
       try {
         const response = await api.get("/reservations");
@@ -83,6 +86,8 @@ export default function ReservationTable({
         } else {
           console.error("Something went wrong. Please try again.");
         }
+      } finally {
+        setIsFetching(false);
       }
     };
 
@@ -130,111 +135,117 @@ export default function ReservationTable({
           </Button>
         </div>
       )}
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Customer</TableHead>
-              <TableHead>Date/Time</TableHead>
-              <TableHead>Guests</TableHead>
-              <TableHead>Service Type</TableHead>
-              <TableHead>Order Type</TableHead>
-              <TableHead>Total Price</TableHead>
-              {!dashboard && <TableHead>Actions</TableHead>}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredReservations.length > 0 ? (
-              filteredReservations!.map((reservation) => (
-                <TableRow key={reservation._id} className="gap-2">
-                  <TableCell className="py-4">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="size-10">
-                        <AvatarFallback>
-                          {avatarFallBack(reservation.fullName)}
-                        </AvatarFallback>
-                      </Avatar>
+      {isFetching ? (
+        <SkeletonReservationTable />
+      ) : (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Customer</TableHead>
+                <TableHead>Date/Time</TableHead>
+                <TableHead>Guests</TableHead>
+                <TableHead>Service Type</TableHead>
+                <TableHead>Order Type</TableHead>
+                <TableHead>Total Price</TableHead>
+                {!dashboard && <TableHead>Actions</TableHead>}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredReservations.length > 0 ? (
+                filteredReservations!.map((reservation) => (
+                  <TableRow key={reservation._id} className="gap-2">
+                    <TableCell className="py-4">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="size-10">
+                          <AvatarFallback>
+                            {avatarFallBack(reservation.fullName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium">
+                            {reservation.fullName}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {reservation.email}
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
                       <div>
-                        <div className="font-medium">
-                          {reservation.fullName}
+                        <div>
+                          {format(
+                            new Date(reservation.reservationDate),
+                            "MMM d, yyyy"
+                          )}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {reservation.email}
+                          {reservation.reservationTime}
                         </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      <div>
-                        {format(
-                          new Date(reservation.reservationDate),
-                          "MMM d, yyyy"
-                        )}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {reservation.reservationTime}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{reservation.guestCount}</TableCell>
-                  <TableCell>{reservation.serviceType}</TableCell>
-                  <TableCell>
-                    {reservation.orderType ? (
-                      reservation.orderType
-                    ) : (
-                      <span className="text-muted-foreground">
-                        On-site Service
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    &#8369; {reservation.totalPrice.toLocaleString()}
-                  </TableCell>
-                  {!dashboard && (
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => openReservationDetails(reservation)}
-                          >
-                            <Eye className="mr-2 h-4 w-4" />
-                            View Details
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
                     </TableCell>
-                  )}
+                    <TableCell>{reservation.guestCount}</TableCell>
+                    <TableCell>{reservation.serviceType}</TableCell>
+                    <TableCell>
+                      {reservation.orderType ? (
+                        reservation.orderType
+                      ) : (
+                        <span className="text-muted-foreground">
+                          On-site Service
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      &#8369; {reservation.totalPrice.toLocaleString()}
+                    </TableCell>
+                    {!dashboard && (
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() =>
+                                openReservationDetails(reservation)
+                              }
+                            >
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center">
+                    <div className="col-span-3 min-h-[50vh] flex justify-center items-center">
+                      <span className="font-bold text-4xl">
+                        No Reservations Found
+                      </span>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center">
-                  <div className="col-span-3 min-h-[50vh] flex justify-center items-center">
-                    <span className="font-bold text-4xl">
-                      No Reservations Found
-                    </span>
-                  </div>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        {selectedReservation && (
-          <ReservationDialog
-            selectedReservation={selectedReservation}
-            setIsDetailsOpen={setIsDetailsOpen}
-            isDetailsOpen={isDetailsOpen}
-          />
-        )}
-      </div>
+              )}
+            </TableBody>
+          </Table>
+          {selectedReservation && (
+            <ReservationDialog
+              selectedReservation={selectedReservation}
+              setIsDetailsOpen={setIsDetailsOpen}
+              isDetailsOpen={isDetailsOpen}
+            />
+          )}
+        </div>
+      )}
     </section>
   );
 }

@@ -27,12 +27,16 @@ import axios from "axios";
 import ReservationDialog from "../caterer/ReservationDialog";
 import CustomDatePicker from "@/components/ui/custom-date-picker";
 import SearchInput from "../SearchInput";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { SkeletonReservationTable } from "../SkeletonReservationTable";
 
 export default function CustomerReservationTable() {
   const [selectedReservation, setSelectedReservation] =
     useState<ReservationItem | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [reservations, setReservations] = useState<ReservationItem[]>([]);
+  const { customer, isLoading } = useAuthContext();
+  const [isFetching, setIsFetching] = useState(false);
 
   const openReservationDetails = (reservation: ReservationItem) => {
     setSelectedReservation(reservation);
@@ -43,29 +47,32 @@ export default function CustomerReservationTable() {
   const [query, setQuery] = useState("");
   const [isClearFilterClicked, setIsClearFilterClicked] = useState(false);
 
-  // const filteredReservations = reservations.filter((reservation) => {
-  //   const matchesName = reservation.fullName
-  //     .toLowerCase()
-  //     .includes(query.toLowerCase());
+  const filteredReservations = reservations.filter((reservation) => {
+    const matchesName = reservation.fullName
+      .toLowerCase()
+      .includes(query.toLowerCase());
 
-  //   const matchesDate =
-  //     !isClearFilterClicked && date
-  //       ? isSameDay(new Date(reservation.reservationDate), date)
-  //       : true; // <== This allows all dates if `date` is undefined
+    const matchesDate =
+      !isClearFilterClicked && date
+        ? isSameDay(new Date(reservation.reservationDate), date)
+        : true; // <== This allows all dates if `date` is undefined
 
-  //   return matchesName && matchesDate;
-  // });
+    return matchesName && matchesDate;
+  });
 
   useEffect(() => {
     setIsClearFilterClicked(true);
   }, []);
 
   useEffect(() => {
+    if (!customer) return;
+
     const getReservations = async () => {
       try {
-        const response = await api.get(`/reservations/daugrey34@gmail.com`);
+        setIsFetching(true);
+        const response = await api.get(`/reservations/${customer.email}`);
         setReservations(response.data.data);
-        console.log("Full API response:", response.data); // ✅ ADD THIS
+        console.log("Full API response:", response.data.data);
       } catch (err: unknown) {
         console.log("ERRRORRR", err);
 
@@ -76,11 +83,15 @@ export default function CustomerReservationTable() {
         } else {
           console.error("Something went wrong. Please try again.");
         }
+      } finally {
+        setIsFetching(false);
       }
     };
 
     getReservations();
-  }, []);
+
+    return;
+  }, [customer]);
 
   return (
     <section className="space-y-10">
@@ -122,110 +133,114 @@ export default function CustomerReservationTable() {
         </Button>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Customer</TableHead>
-              <TableHead>Date/Time</TableHead>
-              <TableHead>Guests</TableHead>
-              <TableHead>Service Type</TableHead>
-              <TableHead>Order Type</TableHead>
-              <TableHead>Total Price</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {reservations.length > 0 ? (
-              reservations!.map((reservation) => (
-                <TableRow key={reservation._id} className="gap-2">
-                  <TableCell className="py-4">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="size-10">
-                        <AvatarFallback>
-                          {avatarFallBack(reservation.fullName)}
-                        </AvatarFallback>
-                      </Avatar>
+      {isLoading || isFetching ? (
+        <SkeletonReservationTable />
+      ) : (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Customer</TableHead>
+                <TableHead>Date/Time</TableHead>
+                <TableHead>Guests</TableHead>
+                <TableHead>Service Type</TableHead>
+                <TableHead>Order Type</TableHead>
+                <TableHead>Total Price</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredReservations.length > 0 ? (
+                filteredReservations.map((reservation) => (
+                  <TableRow key={reservation._id} className="gap-2">
+                    <TableCell className="py-4">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="size-10">
+                          <AvatarFallback>
+                            {avatarFallBack(reservation.fullName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium">
+                            {reservation.fullName}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {reservation.email}
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
                       <div>
-                        <div className="font-medium">
-                          {reservation.fullName}
+                        <div>
+                          {format(
+                            new Date(reservation.reservationDate),
+                            "MMM d, yyyy"
+                          )}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {reservation.email}
+                          {reservation.reservationTime}
                         </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      <div>
-                        {format(
-                          new Date(reservation.reservationDate),
-                          "MMM d, yyyy"
-                        )}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {reservation.reservationTime}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{reservation.guestCount}</TableCell>
-                  <TableCell>{reservation.serviceType}</TableCell>
-                  <TableCell>
-                    {reservation.orderType ? (
-                      reservation.orderType
-                    ) : (
-                      <span className="text-muted-foreground">
-                        On-site Service
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    &#8369; {reservation.totalPrice.toLocaleString()}
-                  </TableCell>
+                    </TableCell>
+                    <TableCell>{reservation.guestCount}</TableCell>
+                    <TableCell>{reservation.serviceType}</TableCell>
+                    <TableCell>
+                      {reservation.orderType ? (
+                        reservation.orderType
+                      ) : (
+                        <span className="text-muted-foreground">
+                          On-site Service
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      &#8369; {reservation.totalPrice.toLocaleString()}
+                    </TableCell>
 
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => openReservationDetails(reservation)}
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => openReservationDetails(reservation)}
+                          >
+                            <Eye className="mr-2 h-4 w-4" />
+                            View Details
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center">
+                    <div className="col-span-3 min-h-[50vh] flex justify-center items-center">
+                      <span className="font-bold text-4xl">
+                        No Reservations Found
+                      </span>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center">
-                  <div className="col-span-3 min-h-[50vh] flex justify-center items-center">
-                    <span className="font-bold text-4xl">
-                      No Reservations Found
-                    </span>
-                  </div>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        {selectedReservation && (
-          <ReservationDialog
-            selectedReservation={selectedReservation}
-            setIsDetailsOpen={setIsDetailsOpen}
-            isDetailsOpen={isDetailsOpen}
-          />
-        )}
-      </div>
+              )}
+            </TableBody>
+          </Table>
+          {selectedReservation && (
+            <ReservationDialog
+              selectedReservation={selectedReservation}
+              setIsDetailsOpen={setIsDetailsOpen}
+              isDetailsOpen={isDetailsOpen}
+            />
+          )}
+        </div>
+      )}
     </section>
   );
 }
