@@ -7,18 +7,12 @@ import { customers } from "../../../lib/caterer/customers-metadata";
 import { CustomerMetricsCards } from "@/components/shared/caterer/CustomerMetricsCards";
 import { CustomersTable } from "@/components/shared/caterer/CustomersTable";
 import { CustomerViewDialog } from "@/components/shared/caterer/CustomerViewDialog";
-import { CustomerEditDialog } from "@/components/shared/caterer/CustomerEditDialog";
-import { CustomerDeleteDialog } from "@/components/shared/caterer/CustomerDeleteDialog";
 import { CustomerProps } from "@/types/customer-types";
 
 export default function CustomersPage() {
   const [selectedCustomer, setSelectedCustomer] =
     useState<CustomerProps | null>(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
-  const [deleteCustomer, setDeleteCustomer] = useState<CustomerProps | null>(
-    null
-  );
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   // Calculate metrics
   const totalCustomers = customers.length;
@@ -32,16 +26,6 @@ export default function CustomersPage() {
   const viewCustomerDetails = (customer: CustomerProps) => {
     setSelectedCustomer(customer);
     setIsViewOpen(true);
-  };
-
-  const editCustomer = (customer: CustomerProps) => {
-    setSelectedCustomer(customer);
-    // setIsEditOpen(true);
-  };
-
-  const deleteCustomerPrompt = (customer: CustomerProps) => {
-    setDeleteCustomer(customer);
-    setIsDeleteOpen(true);
   };
 
   return (
@@ -59,32 +43,13 @@ export default function CustomersPage() {
       />
 
       {/* Customers Table Section */}
-      <CustomersTable
-        onViewCustomer={viewCustomerDetails}
-        onEditCustomer={editCustomer}
-        onDeleteCustomer={deleteCustomerPrompt}
-      />
+      <CustomersTable onViewCustomer={viewCustomerDetails} />
 
       {/* View Customer Details Dialog */}
       <CustomerViewDialog
         customer={selectedCustomer}
         isOpen={isViewOpen}
         onOpenChange={setIsViewOpen}
-        onEdit={editCustomer}
-      />
-
-      {/* Edit Customer Dialog */}
-      {/* <CustomerEditDialog
-        customer={selectedCustomer}
-        isOpen={isEditOpen}
-        onOpenChange={setIsEditOpen}
-      /> */}
-
-      {/* Delete Confirmation Dialog */}
-      <CustomerDeleteDialog
-        customer={deleteCustomer}
-        isOpen={isDeleteOpen}
-        onOpenChange={setIsDeleteOpen}
       />
     </main>
   );

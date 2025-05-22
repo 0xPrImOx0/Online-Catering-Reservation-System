@@ -4,14 +4,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import CustomDatePicker from "@/components/ui/custom-date-picker";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Table,
   TableBody,
   TableCell,
@@ -24,23 +16,19 @@ import { CustomerProps } from "@/types/customer-types";
 import { avatarFallBack } from "@/utils/avatar-fallback";
 import axios from "axios";
 import { format, isSameDay } from "date-fns";
-import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
-import Link from "next/link";
+import { Eye, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import SearchInput from "../SearchInput";
+import { AnimatedIconButton } from "../AnimatedIconButton";
 
 interface CustomersTableProps {
   dashboard?: boolean;
   onViewCustomer?: (customer: CustomerProps) => void;
-  onEditCustomer?: (customer: CustomerProps) => void;
-  onDeleteCustomer?: (customer: CustomerProps) => void;
 }
 
 export function CustomersTable({
   dashboard = false,
   onViewCustomer,
-  onEditCustomer,
-  onDeleteCustomer,
 }: CustomersTableProps) {
   const [customers, setCustomers] = useState<CustomerProps[]>([]);
 
@@ -55,10 +43,14 @@ export function CustomersTable({
           .toLowerCase()
           .includes(query.toLowerCase());
 
+        const createdAtDate = customer.createdAt
+          ? new Date(customer.createdAt)
+          : null;
+
         const matchesDate =
           !isClearFilterClicked && date
-            ? isSameDay(new Date(customer.createdAt), date)
-            : true; // <== This allows all dates if `date` is undefined
+            ? createdAtDate !== null && isSameDay(createdAtDate, date)
+            : true;
 
         return matchesName && matchesDate;
       });
@@ -164,59 +156,19 @@ export function CustomersTable({
                     {customer.contactNumber || "Not provided"}
                   </TableCell>
                   <TableCell>
-                    {format(customer.createdAt, "MMM d, yyyy")}
+                    {format(customer.createdAt!, "MMM d, yyyy")}
                   </TableCell>
                   {/* <TableCell>{customer.totalReservations || 0}</TableCell> */}
                   {/* <TableCell>{formatCurrency(customer.totalSpent)}</TableCell> */}
                   {!dashboard && (
                     <TableCell className="text-right">
                       <div className="flex gap-2 justify-end">
-                        <Button
-                          variant="ghost"
-                          size="icon"
+                        <AnimatedIconButton
+                          icon={Eye}
+                          title="View Details"
+                          className="group transition-all duration-300 hover:w-auto text-blue-500"
                           onClick={() => onViewCustomer!(customer)}
-                        >
-                          <Eye className="w-4 h-4" />
-                          <span className="sr-only">View details</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onEditCustomer!(customer)}
-                        >
-                          <Edit className="w-4 h-4" />
-                          <span className="sr-only">Edit customer</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onDeleteCustomer!(customer)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          <span className="sr-only">Delete customer</span>
-                        </Button>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="w-4 h-4" />
-                              <span className="sr-only">More options</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <Link
-                                href={`/reservations?customer=${customer._id}`}
-                                className="flex w-full"
-                              >
-                                View Reservations
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>Send Email</DropdownMenuItem>
-                            <DropdownMenuItem>Add Note</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        />
                       </div>
                     </TableCell>
                   )}

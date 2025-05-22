@@ -43,18 +43,18 @@ export default function CustomerReservationTable() {
   const [query, setQuery] = useState("");
   const [isClearFilterClicked, setIsClearFilterClicked] = useState(false);
 
-  const filteredReservations = reservations.filter((reservation) => {
-    const matchesName = reservation.fullName
-      .toLowerCase()
-      .includes(query.toLowerCase());
+  // const filteredReservations = reservations.filter((reservation) => {
+  //   const matchesName = reservation.fullName
+  //     .toLowerCase()
+  //     .includes(query.toLowerCase());
 
-    const matchesDate =
-      !isClearFilterClicked && date
-        ? isSameDay(new Date(reservation.reservationDate), date)
-        : true; // <== This allows all dates if `date` is undefined
+  //   const matchesDate =
+  //     !isClearFilterClicked && date
+  //       ? isSameDay(new Date(reservation.reservationDate), date)
+  //       : true; // <== This allows all dates if `date` is undefined
 
-    return matchesName && matchesDate;
-  });
+  //   return matchesName && matchesDate;
+  // });
 
   useEffect(() => {
     setIsClearFilterClicked(true);

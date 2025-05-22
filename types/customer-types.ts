@@ -28,7 +28,7 @@ export type CustomerProps = {
   contactNumber?: string;
   profileImage?: string;
   password?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   __v?: number;
 };

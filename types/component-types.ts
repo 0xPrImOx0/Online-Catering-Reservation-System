@@ -49,28 +49,6 @@ export type CustomPaginationProps = {
   title?: string;
 };
 
-export type Tag = {
-  id: string;
-  text: string;
-};
-export interface TagInputProps {
-  id?: string;
-  tags: Tag[];
-  setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
-  placeholder?: string;
-  styleClasses?: {
-    tagList?: { container?: string };
-    input?: string;
-    tag?: { body?: string; closeButton?: string };
-  };
-  activeTagIndex?: number | null;
-  setActiveTagIndex?: React.Dispatch<React.SetStateAction<number | null>>;
-  inlineTags?: boolean;
-  inputFieldPosition?: "top" | "bottom";
-  enableAutocomplete?: boolean;
-  restrictTagsToAutocompleteOptions?: boolean;
-}
-
 export interface ImageDialogProps {
   item: MenuItem | CateringPackagesProps;
   isImageDialogOpen: boolean;
@@ -136,13 +114,6 @@ export type MultiStepFormProps = {
   isCategoryError?: boolean;
 };
 
-export interface CustomerType {
-  name: string;
-  email: string;
-  phone: string;
-  isRegistered: boolean;
-}
-
 export interface OrderItemType {
   name: string;
   quantity: number;
@@ -153,17 +124,4 @@ export interface ReservationType {
   eventDate: Date;
   address: string;
   items: OrderItemType[];
-}
-
-export interface PaymentType {
-  id: string;
-  reservationId: string;
-  customer: CustomerType;
-  amount: number;
-  status: string;
-  paymentDate: Date | null;
-  paymentMethod: string | null;
-  createdDate: Date;
-  reservation: ReservationType;
-  isUrgent: boolean;
 }
