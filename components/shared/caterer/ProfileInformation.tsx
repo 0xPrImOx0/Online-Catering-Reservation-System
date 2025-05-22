@@ -119,12 +119,14 @@ export function ProfileInformation() {
 
         // Hide the edit mode after successful upload
         setIsEditingPhoto(false);
+        console.log("File selected:", file.name, file.type, file.size);
       }
     }
   };
 
   const cancelImageEdit = () => {
     setPreviewImage(null);
+    setValue("profileImage", initialProfilePicRef);
     setIsEditingPhoto(false);
   };
 

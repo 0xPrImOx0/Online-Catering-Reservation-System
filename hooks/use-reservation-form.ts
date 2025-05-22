@@ -577,7 +577,6 @@ export function useReservationForm() {
       // Allow adding a new dish if under the limit
       if (uniqueMenusSelected < count) {
         updatedMenus[menu._id] = {
-          quantity: 1,
           paxSelected: "4-6 pax",
           pricePerPax: price,
         }; // Set quantity to 1 when checked
@@ -623,14 +622,8 @@ export function useReservationForm() {
         ...currentCategory,
         [menu]: {
           ...currentCategory[menu],
-          quantity: currentCategory[menu].quantity - 1,
         },
       };
-
-      // Remove the menu if its quantity becomes 0
-      if (updatedCategory[menu].quantity === 0) {
-        delete updatedCategory[menu];
-      }
 
       // If the category becomes empty, remove the category
       if (Object.keys(updatedCategory).length === 0) {
@@ -667,7 +660,6 @@ export function useReservationForm() {
       ...currentCategory,
       [menu]: {
         ...currentItem,
-        quantity: currentItem.quantity + 1,
       },
     };
 

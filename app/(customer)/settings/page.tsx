@@ -9,6 +9,7 @@ import { PasswordChange } from "@/components/shared/caterer/PasswordChange";
 import { useSettingsForm } from "@/hooks/use-settings-form";
 import { Form } from "@/components/ui/form";
 import { SuccessDialog } from "@/components/shared/caterer/SuccessDialog";
+import { toast } from "sonner";
 
 export default function Page() {
   const router = useRouter();
@@ -28,10 +29,13 @@ export default function Page() {
     const isValid = await validateAccountStep();
     if (isValid) {
       accountSettingsForm.handleSubmit(async (data) => {
-        onSubmitAccountSettings(data);
+        const isSuccess = await onSubmitAccountSettings(data);
+        if (!isSuccess) {
+          toast.error("Submission Failed");
+          return;
+        }
         setIsSubmitSuccess(true);
         // Wait 1 second, then show dialog
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         setShowSuccessDialog(true);
       })();
     }

@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const businessSettingsSchema = z.object({
@@ -290,19 +291,69 @@ export function useSettingsForm() {
   };
 
   // Submit form function for Account Settings
-  const onSubmitAccountSettings = (data: AccountSettingsValues) => {
-    // Create menu item object
-    const settings: AccountSettingsValues = {
-      ...data,
-    };
-    // Here you would typically send this to your API
-    // If there's an image file, you would upload it first and then update the imageUrl
+  // Add this function to your useSettingsForm hook to properly handle form data with files
+  const onSubmitAccountSettings = async (data: AccountSettingsValues) => {
+    console.log("DATA AFTER SUBMITTING ACCOUNT SETTINGS", data);
 
-    // Show success message
-    setIsSubmitSuccess(true);
+    let isSuccess = false;
 
-    // Return the new menu item
-    return settings;
+    try {
+      // Create FormData object for multipart/form-data submission
+      const formData = new FormData();
+
+      // Add all text fields to the FormData
+      Object.keys(data).forEach((key) => {
+        // Skip the profileImage field as we'll handle it separately
+        if (key !== "profileImage") {
+          formData.append(
+            key,
+            data[key as keyof AccountSettingsValues] as string
+          );
+        }
+      });
+
+      // Handle the profile image - could be a File object or a string URL
+      if (data.profileImage) {
+        if (typeof data.profileImage === "object") {
+          // If it's a File object, append it with the correct field name
+          formData.append("profileImage", data.profileImage);
+        } else if (
+          typeof data.profileImage === "string" &&
+          data.profileImage.startsWith("http")
+        ) {
+          // If it's a URL and hasn't changed, we don't need to send it
+          // But if you need to keep track of the existing URL, uncomment:
+          // formData.append('existingProfileImage', data.profileImage);
+        }
+      }
+
+      // Make the API request with the FormData
+      const response = await api.put(
+        `/customers/68298172697afd7167a8df6f`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      toast.success("Profile updated successfully");
+      isSuccess = true;
+      setIsSubmitSuccess(true);
+      console.log("LOG RESPONSE AFTER SUBMITTING", response.data);
+    } catch (err: unknown) {
+      isSuccess = false;
+      console.log("ERRORRRR", err);
+      if (axios.isAxiosError<{ error: string }>(err)) {
+        const message = err.response?.data.error || "Unexpected Error Occur";
+        toast.error(message);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    }
+
+    return isSuccess;
   };
 
   // Submit form function for Business Settings
