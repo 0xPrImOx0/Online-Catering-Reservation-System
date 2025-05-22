@@ -55,4 +55,9 @@ export const registeredLinks: CustomerLinks[] = [
     href: "/settings",
     Icon: Settings,
   },
+  {
+    title: "Reservation History",
+    href: "reservation-history",
+    Icon: History,
+  },
 ];

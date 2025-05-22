@@ -83,7 +83,6 @@ export interface ReservationItem {
 }
 
 export type ReservationTableProps = {
-  reservations?: ReservationItem[];
   dashboard?: boolean;
 };
 
