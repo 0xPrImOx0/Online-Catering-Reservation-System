@@ -20,6 +20,7 @@ import { Eye, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import SearchInput from "../SearchInput";
 import { AnimatedIconButton } from "../AnimatedIconButton";
+import { SkeletonCustomersTable } from "./SkeletenCustomersTable";
 
 interface CustomersTableProps {
   dashboard?: boolean;
@@ -31,6 +32,7 @@ export function CustomersTable({
   onViewCustomer,
 }: CustomersTableProps) {
   const [customers, setCustomers] = useState<CustomerProps[]>([]);
+  const [isFetching, setIsFetching] = useState(true);
 
   const [date, setDate] = useState<Date>(new Date());
   const [query, setQuery] = useState("");
@@ -60,6 +62,7 @@ export function CustomersTable({
   }, []);
 
   useEffect(() => {
+    setIsFetching(true);
     const getCustomers = async () => {
       try {
         const response = await api.get("/customers");
@@ -75,6 +78,8 @@ export function CustomersTable({
         } else {
           console.error("Something went wrong. Please try again.");
         }
+      } finally {
+        setIsFetching(false);
       }
     };
 
@@ -122,78 +127,77 @@ export function CustomersTable({
           </Button>
         </div>
       )}
-      <div className="mt-8">
-        <div className="mt-4 rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Registration Date</TableHead>
-                {/* <TableHead>Total Reservations</TableHead> */}
-                {/* <TableHead>Total Spent</TableHead> */}
-                {!dashboard && (
-                  <TableHead className="text-right">Actions</TableHead>
-                )}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredReservations.map((customer) => (
-                <TableRow key={customer._id} className="gap-2">
-                  <TableCell className="py-4">
-                    <div className="flex gap-2 items-center">
-                      <Avatar className="size-10">
-                        <AvatarFallback>
-                          {avatarFallBack(customer.fullName)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span>{customer.fullName}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>
-                    {customer.contactNumber || "Not provided"}
-                  </TableCell>
-                  <TableCell>
-                    {format(customer.createdAt!, "MMM d, yyyy")}
-                  </TableCell>
-                  {/* <TableCell>{customer.totalReservations || 0}</TableCell> */}
-                  {/* <TableCell>{formatCurrency(customer.totalSpent)}</TableCell> */}
+      {isFetching ? (
+        <SkeletonCustomersTable />
+      ) : (
+        <div className="mt-8">
+          <div className="mt-4 rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Registration Date</TableHead>
                   {!dashboard && (
-                    <TableCell className="text-right">
-                      <div className="flex gap-2 justify-end">
-                        <AnimatedIconButton
-                          icon={Eye}
-                          title="View Details"
-                          className="group transition-all duration-300 hover:w-auto text-blue-500"
-                          onClick={() => onViewCustomer!(customer)}
-                        />
-                      </div>
-                    </TableCell>
+                    <TableHead className="text-right">Actions</TableHead>
                   )}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredReservations.map((customer) => (
+                  <TableRow key={customer._id} className="gap-2">
+                    <TableCell className="py-4">
+                      <div className="flex gap-2 items-center">
+                        <Avatar className="size-10">
+                          <AvatarFallback>
+                            {avatarFallBack(customer.fullName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>{customer.fullName}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{customer.email}</TableCell>
+                    <TableCell>
+                      {customer.contactNumber || "Not provided"}
+                    </TableCell>
+                    <TableCell>
+                      {format(customer.createdAt!, "MMM d, yyyy")}
+                    </TableCell>
+                    {!dashboard && (
+                      <TableCell className="text-right">
+                        <div className="flex gap-2 justify-end">
+                          <AnimatedIconButton
+                            icon={Eye}
+                            title="View Details"
+                            className="group transition-all duration-300 hover:w-auto text-blue-500"
+                            onClick={() => onViewCustomer!(customer)}
+                          />
+                        </div>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
-        {/* Pagination */}
-        <div className="flex justify-between items-center mt-4">
-          <div className="text-sm text-muted-foreground">
-            Showing <strong>1</strong> to <strong>{customers.length}</strong> of{" "}
-            <strong>{customers.length}</strong> customers
-          </div>
-          <div className="flex gap-2 items-center">
-            <Button variant="outline" size="sm" disabled>
-              Previous
-            </Button>
-            <Button variant="outline" size="sm" disabled>
-              Next
-            </Button>
+          <div className="flex justify-between items-center mt-4">
+            <div className="text-sm text-muted-foreground">
+              Showing <strong>1</strong> to <strong>{customers.length}</strong>{" "}
+              of <strong>{customers.length}</strong> customers
+            </div>
+            <div className="flex gap-2 items-center">
+              <Button variant="outline" size="sm" disabled>
+                Previous
+              </Button>
+              <Button variant="outline" size="sm" disabled>
+                Next
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

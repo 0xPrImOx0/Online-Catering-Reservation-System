@@ -39,6 +39,7 @@ const nextConfig: NextConfig = {
       "www.flyacecorp.com",
       //dummy
       "www.allrecipes.com",
+      "res.cloudinary.com",
     ],
   },
 };
