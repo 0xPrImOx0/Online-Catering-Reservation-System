@@ -12,7 +12,10 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 const businessSettingsSchema = z.object({
-  businessName: z.string().min(1, "Name is required"),
+  businessName: z
+    .string()
+    .min(5, { message: "Business name must be at least 5 characters long" })
+    .trim(),
 
   map: z.object({
     link: z
@@ -33,24 +36,44 @@ const businessSettingsSchema = z.object({
         message: "Embedded link must be a valid embedded Google Maps URL",
       }),
 
-    address: z.string().min(1, "Address is required"),
+    address: z
+      .string()
+      .min(5, {
+        message: "Business address must be at least 5 characters long",
+      })
+      .trim(),
   }),
 
-  systemName: z.string().min(1, "Sys is required"),
+  systemName: z
+    .string()
+    .min(5, { message: "System name must be at least 5 characters long" })
+    .trim(),
 
-  tagline: z.string().min(1, "Tagline is required"),
+  tagline: z
+    .string()
+    .min(5, { message: "Tagline must be at least 5 characters long" })
+    .trim(),
 
   businessLogo: z.any().optional().nullable(),
 
-  businessHours: z.string().min(1, "Business Hours is required"),
+  businessHours: z
+    .string()
+    .min(5, { message: "Business hours must be at least 5 characters long" })
+    .trim(),
 
-  businessDays: z.string().min(1, "Business Days is required"),
+  businessDays: z
+    .string()
+    .min(5, { message: "Business Days must be at least 5 characters long" })
+    .trim(),
 
   socialMediaLinks: z.array(
     z.object({
-      platform: z.string().min(1, "Platform is required"),
+      platform: z
+        .string()
+        .min(5, { message: "Platform must be at least 5 characters long" })
+        .trim(),
 
-      url: z.string().url("Invalid URL"),
+      url: z.any().optional().nullable(),
     })
   ),
 });
@@ -275,6 +298,13 @@ export function useSettingsForm() {
       currentPassword: "",
       newPassword: "",
       confirmNewPassword: "",
+    });
+
+    console.log("Form reset with values:", {
+      fullName: customerData.fullName,
+      email: customerData.email,
+      contactNumber: customerData.contactNumber,
+      profileImage: customerData.profileImage,
     });
   }, [customerData, accountSettingsForm]);
 
