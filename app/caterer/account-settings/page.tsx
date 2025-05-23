@@ -28,10 +28,9 @@ export default function Page() {
     const isValid = await validateAccountStep();
     if (isValid) {
       accountSettingsForm.handleSubmit(async (data) => {
-        onSubmitAccountSettings(data);
         setIsSubmitSuccess(true);
+        await onSubmitAccountSettings(data);
         // Wait 1 second, then show dialog
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         setShowSuccessDialog(true);
       })();
     }

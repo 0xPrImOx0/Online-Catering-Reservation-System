@@ -358,15 +358,11 @@ export function useSettingsForm() {
       }
 
       // Make the API request with the FormData
-      const response = await api.put(
-        `/customers/68298172697afd7167a8df6f`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await api.put(`/customers/${customer?._id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       toast.success("Profile updated successfully");
       isSuccess = true;

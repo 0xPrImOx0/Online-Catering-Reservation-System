@@ -30,7 +30,6 @@ export function ProfileInformation() {
     control,
     formState: { errors },
     setValue,
-    getValues,
     watch,
   } = useFormContext<AccountSettingsValues>();
 
@@ -84,7 +83,7 @@ export function ProfileInformation() {
 
         // Set the file in the form
         if (!currentProfile) {
-          setCurrentProfile(getValues("profileImage"));
+          setCurrentProfile(watch("profileImage"));
         }
 
         setValue("profileImage", file);
@@ -107,7 +106,7 @@ export function ProfileInformation() {
 
         // Set the file in the form
         if (!currentProfile) {
-          setCurrentProfile(getValues("profileImage"));
+          setCurrentProfile(watch("profileImage"));
         }
 
         setValue("profileImage", file);
@@ -121,7 +120,7 @@ export function ProfileInformation() {
 
   const cancelImageEdit = () => {
     setPreviewImage(currentProfile);
-    console.log("GET VALUES OF PROFILE IMAGE", getValues("profileImage"));
+    console.log("GET VALUES OF PROFILE IMAGE", watch("profileImage"));
     console.log("GET VALUES OF CURRENT  PROFILE IMAGE", currentProfile);
     // Only set the value if it's not an empty string
     const currentImage = !currentProfile
@@ -130,10 +129,7 @@ export function ProfileInformation() {
 
     setValue("profileImage", currentImage);
 
-    console.log(
-      "GET VALUES OF AFTERRRR PROFILE IMAGE",
-      getValues("profileImage")
-    );
+    console.log("GET VALUES OF AFTERRRR PROFILE IMAGE", watch("profileImage"));
 
     setIsEditingPhoto(false);
   };
