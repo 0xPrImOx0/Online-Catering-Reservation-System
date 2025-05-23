@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { User, Mail, Phone, X, PenSquare } from "lucide-react";
 import {
   Card,
@@ -30,6 +30,7 @@ export function ProfileInformation() {
     control,
     formState: { errors },
     setValue,
+    getValues,
     watch,
   } = useFormContext<AccountSettingsValues>();
 
@@ -37,21 +38,9 @@ export function ProfileInformation() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [isEditingPhoto, setIsEditingPhoto] = useState(false);
+  const [currentProfile, setCurrentProfile] = useState<string | null>(null);
 
-  // Watch the profilePicture field to get the current value
-  const watchedPic = watch("profileImage");
-
-  // Store the initial profile picture only once using useRef
-  const initialProfilePicRef = useRef<string>(
-    typeof watchedPic === "string"
-      ? watchedPic
-      : "/placeholder.svg?height=256&width=256"
-  );
-
-  // Derive current preview image
-  const displayImage = previewImage
-    ? previewImage
-    : initialProfilePicRef.current;
+  // Derive current display image
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -80,30 +69,32 @@ export function ProfileInformation() {
     return true;
   };
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setDragActive(false);
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
 
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const file = e.dataTransfer.files[0];
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
 
-        if (validateFile(file)) {
-          // Create a preview URL
-          const objectUrl = URL.createObjectURL(file);
-          setPreviewImage(objectUrl);
+      if (validateFile(file)) {
+        // Create a preview URL
+        const objectUrl = URL.createObjectURL(file);
+        setPreviewImage(objectUrl);
 
-          // Set the file in the form
-          setValue("profileImage", file);
-
-          // Hide the edit mode after successful upload
-          setIsEditingPhoto(false);
+        // Set the file in the form
+        if (!currentProfile) {
+          setCurrentProfile(getValues("profileImage"));
         }
+
+        setValue("profileImage", file);
+
+        // Hide the edit mode after successful upload
+        setIsEditingPhoto(false);
+        console.log("File selected:", file.name, file.type, file.size);
       }
-    },
-    [setValue]
-  );
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -115,6 +106,10 @@ export function ProfileInformation() {
         setPreviewImage(objectUrl);
 
         // Set the file in the form
+        if (!currentProfile) {
+          setCurrentProfile(getValues("profileImage"));
+        }
+
         setValue("profileImage", file);
 
         // Hide the edit mode after successful upload
@@ -125,8 +120,21 @@ export function ProfileInformation() {
   };
 
   const cancelImageEdit = () => {
-    setPreviewImage(null);
-    setValue("profileImage", initialProfilePicRef);
+    setPreviewImage(currentProfile);
+    console.log("GET VALUES OF PROFILE IMAGE", getValues("profileImage"));
+    console.log("GET VALUES OF CURRENT  PROFILE IMAGE", currentProfile);
+    // Only set the value if it's not an empty string
+    const currentImage = !currentProfile
+      ? watch("profileImage")
+      : currentProfile;
+
+    setValue("profileImage", currentImage);
+
+    console.log(
+      "GET VALUES OF AFTERRRR PROFILE IMAGE",
+      getValues("profileImage")
+    );
+
     setIsEditingPhoto(false);
   };
 
@@ -150,7 +158,11 @@ export function ProfileInformation() {
             <div className="relative">
               <div className="relative size-64 rounded-full overflow-hidden border-4 border-muted shadow-md">
                 <Image
-                  src={displayImage}
+                  src={
+                    previewImage ||
+                    watch("profileImage") ||
+                    "/placeholder.svg?height=256&width=256"
+                  }
                   alt="Profile"
                   fill
                   className="w-full h-full object-cover object-center"
