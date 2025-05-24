@@ -360,8 +360,8 @@ export function useSettingsForm() {
   };
 
   const validateBusinessStep = async (): Promise<boolean> => {
-    const isValid = await businessSettingsForm.trigger();
-    return isValid;
+    // const isValid = await businessSettingsForm.trigger();
+    return true;
   };
 
   // Submit form function for Account Settings
@@ -427,21 +427,29 @@ export function useSettingsForm() {
   };
 
   // Submit form function for Business Settings
-  const onSubmitBusinessSettings = (data: BusinessSettingsValues) => {
-    // Create menu item object
+  const onSubmitBusinessSettings = async (data: BusinessSettingsValues) => {
+    console.log("DATA AFTER SUBMITTING ACCOUNT SETTINGS", data);
 
-    console.log("SUBMITTED BUSINESS SETTINGS", data);
-    const settings: BusinessSettingsValues = {
-      ...data,
-    };
-    // Here you would typically send this to your API
-    // If there's an image file, you would upload it first and then update the imageUrl
+    let isSuccess = false;
 
-    // Show success message
-    setIsSubmitSuccess(true);
+    try {
+      // Make the API request with the FormData
+      const response = await api.put(`/business-settings`, data);
+      isSuccess = true;
+      setIsSubmitSuccess(true);
+      console.log("LOG RESPONSE AFTER SUBMITTING", response.data);
+    } catch (err: unknown) {
+      isSuccess = false;
+      console.log("ERRORRRR", err);
+      if (axios.isAxiosError<{ error: string }>(err)) {
+        const message = err.response?.data.error || "Unexpected Error Occur";
+        toast.error(message);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    }
 
-    // Return the new menu item
-    return settings;
+    return isSuccess;
   };
 
   return {

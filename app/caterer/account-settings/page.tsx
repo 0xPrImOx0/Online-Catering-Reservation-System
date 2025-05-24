@@ -30,7 +30,6 @@ export default function Page() {
       accountSettingsForm.handleSubmit(async (data) => {
         setIsSubmitSuccess(true);
         await onSubmitAccountSettings(data);
-        // Wait 1 second, then show dialog
         setShowSuccessDialog(true);
       })();
     }

@@ -9,6 +9,7 @@ import { useSettingsForm } from "@/hooks/use-settings-form";
 import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const BusinessSettings = () => {
   const router = useRouter();
@@ -16,29 +17,25 @@ const BusinessSettings = () => {
     businessSettingsForm,
     isSubmitSuccess,
     setIsSubmitSuccess,
-    validateBusinessStep,
     onSubmitBusinessSettings,
   } = useSettingsForm();
 
+  const [dots, setDots] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   // Handle form submission
   const handleSubmit = async () => {
-    const isValid = await validateBusinessStep();
-    console.log("IS BUSINESS SETINGS FORMS VALIE", isValid);
-    if (isValid) {
-      businessSettingsForm.handleSubmit(async (data) => {
-        onSubmitBusinessSettings(data);
-        setIsSubmitSuccess(true);
-        // Wait 1 second, then show dialog
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setShowSuccessDialog(true);
-      })();
+    setIsSubmitSuccess(true);
+
+    const data = businessSettingsForm.getValues();
+    const isSuccess = await onSubmitBusinessSettings(data);
+
+    if (!isSuccess) {
+      toast.error("Submission Failed");
+      return;
     }
-    console.log(
-      "ERRORS IN BUSINESS SETTINGS",
-      businessSettingsForm.formState.errors
-    );
+
+    setShowSuccessDialog(true);
   };
 
   useEffect(() => {
@@ -47,13 +44,26 @@ const BusinessSettings = () => {
     }
   }, [showSuccessDialog, setIsSubmitSuccess]);
 
+  useEffect(() => {
+    if (!isSubmitSuccess) {
+      setDots("");
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
+    }, 500); // change speed if needed
+
+    return () => clearInterval(interval);
+  }, [isSubmitSuccess]);
+
   return (
     <main className="space-y-8 px-2 sm:px-14 md:px-10 max-w-[1440px] w-full mx-auto mb-20">
       <SuccessDialog
         open={showSuccessDialog}
         onOpenChange={setShowSuccessDialog}
         title="Changes Saved!"
-        description="Your account settings have been updated successfully."
+        description="Your business settings have been updated successfully."
         buttonText="Close"
       />
 
@@ -86,7 +96,7 @@ const BusinessSettings = () => {
               disabled={isSubmitSuccess}
               className="bg-sidebar-accent-foreground text-background"
             >
-              {isSubmitSuccess ? "Saving..." : "Save Changes"}
+              {isSubmitSuccess ? `Saving${dots}` : "Save Changes"}
               {!isSubmitSuccess && <Save className="ml-2 w-4 h-4" />}
             </Button>
           </div>
