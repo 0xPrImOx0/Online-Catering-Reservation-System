@@ -25,7 +25,7 @@ const DetailRow = ({
 }) => {
   return (
     <li className="flex items-start">
-      <span className="flex flex-1 items-center text-foreground font-medium shrink-0">
+      <span className="flex flex-1 items-center font-medium text-foreground shrink-0">
         {label}
       </span>
       <span className="ml-2 text-foreground">{value || "Not provided"}</span>
@@ -327,15 +327,9 @@ export default function SummaryBooking() {
                                     key={id}
                                     className="flex gap-2 items-center text-foreground"
                                   >
-                                    {menuIds[id].quantity > 1 ? (
-                                      <span className="text-green-600">
-                                        {menuIds[id].quantity} X
-                                      </span>
-                                    ) : (
-                                      <div className="flex justify-center items-center w-6 h-6 bg-green-700 rounded-full">
-                                        <Check className="size-4 text-white" />
-                                      </div>
-                                    )}
+                                    <div className="flex justify-center items-center w-6 h-6 bg-green-700 rounded-full">
+                                      <Check className="text-white size-4" />
+                                    </div>
                                     <span>{menu.name}</span>
                                   </li>
                                 );

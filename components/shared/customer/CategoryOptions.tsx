@@ -42,7 +42,7 @@ export default function CategoryOptions({
 
   // Preload all menu items used in selectedMenus
   useEffect(() => {
-    async function loadMenuItems() {
+    const loadMenuItems = async () => {
       const menuIds: string[] = [];
       Object.values(selectedMenus || {}).forEach(
         (category: Record<string, unknown>) => {
@@ -64,7 +64,7 @@ export default function CategoryOptions({
       if (Object.keys(newItems).length > 0) {
         setMenuItemsMap((prev) => ({ ...prev, ...newItems }));
       }
-    }
+    };
     loadMenuItems();
   }, [selectedMenus]);
 
@@ -89,7 +89,7 @@ export default function CategoryOptions({
       return;
     }
     if (selectedPackage) {
-      async function fetchPackage() {
+      const fetchPackage = async () => {
         if (!selectedPackage) return;
 
         const selectedPackageData = await getPackageItem(selectedPackage);
@@ -126,7 +126,7 @@ export default function CategoryOptions({
   }, [selectedMenus, categoryAndCount]);
 
   return (
-    <div className="space-y-6 overflow-hidden">
+    <div className="overflow-hidden space-y-6">
       {selectedPackage && (
         <div>
           <h3 className="mb-2 text-base font-medium">

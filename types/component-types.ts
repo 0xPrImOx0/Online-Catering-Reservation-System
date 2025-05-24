@@ -116,7 +116,6 @@ export type MultiStepFormProps = {
 
 export interface OrderItemType {
   name: string;
-  quantity: number;
   price: number;
 }
 

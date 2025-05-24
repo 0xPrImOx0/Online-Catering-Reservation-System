@@ -97,7 +97,6 @@ const reservationSchema = z.object({
       z.record(
         z.string(), // dish ID
         z.object({
-          quantity: z.number().min(1),
           paxSelected: z.enum(paxArray as [PaxArrayType, ...PaxArrayType[]]),
           pricePerPax: z.number().min(0),
         })
@@ -315,14 +314,14 @@ export function useReservationForm() {
     const isPackage = cateringPackages.find(
       (pkg) => pkg._id === selectedPackage
     );
+    
     const calculateTotal = () => {
       let total = 0;
-
       // Iterate through each category (Soup, Beverage)
       Object.values(selectedMenus).forEach((category) => {
         // Iterate through each menu item in the category
         Object.values(category).forEach((item) => {
-          total += item.quantity * item.pricePerPax;
+          total += item.pricePerPax;
         });
       });
       if (isPackage) {
@@ -380,6 +379,7 @@ export function useReservationForm() {
       step !== 0
     ) {
       setShowPackageSelection(true);
+      return false;
     }
     if (cateringOptions === "menus" && step === 1) {
       return true;
@@ -542,17 +542,27 @@ export function useReservationForm() {
       case 2:
         return ["selectedMenus"];
       case 3:
-        return [
-          "eventType",
-          "deliveryAddress",
-          "reservationDate",
-          "reservationTime",
-          "guestCount",
-          "serviceType",
-          "serviceHours",
-          "venue",
-          // "paymentReference",
-        ];
+        if (serviceType === "Plated") {
+          return [
+            "eventType",
+            "deliveryAddress",
+            "reservationDate",
+            "reservationTime",
+            "guestCount",
+            "serviceType",
+            "serviceHours",
+            "venue",
+          ];
+        } else {
+          return [
+            "eventType",
+            "reservationDate",
+            "reservationTime",
+            "guestCount",
+            "serviceType",
+            "venue",
+          ];
+        }
       default:
         return [];
     }
@@ -579,7 +589,7 @@ export function useReservationForm() {
         updatedMenus[menu._id] = {
           paxSelected: "4-6 pax",
           pricePerPax: price,
-        }; // Set quantity to 1 when checked
+        };
       }
     } else {
       // Remove the dish completely when unchecked
@@ -603,72 +613,6 @@ export function useReservationForm() {
     field.onChange(newMenus);
   };
 
-  const handleReduceQuantity = (
-    value: SelectedMenus,
-    category: string,
-    menu: string,
-    onChange: (value: SelectedMenus) => void
-  ) => {
-    // Check if the category exists and get the count of menu items
-    const currentCategory = value[category];
-    const currentCount = currentCategory
-      ? Object.keys(currentCategory).length
-      : 0;
-
-    // Proceed only if the category has menu items and the menu exists
-    if (currentCount > 0 && currentCategory && currentCategory[menu]) {
-      // Create updated category with the new quantity for the menu
-      const updatedCategory: Record<string, MenuReservationDetails> = {
-        ...currentCategory,
-        [menu]: {
-          ...currentCategory[menu],
-        },
-      };
-
-      // If the category becomes empty, remove the category
-      if (Object.keys(updatedCategory).length === 0) {
-        const updatedFieldValue = { ...value };
-        delete updatedFieldValue[category];
-        onChange(updatedFieldValue);
-      } else {
-        onChange({
-          ...value,
-          [category]: updatedCategory,
-        });
-      }
-    }
-  };
-
-  const handleAddQuantity = (
-    value: SelectedMenus,
-    category: string,
-    menu: string,
-    onChange: (value: SelectedMenus) => void
-  ) => {
-    // Get the current category, default to empty object if undefined
-    const currentCategory = value[category] || {};
-
-    // Get the current menu item, default to a new MenuReservationDetails if undefined
-    const currentItem = currentCategory[menu] || {
-      quantity: 0,
-      paxSelected: "Adult", // Default value, adjust as needed
-      pricePerPax: 0, // Default value, adjust as needed
-    };
-
-    // Create updated category with incremented quantity
-    const updatedCategory: Record<string, MenuReservationDetails> = {
-      ...currentCategory,
-      [menu]: {
-        ...currentItem,
-      },
-    };
-
-    // Update the value with the new category
-    onChange({
-      ...value,
-      [category]: updatedCategory,
-    });
-  };
 
   return {
     cateringOptions,
@@ -683,8 +627,6 @@ export function useReservationForm() {
     handleCheckboxChange,
     showPackageSelection,
     setShowPackageSelection,
-    handleReduceQuantity,
-    handleAddQuantity,
     getAllMenus,
     isCategoryError,
     setIsCategoryError,

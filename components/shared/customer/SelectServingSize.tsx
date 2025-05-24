@@ -40,7 +40,6 @@ export default function SelectServingSize({
     };
 
     const currentItem = currentCategory[menu] || {
-      quantity: 0,
       paxSelected: paxSelected,
       pricePerPax: priceMap[paxSelected],
     };
