@@ -8,13 +8,11 @@ import {
 } from "@/types/package-types";
 import {
   HoursArrayTypes,
-  MenuReservationDetails,
   paxArray,
   PaxArrayType,
   ReservationEventTypes,
   reservationEventTypes,
   SelectedMenu,
-  SelectedMenus,
 } from "@/types/reservation-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -314,7 +312,7 @@ export function useReservationForm() {
     const isPackage = cateringPackages.find(
       (pkg) => pkg._id === selectedPackage
     );
-    
+
     const calculateTotal = () => {
       let total = 0;
       // Iterate through each category (Soup, Beverage)
@@ -612,7 +610,6 @@ export function useReservationForm() {
 
     field.onChange(newMenus);
   };
-
 
   return {
     cateringOptions,

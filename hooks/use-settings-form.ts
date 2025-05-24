@@ -2,7 +2,7 @@
 
 import { useAuthContext } from "@/contexts/AuthContext";
 import api from "@/lib/api/axiosInstance";
-import { businessMetadata } from "@/lib/caterer/business-metadata";
+import { BusinessMetadataProps } from "@/lib/caterer/business-metadata";
 import { CustomerProps } from "@/types/customer-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -54,7 +54,7 @@ const businessSettingsSchema = z.object({
     .min(5, { message: "Tagline must be at least 5 characters long" })
     .trim(),
 
-  businessLogo: z.any().optional().nullable(),
+  // businessLogo: z.any().optional().nullable(),
 
   businessHours: z
     .string()
@@ -191,30 +191,19 @@ export type AccountSettingsValues = z.infer<typeof accountSettingsSchema>;
 
 export type BusinessSettingsValues = z.infer<typeof businessSettingsSchema>;
 
-const {
-  businessName,
-  map,
-  systemName,
-  tagline,
-  businessLogo,
-  businessHours,
-  businessDays,
-  socialMediaLinks,
-} = businessMetadata;
-
 const defaultBusinessValues: BusinessSettingsValues = {
-  businessName: businessName,
+  businessName: "",
   map: {
-    link: map.link,
-    embeddedLink: map.embeddedLink,
-    address: map.address,
+    link: "",
+    embeddedLink: "",
+    address: "",
   },
-  systemName: systemName,
-  tagline: tagline,
-  businessLogo: businessLogo,
-  businessHours: businessHours,
-  businessDays: businessDays,
-  socialMediaLinks: socialMediaLinks,
+  systemName: "",
+  tagline: "",
+  // businessLogo: businessLogo,
+  businessHours: "",
+  businessDays: "",
+  socialMediaLinks: [{ platform: "", url: "" }],
 };
 
 const defaultAccountValues: AccountSettingsValues = {
@@ -229,6 +218,8 @@ const defaultAccountValues: AccountSettingsValues = {
 
 export function useSettingsForm() {
   const [customerData, setCustomerData] = useState<CustomerProps>();
+  const [businessSettingsData, setBusinessSettingsData] =
+    useState<BusinessMetadataProps>();
   const { customer } = useAuthContext();
 
   useEffect(() => {
@@ -262,6 +253,37 @@ export function useSettingsForm() {
     };
 
     getCustomer();
+  }, []);
+
+  useEffect(() => {
+    const getBusinessSettingsData = async () => {
+      try {
+        const response = await api.get(`/business-settings`);
+        setBusinessSettingsData(response.data.data);
+
+        // Save only if window is defined
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            "businessSettingsData",
+            JSON.stringify(response.data.data)
+          );
+        }
+
+        console.log(response.data.data);
+      } catch (err: unknown) {
+        console.log("ERRRORRR", err);
+
+        if (axios.isAxiosError<{ error: string }>(err)) {
+          const message = err.response?.data.error || "Unexpected Error Occur";
+
+          console.error("ERROR FETCHING BUSINESS SETTINGS DATA", message);
+        } else {
+          console.error("Something went wrong. Please try again.");
+        }
+      }
+    };
+
+    getBusinessSettingsData();
   }, []);
 
   useEffect(() => {
@@ -307,6 +329,28 @@ export function useSettingsForm() {
       profileImage: customerData.profileImage,
     });
   }, [customerData, accountSettingsForm]);
+
+  useEffect(() => {
+    if (!businessSettingsData) return;
+
+    businessSettingsForm.reset({
+      businessName: businessSettingsData.businessName,
+      map: businessSettingsData.map,
+      systemName: "",
+      tagline: businessSettingsData.tagline,
+      // businessLogo: businessLogo,
+      businessHours: businessSettingsData.businessHours,
+      businessDays: businessSettingsData.businessDays,
+      socialMediaLinks: businessSettingsData.socialMediaLinks,
+    });
+
+    console.log("Form reset with values:", {
+      businessName: businessSettingsData.businessName,
+      map: businessSettingsData.map,
+      tagline: businessSettingsData.tagline,
+      businessHours: businessSettingsData.businessHours,
+    });
+  }, [businessSettingsData]);
 
   const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
 

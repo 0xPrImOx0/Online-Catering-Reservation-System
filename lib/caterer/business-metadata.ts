@@ -36,4 +36,27 @@ const ownerMetadata = {
   profilePic: "/images/caterer-profile.jpg",
 };
 
+export type SocialMediaLink = {
+  platform: string;
+  url: string;
+};
+
+export type MapInfo = {
+  link: string;
+  embeddedLink: string;
+  address: string;
+};
+
+export type BusinessMetadataProps = {
+  businessName: string;
+  address: string;
+  map: MapInfo;
+  tagline: string;
+  systemName: string;
+  // businessLogo: string;
+  businessHours: string;
+  businessDays: string;
+  socialMediaLinks: SocialMediaLink[];
+};
+
 export { businessMetadata, ownerMetadata };

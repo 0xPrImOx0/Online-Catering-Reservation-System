@@ -1,7 +1,6 @@
 "use client";
 
 import { BusinessDetailsForm } from "@/components/shared/caterer/BusinessDetailsForm";
-import { BusinessLogoUpload } from "@/components/shared/caterer/BusinessLogoUpload";
 import { SocialMediaLinks } from "@/components/shared/caterer/SocialMediaLinks";
 import { SuccessDialog } from "@/components/shared/caterer/SuccessDialog";
 import { Button } from "@/components/ui/button";
@@ -69,7 +68,7 @@ const BusinessSettings = () => {
         <div className="mt-6 space-y-6">
           <BusinessDetailsForm />
 
-          <BusinessLogoUpload />
+          {/* <BusinessLogoUpload /> */}
 
           <SocialMediaLinks />
 
